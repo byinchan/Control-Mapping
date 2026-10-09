@@ -1,0 +1,17 @@
+# Copyrighted framework source files: never commit
+reference-sources/
+
+# Secrets
+.env.local
+.env*.local
+
+# Dependencies and build output
+node_modules/
+.next/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# OS and local tool settings
+.DS_Store
+.claude/settings.local.json
