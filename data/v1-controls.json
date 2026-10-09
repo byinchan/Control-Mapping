@@ -1,0 +1,709 @@
+{
+  "source": "v1/04 - Control Mapping Matrix.xlsx (sheet \"1 - Control Mapping Matrix\")",
+  "note": "Transcribed once from the v1 matrix. \"raw\" keeps each framework cell verbatim; \"parsed\" expands ranges and N/A reasons. The original v1 files are never edited.",
+  "controls": [
+    {
+      "id": "C001",
+      "name": "Multi-Factor Authentication (MFA)",
+      "objective": "Ensure only authorized users can access enterprise systems.",
+      "activity": "Enforce multi-factor authentication through Microsoft Entra ID for enterprise users.",
+      "owner": "Infrastructure Manager",
+      "v1Status": "Fully Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "PR.AA-03",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "PR.AA-03"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.5.15, A.8.5",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.5.15",
+              "A.8.5"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "6.3, 6.4, 6.5",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "6.3",
+              "6.4",
+              "6.5"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC6.1",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC6.1"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C002",
+      "name": "Vulnerability Management",
+      "objective": "Identify and reduce security vulnerabilities before they can be exploited.",
+      "activity": "Perform scheduled vulnerability scanning, risk prioritization, and remediation tracking using Tenable.io.",
+      "owner": "SOC Manager",
+      "v1Status": "Fully Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "PR.PS-02, ID.IM-04",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "PR.PS-02",
+              "ID.IM-04"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.8.8",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.8.8"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "7.1, 7.2, 7.7",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "7.1",
+              "7.2",
+              "7.7"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC7.1",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC7.1"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C003",
+      "name": "Patch Management",
+      "objective": "Reduce exposure to known software vulnerabilities.",
+      "activity": "Apply security patches to enterprise systems through the patch management program",
+      "owner": "Infrastructure Manager",
+      "v1Status": "Partially Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "PR.PS-02",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "PR.PS-02"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.8.8",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.8.8"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "7.3 -7.6",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "7.3",
+              "7.4",
+              "7.5",
+              "7.6"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC8.1",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC8.1"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C004",
+      "name": "Security Awareness",
+      "objective": "Promote secure employee behavior and reduce human-related cyber risks.",
+      "activity": "Deliver annual security awareness training and phishing simulations to employees.",
+      "owner": "GRC Manager",
+      "v1Status": "Partially Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "PR.AT-01",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "PR.AT-01"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.6.3",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.6.3"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "14.1-14.8",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "14.1",
+              "14.2",
+              "14.3",
+              "14.4",
+              "14.5",
+              "14.6",
+              "14.7",
+              "14.8"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC2.2",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC2.2"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C005",
+      "name": "Incident Response",
+      "objective": "Detect, respond to, and recover from cybersecurity incidents.",
+      "activity": "Execute incident response procedures, investigations, and tabletop exercises for security events.",
+      "owner": "SOC Manager",
+      "v1Status": "Fully Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "ID.IM-04",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "ID.IM-04"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.5.26",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.5.26"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "17.1-17.8",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "17.1",
+              "17.2",
+              "17.3",
+              "17.4",
+              "17.5",
+              "17.6",
+              "17.7",
+              "17.8"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC7.4",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC7.4"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C006",
+      "name": "Vendor Due Diligence",
+      "objective": "Evaluate cybersecurity risks before engaging third-party vendors.",
+      "activity": "Perform vendor security assessments and due diligence during onboarding and contract renewals.",
+      "owner": "GRC Manager",
+      "v1Status": "Partially Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "GV.SC-06",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "GV.SC-06"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.5.22",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.5.22"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "15.1- 15.7",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "15.1",
+              "15.2",
+              "15.3",
+              "15.4",
+              "15.5",
+              "15.6",
+              "15.7"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "P6.4, P6.5",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "P6.4",
+              "P6.5"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C007",
+      "name": "Backup & Disaster Recovery",
+      "objective": "Ensure business continuity and recovery following disruptive events.",
+      "activity": "Perform regular data backups and test disaster recovery procedures.",
+      "owner": "Infrastructure Manager",
+      "v1Status": "Fully Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "ID.IM-04",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "ID.IM-04"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.5.29, A.5.30, A.8.13",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.5.29",
+              "A.5.30",
+              "A.8.13"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "11.1-11.5",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "11.1",
+              "11.2",
+              "11.3",
+              "11.4",
+              "11.5"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "A1.2, A1.3",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A1.2",
+              "A1.3"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C008",
+      "name": "Cybersecurity Policies & Standards",
+      "objective": "Establish governance requirements for enterprise cybersecurity.",
+      "activity": "Develop, maintain, and periodically review cybersecurity policies and standards.",
+      "owner": "GRC Manager",
+      "v1Status": "Partially Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "GV.PO-01, GV.PO-02",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "GV.PO-01",
+              "GV.PO-02"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.5.1",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.5.1"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "N/A  (Outside CIS Scope)",
+          "parsed": {
+            "kind": "na",
+            "reason": "Outside CIS Scope"
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC1.4, CC5.3, ",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC1.4",
+              "CC5.3"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C009",
+      "name": "Enterprise Risk Management",
+      "objective": "Identify, assess, and monitor enterprise cybersecurity risks.",
+      "activity": "Maintain the enterprise risk register and conduct periodic cyber risk assessments.",
+      "owner": "GRC Manager",
+      "v1Status": "Partially Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "GV.RM-03, GV.RM-01",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "GV.RM-03",
+              "GV.RM-01"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "N/A  (see ISO 31000)",
+          "parsed": {
+            "kind": "na",
+            "reason": "see ISO 31000"
+          }
+        },
+        "cis-v8.1": {
+          "raw": "N/A  (Outside CIS Scope)",
+          "parsed": {
+            "kind": "na",
+            "reason": "Outside CIS Scope"
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC3.1, CC3.2",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC3.1",
+              "CC3.2"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C010",
+      "name": "Executive Risk Reporting",
+      "objective": "Provide leadership with timely information to support cyber risk decisions.",
+      "activity": "Prepare and present periodic cyber risk metrics and executive dashboards.",
+      "owner": "GRC Manager",
+      "v1Status": "Partially Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "GV.OV-03",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "GV.OV-03"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.5.4",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.5.4"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "N/A  (Outside CIS Scope)",
+          "parsed": {
+            "kind": "na",
+            "reason": "Outside CIS Scope"
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC1.3",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC1.3"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C011",
+      "name": "Identity & Access Management (IAM)",
+      "objective": "Ensure appropriate user access to enterprise systems throughout the identity lifecycle.",
+      "activity": "Provision, modify, review, and remove user access through Microsoft Entra ID.",
+      "owner": "Infrastructure Manager",
+      "v1Status": "Fully Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "PR.AA-01, PR.AA-03, PR.AA-05",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "PR.AA-01",
+              "PR.AA-03",
+              "PR.AA-05"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.5.15, A.5.16",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.5.15",
+              "A.5.16"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "5.1–5.5, 6.1, 6.2, 6.7",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "5.1",
+              "5.2",
+              "5.3",
+              "5.4",
+              "5.5",
+              "6.1",
+              "6.2",
+              "6.7"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC6.1 , CC6.2, CC6.3",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC6.1",
+              "CC6.2",
+              "CC6.3"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C012",
+      "name": "Security Monitoring & SIEM",
+      "objective": "Detect suspicious activity and support timely incident response.",
+      "activity": "Continuously monitor security events using Microsoft Sentinel and the managed security service provider (MSSP).",
+      "owner": "SOC Manager",
+      "v1Status": "Fully Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "DE.AE-02, DE.AE-03",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "DE.AE-02",
+              "DE.AE-03"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.8.15, A.8.16",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.8.15",
+              "A.8.16"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "8.1–8.6, 13.1, 13.7–13.10",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "8.1",
+              "8.2",
+              "8.3",
+              "8.4",
+              "8.5",
+              "8.6",
+              "13.1",
+              "13.7",
+              "13.8",
+              "13.9",
+              "13.10"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC4.1, CC4.2",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC4.1",
+              "CC4.2"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C013",
+      "name": "Endpoint Protection",
+      "objective": "Protect enterprise endpoints from malware and other cyber threats.",
+      "activity": "Monitor and protect endpoints using Microsoft Defender",
+      "owner": "SOC Manager",
+      "v1Status": "Fully Aligned",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "DE.CM-09",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "DE.CM-09"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "A.8.7",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "A.8.7"
+            ]
+          }
+        },
+        "cis-v8.1": {
+          "raw": "10.1-10.7",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "10.1",
+              "10.2",
+              "10.3",
+              "10.4",
+              "10.5",
+              "10.6",
+              "10.7"
+            ]
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "CC6.1, CC6.7",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "CC6.1",
+              "CC6.7"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "C014",
+      "name": "AI Governance",
+      "objective": "Ensure the secure, responsible, and compliant use of artificial intelligence.",
+      "activity": "Establish AI governance policies, approval processes, and oversight for enterprise AI solutions.",
+      "owner": "GRC Manager",
+      "v1Status": "Gap Identified",
+      "frameworks": {
+        "nist-csf-2.0": {
+          "raw": "GV.PO-02",
+          "parsed": {
+            "kind": "ids",
+            "ids": [
+              "GV.PO-02"
+            ]
+          }
+        },
+        "iso-27001-2022": {
+          "raw": "N/A  (see ISO 42001)",
+          "parsed": {
+            "kind": "na",
+            "reason": "see ISO 42001"
+          }
+        },
+        "cis-v8.1": {
+          "raw": "N/A  (Outside CIS Scope)",
+          "parsed": {
+            "kind": "na",
+            "reason": "Outside CIS Scope"
+          }
+        },
+        "soc2-tsc-2017": {
+          "raw": "N/A - Out of Scope",
+          "parsed": {
+            "kind": "na",
+            "reason": "Out of Scope"
+          }
+        }
+      }
+    }
+  ]
+}
