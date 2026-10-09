@@ -19,9 +19,14 @@ Every NIST, CIS and SOC 2 ID in the v1 matrix exists in the current catalogs. No
 v1 changed or disappeared in v8.1.
 
 ### Dependency versions
-Same pins as the first project. All confirmed on the npm registry: next 16.3.6, react 19.3.0,
-react-dom 19.3.0, typescript 5.9.3, tailwindcss 4.3.3, @tailwindcss/postcss 4.3.3. Dev-only type
-packages use caret ranges. `npm audit` is pending until Node is installed.
+Same pins as the first project: react 19.3.0, react-dom 19.3.0, typescript 5.9.3, tailwindcss 4.3.3,
+@tailwindcss/postcss 4.3.3. Dev-only type packages use caret ranges.
+
+**Changed: next 16.3.6 → 16.3.8 (security fix).** `npm audit` reported a high-severity advisory range
+covering next 16.0.0–16.3.7, including GHSA-cjq9-62q9-8jv4 (SSRF in image optimization),
+GHSA-mcj8-r9mp-w47p and GHSA-4jqv-mc3x-m676 (cache poisoning), and GHSA-39w2-rjm5-chcv (dev-server
+information disclosure). 16.3.8 is the nearest patched release (patch bump only). `npm audit` now
+reports 0 vulnerabilities. Built and tested on Node 24.21.0 / npm 11.19.0.
 
 ### Spec defaults (approved by Bernadette)
 1. N/A vs None: v1 "N/A (...)" cells stay N/A with the stated reason. AI Governance (C014) is then
