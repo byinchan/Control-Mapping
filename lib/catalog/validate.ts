@@ -24,8 +24,8 @@ export function validateCatalog(data: unknown, framework: FrameworkId): string[]
   const source = data.source;
   if (!isObject(source) || !isText(source.title) || !isText(source.url) || !String(source.url).startsWith("https://")) {
     err("source needs a title and an https url");
-  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(String(source.retrieved))) {
-    err("source.retrieved must be YYYY-MM-DD");
+  } else if (source.retrieved !== null && !/^\d{4}-\d{2}-\d{2}$/.test(String(source.retrieved))) {
+    err("source.retrieved must be YYYY-MM-DD or null (no source downloaded)");
   }
   if (!isObject(data.license) || !isText(data.license.name) || !isText(data.license.note)) err("license needs name and note");
   const expectedLabelType = framework === "nist-csf-2.0" ? "official-text" : "own-label";

@@ -22,9 +22,15 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
   No CIS label is identical to a CIS safeguard title. I reworded the 8 labels that were most similar
   to the titles. The remaining closest matches are generic technical terms (e.g. "MFA for administrator
   access", "Threat modelling").
-- **Source URLs to confirm (Bernadette):** the CPRT link in the NIST catalog, the CIS v8.1 page, and the
-  AICPA download page. I wrote them from knowledge of the sites, not from the files. Retrieval dates are
-  the file dates of your downloads (NIST 2026-10-09, CIS and TSC 2026-08-03).
+- **Source URLs:** checked on 2026-10-09 by fetching each page and reading its title. The CPRT tool
+  (`https://csrc.nist.gov/projects/cprt/catalog`), the CIS v8.1 page and the AICPA 2017 TSC (2022)
+  download page all resolve to the expected page. The NIST link was first written with a
+  `#/cprt/framework/version/CSF_2_0_0` deep-link fragment. That fragment couldn't be verified (the tool
+  is a single-page app), so it was dropped. The ISO page returns 403 to automated requests and is unverified.
+- **Retrieval dates:** NIST, CIS and SOC 2 are 2026-10-09, the download date Bernadette confirmed. An
+  earlier draft used the PDFs' file timestamps (2026-08-03), which were wrong. Dates are now fixed values,
+  not read from timestamps. ISO's `retrieved` is `null` because no ISO source was downloaded. The draft
+  had a made-up date there.
 
 ### Validator
 - `lib/catalog/ids.ts`: `normalizeId` (spacing, dash characters, case, NIST zero-padding),

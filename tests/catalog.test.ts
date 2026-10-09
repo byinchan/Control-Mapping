@@ -29,6 +29,20 @@ test("only NIST uses official text; copyrighted frameworks use own labels", () =
   assert.equal(getCatalog("cis-v8.1").license.url, "https://creativecommons.org/licenses/by-nc-nd/4.0/");
 });
 
+test("source metadata: confirmed download dates, no date where nothing was downloaded, no URL fragments", () => {
+  for (const f of ["nist-csf-2.0", "cis-v8.1", "soc2-tsc-2017"] as const) {
+    assert.equal(getCatalog(f).source.retrieved, "2026-10-09", f);
+  }
+  assert.equal(getCatalog("iso-27001-2022").source.retrieved, null);
+  for (const c of CATALOGS) assert.ok(!c.source.url.includes("#"), c.framework);
+});
+
+test("validator rejects a malformed retrieved date", () => {
+  const c = clone(getCatalog("cis-v8.1"));
+  c.source.retrieved = "Aug 2026";
+  assert.ok(validateCatalog(c, "cis-v8.1").some((e) => e.includes("retrieved")));
+});
+
 test("validator rejects a duplicate id", () => {
   const c = clone(getCatalog("cis-v8.1"));
   c.items.push({ ...c.items[0] });

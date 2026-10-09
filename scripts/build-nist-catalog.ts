@@ -1,10 +1,12 @@
 // Builds reference/nist-csf-2.0.json from the NIST CPRT export in reference-sources/
 // (git-ignored, local only). Run: npm run build:nist
 // CI never runs this; it validates the committed catalog instead.
-import { readFileSync, statSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import type { Catalog, CatalogGroup, CatalogItem } from "../lib/catalog/types.ts";
 
 const SOURCE = "reference-sources/csf-export.json";
+// Download date confirmed by Bernadette. Not taken from file timestamps, which can be wrong.
+const RETRIEVED = "2026-10-09";
 const OUT = "reference/nist-csf-2.0.json";
 
 type Element = { element_identifier: string; element_type: string; text?: string; title?: string };
@@ -63,8 +65,8 @@ const catalog: Catalog = {
   publisher: "National Institute of Standards and Technology (NIST)",
   source: {
     title: "NIST CSF 2.0 reference data, Cybersecurity and Privacy Reference Tool (CPRT) JSON export",
-    url: "https://csrc.nist.gov/projects/cprt/catalog#/cprt/framework/version/CSF_2_0_0",
-    retrieved: statSync(SOURCE).mtime.toISOString().slice(0, 10),
+    url: "https://csrc.nist.gov/projects/cprt/catalog",
+    retrieved: RETRIEVED,
   },
   license: {
     name: "U.S. Government work",

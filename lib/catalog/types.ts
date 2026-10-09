@@ -20,7 +20,8 @@ export type Catalog = {
   name: string;
   version: string;
   publisher: string;
-  source: { title: string; url: string; retrieved: string };
+  /** retrieved is null when no source file was downloaded (ISO: IDs from numbering only). */
+  source: { title: string; url: string; retrieved: string | null };
   license: { name: string; url?: string; note: string };
   labelType: "official-text" | "own-label";
   labelStatus: "final" | "draft-pending-review";

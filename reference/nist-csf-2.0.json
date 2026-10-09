@@ -6,7 +6,7 @@
   "publisher": "National Institute of Standards and Technology (NIST)",
   "source": {
     "title": "NIST CSF 2.0 reference data, Cybersecurity and Privacy Reference Tool (CPRT) JSON export",
-    "url": "https://csrc.nist.gov/projects/cprt/catalog#/cprt/framework/version/CSF_2_0_0",
+    "url": "https://csrc.nist.gov/projects/cprt/catalog",
     "retrieved": "2026-10-09"
   },
   "license": {
