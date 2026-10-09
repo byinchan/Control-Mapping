@@ -38,7 +38,8 @@ reports 0 vulnerabilities. Built and tested on Node 24.21.0 / npm 11.19.0.
 5. NIST labels use the subcategory outcome statement (public domain; CSF 2.0 has no subcategory titles).
 6. The app and README say "CIS Controls v8.1".
 7. Pinned versions confirmed (see above).
-8. CLAUDE.md and v1/ are committed. The budget line was removed from CLAUDE.md first.
+8. CLAUDE.md and v1/ are committed. Before committing, the budget line was removed
+   from CLAUDE.md and the second dollar figure was reworded to "a small amount of credit".
 9. v1 mappings noted for later review, unchanged: C006 maps to SOC 2 P6.4/P6.5 rather than CC9.2;
    C005 and C007 map to NIST ID.IM-04 only.
 
