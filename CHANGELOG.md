@@ -27,10 +27,9 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
   download page all resolve to the expected page. The NIST link was first written with a
   `#/cprt/framework/version/CSF_2_0_0` deep-link fragment. That fragment couldn't be verified (the tool
   is a single-page app), so it was dropped. The ISO page returns 403 to automated requests and is unverified.
-- **Retrieval dates:** NIST, CIS and SOC 2 are 2026-10-09, the download date Bernadette confirmed. An
-  earlier draft used the PDFs' file timestamps (2026-08-03), which were wrong. Dates are now fixed values,
-  not read from timestamps. ISO's `retrieved` is `null` because no ISO source was downloaded. The draft
-  had a made-up date there.
+- **Retrieval dates (confirmed by Bernadette):** CIS and SOC 2 PDFs 2026-08-03, NIST export 2026-10-09.
+  Dates are fixed values, not read from file timestamps. ISO's `retrieved` is `null` because no ISO source
+  was downloaded. The first draft had a made-up date there.
 
 ### Validator
 - `lib/catalog/ids.ts`: `normalizeId` (spacing, dash characters, case, NIST zero-padding),

@@ -30,9 +30,9 @@ test("only NIST uses official text; copyrighted frameworks use own labels", () =
 });
 
 test("source metadata: confirmed download dates, no date where nothing was downloaded, no URL fragments", () => {
-  for (const f of ["nist-csf-2.0", "cis-v8.1", "soc2-tsc-2017"] as const) {
-    assert.equal(getCatalog(f).source.retrieved, "2026-10-09", f);
-  }
+  assert.equal(getCatalog("nist-csf-2.0").source.retrieved, "2026-10-09");
+  assert.equal(getCatalog("cis-v8.1").source.retrieved, "2026-08-03");
+  assert.equal(getCatalog("soc2-tsc-2017").source.retrieved, "2026-08-03");
   assert.equal(getCatalog("iso-27001-2022").source.retrieved, null);
   for (const c of CATALOGS) assert.ok(!c.source.url.includes("#"), c.framework);
 });
