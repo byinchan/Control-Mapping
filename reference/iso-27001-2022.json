@@ -1,0 +1,508 @@
+{
+  "schemaVersion": 1,
+  "framework": "iso-27001-2022",
+  "name": "ISO/IEC 27001:2022 Annex A",
+  "version": "2022",
+  "publisher": "ISO/IEC",
+  "source": {
+    "title": "ISO/IEC 27001:2022 Annex A control numbering (standard not consulted for this catalog)",
+    "url": "https://www.iso.org/standard/27001",
+    "retrieved": null
+  },
+  "license": {
+    "name": "Copyright ISO/IEC",
+    "note": "ISO/IEC 27001 is copyrighted. This catalog stores Annex A control numbers only, with short labels paraphrased by the author; no ISO text is reproduced."
+  },
+  "labelType": "own-label",
+  "labelStatus": "draft-pending-review",
+  "notes": [
+    "IDs generated from the Annex A numbering: A.5.1-A.5.37, A.6.1-A.6.8, A.7.1-A.7.14, A.8.1-A.8.34 (93).",
+    "Labels are the author's own paraphrase and were not checked against the standard; pending spot-check."
+  ],
+  "expectedCount": 93,
+  "groups": [
+    {
+      "id": "A.5",
+      "label": "Organizational controls"
+    },
+    {
+      "id": "A.6",
+      "label": "People controls"
+    },
+    {
+      "id": "A.7",
+      "label": "Physical controls"
+    },
+    {
+      "id": "A.8",
+      "label": "Technological controls"
+    }
+  ],
+  "items": [
+    {
+      "id": "A.5.1",
+      "group": "A.5",
+      "label": "Security policy set, approved and reviewed"
+    },
+    {
+      "id": "A.5.2",
+      "group": "A.5",
+      "label": "Assigned security roles"
+    },
+    {
+      "id": "A.5.3",
+      "group": "A.5",
+      "label": "Conflicting duties kept apart"
+    },
+    {
+      "id": "A.5.4",
+      "group": "A.5",
+      "label": "Leadership enforces security expectations"
+    },
+    {
+      "id": "A.5.5",
+      "group": "A.5",
+      "label": "Liaison with regulators and authorities"
+    },
+    {
+      "id": "A.5.6",
+      "group": "A.5",
+      "label": "Engaging security forums and peer groups"
+    },
+    {
+      "id": "A.5.7",
+      "group": "A.5",
+      "label": "Gathering and analysing threat intelligence"
+    },
+    {
+      "id": "A.5.8",
+      "group": "A.5",
+      "label": "Security built into projects"
+    },
+    {
+      "id": "A.5.9",
+      "group": "A.5",
+      "label": "Register of information and related assets"
+    },
+    {
+      "id": "A.5.10",
+      "group": "A.5",
+      "label": "Acceptable-use rules for assets"
+    },
+    {
+      "id": "A.5.11",
+      "group": "A.5",
+      "label": "Assets returned on exit or role change"
+    },
+    {
+      "id": "A.5.12",
+      "group": "A.5",
+      "label": "Classifying information by sensitivity"
+    },
+    {
+      "id": "A.5.13",
+      "group": "A.5",
+      "label": "Marking information with its classification"
+    },
+    {
+      "id": "A.5.14",
+      "group": "A.5",
+      "label": "Rules for sending information"
+    },
+    {
+      "id": "A.5.15",
+      "group": "A.5",
+      "label": "Rules for controlling access"
+    },
+    {
+      "id": "A.5.16",
+      "group": "A.5",
+      "label": "Identity lifecycle management"
+    },
+    {
+      "id": "A.5.17",
+      "group": "A.5",
+      "label": "Managing passwords and other secrets"
+    },
+    {
+      "id": "A.5.18",
+      "group": "A.5",
+      "label": "Provisioning, review and removal of access"
+    },
+    {
+      "id": "A.5.19",
+      "group": "A.5",
+      "label": "Managing supplier security risk"
+    },
+    {
+      "id": "A.5.20",
+      "group": "A.5",
+      "label": "Security clauses in supplier contracts"
+    },
+    {
+      "id": "A.5.21",
+      "group": "A.5",
+      "label": "ICT supply chain risk"
+    },
+    {
+      "id": "A.5.22",
+      "group": "A.5",
+      "label": "Ongoing oversight of supplier services"
+    },
+    {
+      "id": "A.5.23",
+      "group": "A.5",
+      "label": "Acquiring and exiting cloud services securely"
+    },
+    {
+      "id": "A.5.24",
+      "group": "A.5",
+      "label": "Preparing to manage incidents"
+    },
+    {
+      "id": "A.5.25",
+      "group": "A.5",
+      "label": "Triage of security events"
+    },
+    {
+      "id": "A.5.26",
+      "group": "A.5",
+      "label": "Handling incidents per procedure"
+    },
+    {
+      "id": "A.5.27",
+      "group": "A.5",
+      "label": "Lessons learned from incidents"
+    },
+    {
+      "id": "A.5.28",
+      "group": "A.5",
+      "label": "Collecting and preserving evidence"
+    },
+    {
+      "id": "A.5.29",
+      "group": "A.5",
+      "label": "Maintaining security during disruption"
+    },
+    {
+      "id": "A.5.30",
+      "group": "A.5",
+      "label": "Keeping ICT ready for continuity events"
+    },
+    {
+      "id": "A.5.31",
+      "group": "A.5",
+      "label": "Tracking legal and contractual obligations"
+    },
+    {
+      "id": "A.5.32",
+      "group": "A.5",
+      "label": "Respecting intellectual property"
+    },
+    {
+      "id": "A.5.33",
+      "group": "A.5",
+      "label": "Safeguarding organizational records"
+    },
+    {
+      "id": "A.5.34",
+      "group": "A.5",
+      "label": "Handling personal data lawfully"
+    },
+    {
+      "id": "A.5.35",
+      "group": "A.5",
+      "label": "Periodic independent security review"
+    },
+    {
+      "id": "A.5.36",
+      "group": "A.5",
+      "label": "Checking adherence to security policies"
+    },
+    {
+      "id": "A.5.37",
+      "group": "A.5",
+      "label": "Written procedures for operations"
+    },
+    {
+      "id": "A.6.1",
+      "group": "A.6",
+      "label": "Background checks before hiring"
+    },
+    {
+      "id": "A.6.2",
+      "group": "A.6",
+      "label": "Security duties in employment terms"
+    },
+    {
+      "id": "A.6.3",
+      "group": "A.6",
+      "label": "Security awareness and training for staff"
+    },
+    {
+      "id": "A.6.4",
+      "group": "A.6",
+      "label": "Consequences for security violations"
+    },
+    {
+      "id": "A.6.5",
+      "group": "A.6",
+      "label": "Security duties after leaving or changing role"
+    },
+    {
+      "id": "A.6.6",
+      "group": "A.6",
+      "label": "NDAs and confidentiality undertakings"
+    },
+    {
+      "id": "A.6.7",
+      "group": "A.6",
+      "label": "Security for remote work"
+    },
+    {
+      "id": "A.6.8",
+      "group": "A.6",
+      "label": "Staff reporting of security events"
+    },
+    {
+      "id": "A.7.1",
+      "group": "A.7",
+      "label": "Defined and protected site boundaries"
+    },
+    {
+      "id": "A.7.2",
+      "group": "A.7",
+      "label": "Controlling who enters premises"
+    },
+    {
+      "id": "A.7.3",
+      "group": "A.7",
+      "label": "Securing internal workspaces"
+    },
+    {
+      "id": "A.7.4",
+      "group": "A.7",
+      "label": "Monitoring premises for intrusion"
+    },
+    {
+      "id": "A.7.5",
+      "group": "A.7",
+      "label": "Resilience to fire, flood and other hazards"
+    },
+    {
+      "id": "A.7.6",
+      "group": "A.7",
+      "label": "Conduct rules inside secure areas"
+    },
+    {
+      "id": "A.7.7",
+      "group": "A.7",
+      "label": "Unattended desks and screens kept clear"
+    },
+    {
+      "id": "A.7.8",
+      "group": "A.7",
+      "label": "Placing equipment to reduce risk"
+    },
+    {
+      "id": "A.7.9",
+      "group": "A.7",
+      "label": "Protecting assets off-site"
+    },
+    {
+      "id": "A.7.10",
+      "group": "A.7",
+      "label": "Managing removable and storage media"
+    },
+    {
+      "id": "A.7.11",
+      "group": "A.7",
+      "label": "Power, cooling and other utilities"
+    },
+    {
+      "id": "A.7.12",
+      "group": "A.7",
+      "label": "Protecting power and data cabling"
+    },
+    {
+      "id": "A.7.13",
+      "group": "A.7",
+      "label": "Keeping equipment maintained"
+    },
+    {
+      "id": "A.7.14",
+      "group": "A.7",
+      "label": "Wiping equipment before disposal or reuse"
+    },
+    {
+      "id": "A.8.1",
+      "group": "A.8",
+      "label": "Securing laptops, phones and other endpoints"
+    },
+    {
+      "id": "A.8.2",
+      "group": "A.8",
+      "label": "Restricting privileged access"
+    },
+    {
+      "id": "A.8.3",
+      "group": "A.8",
+      "label": "Need-to-know access to information"
+    },
+    {
+      "id": "A.8.4",
+      "group": "A.8",
+      "label": "Controlling access to source code"
+    },
+    {
+      "id": "A.8.5",
+      "group": "A.8",
+      "label": "Strong user authentication"
+    },
+    {
+      "id": "A.8.6",
+      "group": "A.8",
+      "label": "Monitoring and planning capacity"
+    },
+    {
+      "id": "A.8.7",
+      "group": "A.8",
+      "label": "Anti-malware defenses"
+    },
+    {
+      "id": "A.8.8",
+      "group": "A.8",
+      "label": "Finding and fixing technical vulnerabilities"
+    },
+    {
+      "id": "A.8.9",
+      "group": "A.8",
+      "label": "Managing secure configurations"
+    },
+    {
+      "id": "A.8.10",
+      "group": "A.8",
+      "label": "Deleting information no longer needed"
+    },
+    {
+      "id": "A.8.11",
+      "group": "A.8",
+      "label": "Masking sensitive data"
+    },
+    {
+      "id": "A.8.12",
+      "group": "A.8",
+      "label": "Stopping unauthorized data leakage"
+    },
+    {
+      "id": "A.8.13",
+      "group": "A.8",
+      "label": "Backing up information"
+    },
+    {
+      "id": "A.8.14",
+      "group": "A.8",
+      "label": "Redundancy for critical processing"
+    },
+    {
+      "id": "A.8.15",
+      "group": "A.8",
+      "label": "Recording activity and event logs"
+    },
+    {
+      "id": "A.8.16",
+      "group": "A.8",
+      "label": "Watching for anomalous behaviour"
+    },
+    {
+      "id": "A.8.17",
+      "group": "A.8",
+      "label": "Synchronized system clocks"
+    },
+    {
+      "id": "A.8.18",
+      "group": "A.8",
+      "label": "Restricting powerful utility programs"
+    },
+    {
+      "id": "A.8.19",
+      "group": "A.8",
+      "label": "Controlling software installs on live systems"
+    },
+    {
+      "id": "A.8.20",
+      "group": "A.8",
+      "label": "Securing networks and network devices"
+    },
+    {
+      "id": "A.8.21",
+      "group": "A.8",
+      "label": "Protecting network services"
+    },
+    {
+      "id": "A.8.22",
+      "group": "A.8",
+      "label": "Separating networks into zones"
+    },
+    {
+      "id": "A.8.23",
+      "group": "A.8",
+      "label": "Filtering access to websites"
+    },
+    {
+      "id": "A.8.24",
+      "group": "A.8",
+      "label": "Rules for using cryptography"
+    },
+    {
+      "id": "A.8.25",
+      "group": "A.8",
+      "label": "Security across the development lifecycle"
+    },
+    {
+      "id": "A.8.26",
+      "group": "A.8",
+      "label": "Defining security needs for applications"
+    },
+    {
+      "id": "A.8.27",
+      "group": "A.8",
+      "label": "Secure architecture and engineering principles"
+    },
+    {
+      "id": "A.8.28",
+      "group": "A.8",
+      "label": "Secure coding practices"
+    },
+    {
+      "id": "A.8.29",
+      "group": "A.8",
+      "label": "Security testing before release"
+    },
+    {
+      "id": "A.8.30",
+      "group": "A.8",
+      "label": "Oversight of outsourced development"
+    },
+    {
+      "id": "A.8.31",
+      "group": "A.8",
+      "label": "Separate development, test and production"
+    },
+    {
+      "id": "A.8.32",
+      "group": "A.8",
+      "label": "Controlled changes to systems"
+    },
+    {
+      "id": "A.8.33",
+      "group": "A.8",
+      "label": "Protecting test data"
+    },
+    {
+      "id": "A.8.34",
+      "group": "A.8",
+      "label": "Protecting systems during audit testing"
+    }
+  ]
+}

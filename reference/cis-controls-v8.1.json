@@ -1,0 +1,865 @@
+{
+  "schemaVersion": 1,
+  "framework": "cis-v8.1",
+  "name": "CIS Critical Security Controls v8.1",
+  "version": "8.1.2 (March 2025)",
+  "publisher": "Center for Internet Security, Inc. (CIS)",
+  "source": {
+    "title": "CIS Critical Security Controls Version 8.1 (guide v8.1.2, March 2025)",
+    "url": "https://www.cisecurity.org/controls/v8-1",
+    "retrieved": "2026-08-03"
+  },
+  "license": {
+    "name": "CC BY-NC-ND 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "note": "CIS Controls content is licensed by CIS under CC BY-NC-ND 4.0. This catalog stores safeguard IDs only, with short labels written by the author; no CIS text is reproduced. Non-commercial use; see https://www.cisecurity.org/controls/ for the current guidance."
+  },
+  "labelType": "own-label",
+  "labelStatus": "draft-pending-review",
+  "notes": [
+    "IDs taken from the v8.1.2 guide and checked against its per-control safeguard counts.",
+    "Labels are the author's own short descriptions, not CIS titles or text."
+  ],
+  "expectedCount": 153,
+  "groups": [
+    {
+      "id": "1",
+      "label": "Hardware and device asset inventory"
+    },
+    {
+      "id": "2",
+      "label": "Software inventory and allowlisting"
+    },
+    {
+      "id": "3",
+      "label": "Data handling and protection"
+    },
+    {
+      "id": "4",
+      "label": "Secure configuration baselines"
+    },
+    {
+      "id": "5",
+      "label": "User and service account management"
+    },
+    {
+      "id": "6",
+      "label": "Access granting and authentication"
+    },
+    {
+      "id": "7",
+      "label": "Ongoing vulnerability handling"
+    },
+    {
+      "id": "8",
+      "label": "Audit log collection and review"
+    },
+    {
+      "id": "9",
+      "label": "Email and browser defenses"
+    },
+    {
+      "id": "10",
+      "label": "Anti-malware defenses"
+    },
+    {
+      "id": "11",
+      "label": "Backup and data recovery"
+    },
+    {
+      "id": "12",
+      "label": "Network device and architecture management"
+    },
+    {
+      "id": "13",
+      "label": "Network monitoring and intrusion defense"
+    },
+    {
+      "id": "14",
+      "label": "Workforce security training"
+    },
+    {
+      "id": "15",
+      "label": "Third-party service provider oversight"
+    },
+    {
+      "id": "16",
+      "label": "Secure software development"
+    },
+    {
+      "id": "17",
+      "label": "Incident response capability"
+    },
+    {
+      "id": "18",
+      "label": "Offensive testing of defenses"
+    }
+  ],
+  "items": [
+    {
+      "id": "1.1",
+      "group": "1",
+      "label": "Detailed inventory of all enterprise devices"
+    },
+    {
+      "id": "1.2",
+      "group": "1",
+      "label": "Handle unapproved devices found on the network"
+    },
+    {
+      "id": "1.3",
+      "group": "1",
+      "label": "Active scanning to discover devices"
+    },
+    {
+      "id": "1.4",
+      "group": "1",
+      "label": "DHCP logs used to keep device inventory current"
+    },
+    {
+      "id": "1.5",
+      "group": "1",
+      "label": "Passive network discovery of devices"
+    },
+    {
+      "id": "2.1",
+      "group": "2",
+      "label": "Inventory of installed software"
+    },
+    {
+      "id": "2.2",
+      "group": "2",
+      "label": "Only vendor-supported software in use"
+    },
+    {
+      "id": "2.3",
+      "group": "2",
+      "label": "Handle unapproved software"
+    },
+    {
+      "id": "2.4",
+      "group": "2",
+      "label": "Automated tools to inventory software"
+    },
+    {
+      "id": "2.5",
+      "group": "2",
+      "label": "Only approved applications may run"
+    },
+    {
+      "id": "2.6",
+      "group": "2",
+      "label": "Only approved software libraries may load"
+    },
+    {
+      "id": "2.7",
+      "group": "2",
+      "label": "Only approved scripts may run"
+    },
+    {
+      "id": "3.1",
+      "group": "3",
+      "label": "Documented process for managing data"
+    },
+    {
+      "id": "3.2",
+      "group": "3",
+      "label": "Inventory of data held"
+    },
+    {
+      "id": "3.3",
+      "group": "3",
+      "label": "Access permissions on data stores"
+    },
+    {
+      "id": "3.4",
+      "group": "3",
+      "label": "Data kept no longer than retention limits"
+    },
+    {
+      "id": "3.5",
+      "group": "3",
+      "label": "Data disposed of securely"
+    },
+    {
+      "id": "3.6",
+      "group": "3",
+      "label": "Encryption on laptops and workstations"
+    },
+    {
+      "id": "3.7",
+      "group": "3",
+      "label": "Data classification scheme"
+    },
+    {
+      "id": "3.8",
+      "group": "3",
+      "label": "Map of how data flows"
+    },
+    {
+      "id": "3.9",
+      "group": "3",
+      "label": "Removable media encrypted"
+    },
+    {
+      "id": "3.10",
+      "group": "3",
+      "label": "Sensitive data encrypted when sent"
+    },
+    {
+      "id": "3.11",
+      "group": "3",
+      "label": "Sensitive data encrypted when stored"
+    },
+    {
+      "id": "3.12",
+      "group": "3",
+      "label": "Processing and storage separated by sensitivity"
+    },
+    {
+      "id": "3.13",
+      "group": "3",
+      "label": "Data loss prevention tooling"
+    },
+    {
+      "id": "3.14",
+      "group": "3",
+      "label": "Access to sensitive data is logged"
+    },
+    {
+      "id": "4.1",
+      "group": "4",
+      "label": "Documented secure configuration process for assets"
+    },
+    {
+      "id": "4.2",
+      "group": "4",
+      "label": "Secure configuration process for network gear"
+    },
+    {
+      "id": "4.3",
+      "group": "4",
+      "label": "Idle sessions lock automatically"
+    },
+    {
+      "id": "4.4",
+      "group": "4",
+      "label": "Host firewall on servers"
+    },
+    {
+      "id": "4.5",
+      "group": "4",
+      "label": "Host firewall on user devices"
+    },
+    {
+      "id": "4.6",
+      "group": "4",
+      "label": "Secure administration of assets and software"
+    },
+    {
+      "id": "4.7",
+      "group": "4",
+      "label": "Vendor default accounts handled"
+    },
+    {
+      "id": "4.8",
+      "group": "4",
+      "label": "Unneeded services removed or disabled"
+    },
+    {
+      "id": "4.9",
+      "group": "4",
+      "label": "Devices use trusted DNS resolvers"
+    },
+    {
+      "id": "4.10",
+      "group": "4",
+      "label": "Portable devices lock after failed logins"
+    },
+    {
+      "id": "4.11",
+      "group": "4",
+      "label": "Lost portable devices can be wiped remotely"
+    },
+    {
+      "id": "4.12",
+      "group": "4",
+      "label": "Work profile separated on mobile devices"
+    },
+    {
+      "id": "5.1",
+      "group": "5",
+      "label": "Inventory of user and admin accounts"
+    },
+    {
+      "id": "5.2",
+      "group": "5",
+      "label": "Each account has its own password"
+    },
+    {
+      "id": "5.3",
+      "group": "5",
+      "label": "Inactive accounts disabled"
+    },
+    {
+      "id": "5.4",
+      "group": "5",
+      "label": "Admin tasks done from separate admin accounts"
+    },
+    {
+      "id": "5.5",
+      "group": "5",
+      "label": "Inventory of service accounts"
+    },
+    {
+      "id": "5.6",
+      "group": "5",
+      "label": "Accounts managed from a central directory"
+    },
+    {
+      "id": "6.1",
+      "group": "6",
+      "label": "Process for granting access"
+    },
+    {
+      "id": "6.2",
+      "group": "6",
+      "label": "Process for removing access"
+    },
+    {
+      "id": "6.3",
+      "group": "6",
+      "label": "MFA on internet-facing applications"
+    },
+    {
+      "id": "6.4",
+      "group": "6",
+      "label": "MFA for remote network connections"
+    },
+    {
+      "id": "6.5",
+      "group": "6",
+      "label": "MFA for administrator access"
+    },
+    {
+      "id": "6.6",
+      "group": "6",
+      "label": "Inventory of authentication and authorization systems"
+    },
+    {
+      "id": "6.7",
+      "group": "6",
+      "label": "Access control centralized (e.g. SSO)"
+    },
+    {
+      "id": "6.8",
+      "group": "6",
+      "label": "Role-based access defined and kept current"
+    },
+    {
+      "id": "7.1",
+      "group": "7",
+      "label": "Documented vulnerability management process"
+    },
+    {
+      "id": "7.2",
+      "group": "7",
+      "label": "Risk-based remediation process"
+    },
+    {
+      "id": "7.3",
+      "group": "7",
+      "label": "Operating systems patched automatically"
+    },
+    {
+      "id": "7.4",
+      "group": "7",
+      "label": "Applications patched automatically"
+    },
+    {
+      "id": "7.5",
+      "group": "7",
+      "label": "Scheduled scanning of internal systems for flaws"
+    },
+    {
+      "id": "7.6",
+      "group": "7",
+      "label": "Automated vulnerability scans of internet-facing assets"
+    },
+    {
+      "id": "7.7",
+      "group": "7",
+      "label": "Detected vulnerabilities fixed"
+    },
+    {
+      "id": "8.1",
+      "group": "8",
+      "label": "Documented audit log management process"
+    },
+    {
+      "id": "8.2",
+      "group": "8",
+      "label": "Audit logs collected"
+    },
+    {
+      "id": "8.3",
+      "group": "8",
+      "label": "Enough storage for audit logs"
+    },
+    {
+      "id": "8.4",
+      "group": "8",
+      "label": "Consistent time source across systems"
+    },
+    {
+      "id": "8.5",
+      "group": "8",
+      "label": "Detailed logs for sensitive systems"
+    },
+    {
+      "id": "8.6",
+      "group": "8",
+      "label": "DNS queries logged"
+    },
+    {
+      "id": "8.7",
+      "group": "8",
+      "label": "Web requests logged"
+    },
+    {
+      "id": "8.8",
+      "group": "8",
+      "label": "Command-line activity logged"
+    },
+    {
+      "id": "8.9",
+      "group": "8",
+      "label": "Logs aggregated centrally"
+    },
+    {
+      "id": "8.10",
+      "group": "8",
+      "label": "Audit logs kept for a set period"
+    },
+    {
+      "id": "8.11",
+      "group": "8",
+      "label": "Audit logs reviewed regularly"
+    },
+    {
+      "id": "8.12",
+      "group": "8",
+      "label": "Logs collected from service providers"
+    },
+    {
+      "id": "9.1",
+      "group": "9",
+      "label": "Supported browsers and mail clients only"
+    },
+    {
+      "id": "9.2",
+      "group": "9",
+      "label": "Malicious domains blocked via DNS"
+    },
+    {
+      "id": "9.3",
+      "group": "9",
+      "label": "Network-level web filtering"
+    },
+    {
+      "id": "9.4",
+      "group": "9",
+      "label": "Browser and mail add-ons restricted"
+    },
+    {
+      "id": "9.5",
+      "group": "9",
+      "label": "DMARC email authentication"
+    },
+    {
+      "id": "9.6",
+      "group": "9",
+      "label": "Risky file types blocked"
+    },
+    {
+      "id": "9.7",
+      "group": "9",
+      "label": "Mail servers scan for malware"
+    },
+    {
+      "id": "10.1",
+      "group": "10",
+      "label": "Anti-malware on enterprise assets"
+    },
+    {
+      "id": "10.2",
+      "group": "10",
+      "label": "Malware signatures update automatically"
+    },
+    {
+      "id": "10.3",
+      "group": "10",
+      "label": "Autorun off for removable media"
+    },
+    {
+      "id": "10.4",
+      "group": "10",
+      "label": "Removable media scanned automatically"
+    },
+    {
+      "id": "10.5",
+      "group": "10",
+      "label": "Exploit mitigation features turned on"
+    },
+    {
+      "id": "10.6",
+      "group": "10",
+      "label": "Anti-malware managed centrally"
+    },
+    {
+      "id": "10.7",
+      "group": "10",
+      "label": "Behavior-based malware detection"
+    },
+    {
+      "id": "11.1",
+      "group": "11",
+      "label": "Documented data recovery process"
+    },
+    {
+      "id": "11.2",
+      "group": "11",
+      "label": "Backups run automatically"
+    },
+    {
+      "id": "11.3",
+      "group": "11",
+      "label": "Backup data protected"
+    },
+    {
+      "id": "11.4",
+      "group": "11",
+      "label": "Isolated copy of backup data"
+    },
+    {
+      "id": "11.5",
+      "group": "11",
+      "label": "Data restores tested"
+    },
+    {
+      "id": "12.1",
+      "group": "12",
+      "label": "Network infrastructure kept up to date"
+    },
+    {
+      "id": "12.2",
+      "group": "12",
+      "label": "Secure network architecture design"
+    },
+    {
+      "id": "12.3",
+      "group": "12",
+      "label": "Network devices managed securely"
+    },
+    {
+      "id": "12.4",
+      "group": "12",
+      "label": "Network architecture diagrams"
+    },
+    {
+      "id": "12.5",
+      "group": "12",
+      "label": "Central AAA for network devices"
+    },
+    {
+      "id": "12.6",
+      "group": "12",
+      "label": "Secure protocols for network management"
+    },
+    {
+      "id": "12.7",
+      "group": "12",
+      "label": "Remote devices connect through VPN"
+    },
+    {
+      "id": "12.8",
+      "group": "12",
+      "label": "Dedicated machines for admin work"
+    },
+    {
+      "id": "13.1",
+      "group": "13",
+      "label": "Security alerts centralized (e.g. SIEM)"
+    },
+    {
+      "id": "13.2",
+      "group": "13",
+      "label": "Host-based intrusion detection"
+    },
+    {
+      "id": "13.3",
+      "group": "13",
+      "label": "Network intrusion detection"
+    },
+    {
+      "id": "13.4",
+      "group": "13",
+      "label": "Segment-to-segment traffic filtering"
+    },
+    {
+      "id": "13.5",
+      "group": "13",
+      "label": "Remote assets checked before network access"
+    },
+    {
+      "id": "13.6",
+      "group": "13",
+      "label": "Network flow logs collected"
+    },
+    {
+      "id": "13.7",
+      "group": "13",
+      "label": "Host-based intrusion prevention"
+    },
+    {
+      "id": "13.8",
+      "group": "13",
+      "label": "Network intrusion prevention"
+    },
+    {
+      "id": "13.9",
+      "group": "13",
+      "label": "Port-level network access control"
+    },
+    {
+      "id": "13.10",
+      "group": "13",
+      "label": "Application-layer traffic filtering"
+    },
+    {
+      "id": "13.11",
+      "group": "13",
+      "label": "Alert thresholds tuned"
+    },
+    {
+      "id": "14.1",
+      "group": "14",
+      "label": "Security awareness program"
+    },
+    {
+      "id": "14.2",
+      "group": "14",
+      "label": "Training on social engineering"
+    },
+    {
+      "id": "14.3",
+      "group": "14",
+      "label": "Training on login and password practices"
+    },
+    {
+      "id": "14.4",
+      "group": "14",
+      "label": "Training on handling data"
+    },
+    {
+      "id": "14.5",
+      "group": "14",
+      "label": "Training on accidental data exposure"
+    },
+    {
+      "id": "14.6",
+      "group": "14",
+      "label": "Training to spot and report incidents"
+    },
+    {
+      "id": "14.7",
+      "group": "14",
+      "label": "Training to report missing security updates"
+    },
+    {
+      "id": "14.8",
+      "group": "14",
+      "label": "Training on untrusted networks"
+    },
+    {
+      "id": "14.9",
+      "group": "14",
+      "label": "Role-specific security training"
+    },
+    {
+      "id": "15.1",
+      "group": "15",
+      "label": "Inventory of service providers"
+    },
+    {
+      "id": "15.2",
+      "group": "15",
+      "label": "Service provider management policy"
+    },
+    {
+      "id": "15.3",
+      "group": "15",
+      "label": "Service providers classified by risk"
+    },
+    {
+      "id": "15.4",
+      "group": "15",
+      "label": "Security terms in provider contracts"
+    },
+    {
+      "id": "15.5",
+      "group": "15",
+      "label": "Service providers assessed"
+    },
+    {
+      "id": "15.6",
+      "group": "15",
+      "label": "Service providers monitored over time"
+    },
+    {
+      "id": "15.7",
+      "group": "15",
+      "label": "Service providers offboarded securely"
+    },
+    {
+      "id": "16.1",
+      "group": "16",
+      "label": "Secure development process"
+    },
+    {
+      "id": "16.2",
+      "group": "16",
+      "label": "Process to receive and fix software flaws"
+    },
+    {
+      "id": "16.3",
+      "group": "16",
+      "label": "Root causes of vulnerabilities analysed"
+    },
+    {
+      "id": "16.4",
+      "group": "16",
+      "label": "Inventory of third-party components"
+    },
+    {
+      "id": "16.5",
+      "group": "16",
+      "label": "Third-party components current and trusted"
+    },
+    {
+      "id": "16.6",
+      "group": "16",
+      "label": "Severity ratings for application flaws"
+    },
+    {
+      "id": "16.7",
+      "group": "16",
+      "label": "Hardened templates for application infrastructure"
+    },
+    {
+      "id": "16.8",
+      "group": "16",
+      "label": "Production kept separate from non-production"
+    },
+    {
+      "id": "16.9",
+      "group": "16",
+      "label": "Secure coding training for developers"
+    },
+    {
+      "id": "16.10",
+      "group": "16",
+      "label": "Security-by-design in app architecture"
+    },
+    {
+      "id": "16.11",
+      "group": "16",
+      "label": "Vetted security modules and services reused"
+    },
+    {
+      "id": "16.12",
+      "group": "16",
+      "label": "Security checks in source code (e.g. SAST)"
+    },
+    {
+      "id": "16.13",
+      "group": "16",
+      "label": "Pen testing of applications"
+    },
+    {
+      "id": "16.14",
+      "group": "16",
+      "label": "Threat modelling"
+    },
+    {
+      "id": "17.1",
+      "group": "17",
+      "label": "Named incident lead and backup"
+    },
+    {
+      "id": "17.2",
+      "group": "17",
+      "label": "Contact list for incident reporting"
+    },
+    {
+      "id": "17.3",
+      "group": "17",
+      "label": "Enterprise process for reporting incidents"
+    },
+    {
+      "id": "17.4",
+      "group": "17",
+      "label": "Documented incident response process"
+    },
+    {
+      "id": "17.5",
+      "group": "17",
+      "label": "Incident response roles assigned"
+    },
+    {
+      "id": "17.6",
+      "group": "17",
+      "label": "Communication plan for incidents"
+    },
+    {
+      "id": "17.7",
+      "group": "17",
+      "label": "Incident response exercises held regularly"
+    },
+    {
+      "id": "17.8",
+      "group": "17",
+      "label": "Reviews after incidents"
+    },
+    {
+      "id": "17.9",
+      "group": "17",
+      "label": "Thresholds that define a security incident"
+    },
+    {
+      "id": "18.1",
+      "group": "18",
+      "label": "Penetration testing program"
+    },
+    {
+      "id": "18.2",
+      "group": "18",
+      "label": "External penetration tests on a schedule"
+    },
+    {
+      "id": "18.3",
+      "group": "18",
+      "label": "Penetration test findings fixed"
+    },
+    {
+      "id": "18.4",
+      "group": "18",
+      "label": "Security measures validated"
+    },
+    {
+      "id": "18.5",
+      "group": "18",
+      "label": "Internal penetration tests on a schedule"
+    }
+  ]
+}

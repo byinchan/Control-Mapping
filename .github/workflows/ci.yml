@@ -20,5 +20,5 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
-      # Step 1 adds: npm run validate:catalogs
+      - run: npm run validate:catalogs
       - run: npm run build

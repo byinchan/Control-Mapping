@@ -1,0 +1,437 @@
+{
+  "schemaVersion": 1,
+  "framework": "soc2-tsc-2017",
+  "name": "SOC 2 Trust Services Criteria (2017, revised points of focus 2022)",
+  "version": "2017 TSC with Revised Points of Focus (2022)",
+  "publisher": "AICPA",
+  "source": {
+    "title": "2017 Trust Services Criteria for Security, Availability, Processing Integrity, Confidentiality, and Privacy (With Revised Points of Focus, 2022)",
+    "url": "https://www.aicpa-cima.com/resources/download/2017-trust-services-criteria-with-revised-points-of-focus-2022",
+    "retrieved": "2026-08-03"
+  },
+  "license": {
+    "name": "Copyright AICPA",
+    "note": "The Trust Services Criteria are copyrighted by the AICPA. This catalog stores criterion IDs only, with short labels written by the author; no criteria text or points of focus are reproduced."
+  },
+  "labelType": "own-label",
+  "labelStatus": "draft-pending-review",
+  "notes": [
+    "Privacy category headings (P1.0 to P8.0) are not criteria and are excluded.",
+    "Labels are the author's own short paraphrases, pending spot-check."
+  ],
+  "expectedCount": 61,
+  "groups": [
+    {
+      "id": "CC",
+      "label": "Common criteria (security)"
+    },
+    {
+      "id": "CC1",
+      "label": "Control environment",
+      "parent": "CC"
+    },
+    {
+      "id": "CC2",
+      "label": "Information and communication",
+      "parent": "CC"
+    },
+    {
+      "id": "CC3",
+      "label": "Risk assessment",
+      "parent": "CC"
+    },
+    {
+      "id": "CC4",
+      "label": "Monitoring of controls",
+      "parent": "CC"
+    },
+    {
+      "id": "CC5",
+      "label": "Control activities",
+      "parent": "CC"
+    },
+    {
+      "id": "CC6",
+      "label": "Logical and physical access",
+      "parent": "CC"
+    },
+    {
+      "id": "CC7",
+      "label": "System operations",
+      "parent": "CC"
+    },
+    {
+      "id": "CC8",
+      "label": "Change management",
+      "parent": "CC"
+    },
+    {
+      "id": "CC9",
+      "label": "Risk mitigation",
+      "parent": "CC"
+    },
+    {
+      "id": "A1",
+      "label": "Availability"
+    },
+    {
+      "id": "C1",
+      "label": "Confidentiality"
+    },
+    {
+      "id": "PI1",
+      "label": "Processing integrity"
+    },
+    {
+      "id": "P",
+      "label": "Privacy"
+    },
+    {
+      "id": "P1",
+      "label": "Privacy notice",
+      "parent": "P"
+    },
+    {
+      "id": "P2",
+      "label": "Choice and consent",
+      "parent": "P"
+    },
+    {
+      "id": "P3",
+      "label": "Collection",
+      "parent": "P"
+    },
+    {
+      "id": "P4",
+      "label": "Use, retention and disposal",
+      "parent": "P"
+    },
+    {
+      "id": "P5",
+      "label": "Data subject access",
+      "parent": "P"
+    },
+    {
+      "id": "P6",
+      "label": "Disclosure and notification",
+      "parent": "P"
+    },
+    {
+      "id": "P7",
+      "label": "Data quality",
+      "parent": "P"
+    },
+    {
+      "id": "P8",
+      "label": "Monitoring and enforcement",
+      "parent": "P"
+    }
+  ],
+  "items": [
+    {
+      "id": "CC1.1",
+      "group": "CC1",
+      "label": "Tone at the top: integrity and ethics"
+    },
+    {
+      "id": "CC1.2",
+      "group": "CC1",
+      "label": "Board independence and oversight"
+    },
+    {
+      "id": "CC1.3",
+      "group": "CC1",
+      "label": "Structures, reporting lines and authority"
+    },
+    {
+      "id": "CC1.4",
+      "group": "CC1",
+      "label": "Hiring, developing and keeping competent staff"
+    },
+    {
+      "id": "CC1.5",
+      "group": "CC1",
+      "label": "Holding people accountable for controls"
+    },
+    {
+      "id": "CC2.1",
+      "group": "CC2",
+      "label": "Quality information to support controls"
+    },
+    {
+      "id": "CC2.2",
+      "group": "CC2",
+      "label": "Internal communication about controls"
+    },
+    {
+      "id": "CC2.3",
+      "group": "CC2",
+      "label": "External communication about controls"
+    },
+    {
+      "id": "CC3.1",
+      "group": "CC3",
+      "label": "Objectives clear enough to assess risk"
+    },
+    {
+      "id": "CC3.2",
+      "group": "CC3",
+      "label": "Risks identified and analysed"
+    },
+    {
+      "id": "CC3.3",
+      "group": "CC3",
+      "label": "Fraud risk considered"
+    },
+    {
+      "id": "CC3.4",
+      "group": "CC3",
+      "label": "Significant changes assessed for risk"
+    },
+    {
+      "id": "CC4.1",
+      "group": "CC4",
+      "label": "Ongoing and separate control evaluations"
+    },
+    {
+      "id": "CC4.2",
+      "group": "CC4",
+      "label": "Control deficiencies reported and acted on"
+    },
+    {
+      "id": "CC5.1",
+      "group": "CC5",
+      "label": "Control activities chosen to reduce risk"
+    },
+    {
+      "id": "CC5.2",
+      "group": "CC5",
+      "label": "General IT controls"
+    },
+    {
+      "id": "CC5.3",
+      "group": "CC5",
+      "label": "Controls put in place through policies"
+    },
+    {
+      "id": "CC6.1",
+      "group": "CC6",
+      "label": "Logical access security architecture"
+    },
+    {
+      "id": "CC6.2",
+      "group": "CC6",
+      "label": "User registration and authorization"
+    },
+    {
+      "id": "CC6.3",
+      "group": "CC6",
+      "label": "Role-based access changes and removal"
+    },
+    {
+      "id": "CC6.4",
+      "group": "CC6",
+      "label": "Physical access restricted"
+    },
+    {
+      "id": "CC6.5",
+      "group": "CC6",
+      "label": "Data protection ends safely at asset disposal"
+    },
+    {
+      "id": "CC6.6",
+      "group": "CC6",
+      "label": "Defense against threats from outside the boundary"
+    },
+    {
+      "id": "CC6.7",
+      "group": "CC6",
+      "label": "Data movement and transmission restricted"
+    },
+    {
+      "id": "CC6.8",
+      "group": "CC6",
+      "label": "Unauthorized or malicious software stopped"
+    },
+    {
+      "id": "CC7.1",
+      "group": "CC7",
+      "label": "Configuration changes and new vulnerabilities detected"
+    },
+    {
+      "id": "CC7.2",
+      "group": "CC7",
+      "label": "Systems monitored for anomalies"
+    },
+    {
+      "id": "CC7.3",
+      "group": "CC7",
+      "label": "Security events evaluated"
+    },
+    {
+      "id": "CC7.4",
+      "group": "CC7",
+      "label": "Security incidents responded to"
+    },
+    {
+      "id": "CC7.5",
+      "group": "CC7",
+      "label": "Recovery after security incidents"
+    },
+    {
+      "id": "CC8.1",
+      "group": "CC8",
+      "label": "Changes authorized, tested and approved"
+    },
+    {
+      "id": "CC9.1",
+      "group": "CC9",
+      "label": "Business disruption risk mitigated"
+    },
+    {
+      "id": "CC9.2",
+      "group": "CC9",
+      "label": "Vendor and business partner risk managed"
+    },
+    {
+      "id": "A1.1",
+      "group": "A1",
+      "label": "Capacity monitored and planned"
+    },
+    {
+      "id": "A1.2",
+      "group": "A1",
+      "label": "Environmental protection, backup and recovery infrastructure"
+    },
+    {
+      "id": "A1.3",
+      "group": "A1",
+      "label": "Recovery plans tested"
+    },
+    {
+      "id": "C1.1",
+      "group": "C1",
+      "label": "Confidential information identified and protected"
+    },
+    {
+      "id": "C1.2",
+      "group": "C1",
+      "label": "Confidential information disposed of"
+    },
+    {
+      "id": "PI1.1",
+      "group": "PI1",
+      "label": "Processing specifications and quality information"
+    },
+    {
+      "id": "PI1.2",
+      "group": "PI1",
+      "label": "Controls over system inputs"
+    },
+    {
+      "id": "PI1.3",
+      "group": "PI1",
+      "label": "Controls over processing"
+    },
+    {
+      "id": "PI1.4",
+      "group": "PI1",
+      "label": "Controls over outputs"
+    },
+    {
+      "id": "PI1.5",
+      "group": "PI1",
+      "label": "Inputs, work in progress and outputs stored safely"
+    },
+    {
+      "id": "P1.1",
+      "group": "P1",
+      "label": "Privacy notice given to data subjects"
+    },
+    {
+      "id": "P2.1",
+      "group": "P2",
+      "label": "Choices and consent communicated"
+    },
+    {
+      "id": "P3.1",
+      "group": "P3",
+      "label": "Collection limited to privacy objectives"
+    },
+    {
+      "id": "P3.2",
+      "group": "P3",
+      "label": "Explicit consent obtained where needed"
+    },
+    {
+      "id": "P4.1",
+      "group": "P4",
+      "label": "Use limited to stated purposes"
+    },
+    {
+      "id": "P4.2",
+      "group": "P4",
+      "label": "Personal information retained appropriately"
+    },
+    {
+      "id": "P4.3",
+      "group": "P4",
+      "label": "Personal information disposed of securely"
+    },
+    {
+      "id": "P5.1",
+      "group": "P5",
+      "label": "Data subjects can access their information"
+    },
+    {
+      "id": "P5.2",
+      "group": "P5",
+      "label": "Personal information corrected on request"
+    },
+    {
+      "id": "P6.1",
+      "group": "P6",
+      "label": "Third-party disclosure only with consent"
+    },
+    {
+      "id": "P6.2",
+      "group": "P6",
+      "label": "Record of authorized disclosures"
+    },
+    {
+      "id": "P6.3",
+      "group": "P6",
+      "label": "Record of unauthorized disclosures"
+    },
+    {
+      "id": "P6.4",
+      "group": "P6",
+      "label": "Privacy commitments from vendors with access"
+    },
+    {
+      "id": "P6.5",
+      "group": "P6",
+      "label": "Vendors report unauthorized disclosures"
+    },
+    {
+      "id": "P6.6",
+      "group": "P6",
+      "label": "Breaches notified to affected parties"
+    },
+    {
+      "id": "P6.7",
+      "group": "P6",
+      "label": "Accounting of personal information held and shared"
+    },
+    {
+      "id": "P7.1",
+      "group": "P7",
+      "label": "Personal information kept accurate and complete"
+    },
+    {
+      "id": "P8.1",
+      "group": "P8",
+      "label": "Privacy inquiries, complaints and disputes handled"
+    }
+  ]
+}
