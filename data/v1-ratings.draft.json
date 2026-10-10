@@ -1,0 +1,91 @@
+{
+  "status": "draft, pending Bernadette",
+  "draftedBy": "Claude (AI-drafted for analyst review)",
+  "method": "One rating per control per framework, judged only from the v1 control objective/activity text and the v1 mapped IDs. Full = the description covers the core intent of every mapped ID; Partial = it covers some mapped IDs or only part of their intent; None = it does not address the mapped IDs. N/A cells keep the v1 reason verbatim. Ratings were NOT tuned to reproduce the v1 overall status.",
+  "controls": {
+    "C001": {
+      "nist-csf-2.0": { "rating": "full", "basis": "MFA directly authenticates users (PR.AA-03).", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "partial", "basis": "Covers secure authentication (A.8.5); MFA alone does not set access control rules (A.5.15).", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "full", "basis": "Enterprise-wide MFA covers external apps, remote access and admin access (6.3-6.5).", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "MFA is one part of the logical access architecture in CC6.1.", "status": "draft, pending Bernadette" }
+    },
+    "C002": {
+      "nist-csf-2.0": { "rating": "partial", "basis": "Remediation tracking supports software maintenance (PR.PS-02); plan improvement (ID.IM-04) not described.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "full", "basis": "Scanning, prioritization and remediation match A.8.8.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "full", "basis": "Process, risk-based remediation and fixing findings (7.1, 7.2, 7.7) are all described.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "Detects new vulnerabilities; configuration-change detection in CC7.1 not described.", "status": "draft, pending Bernadette" }
+    },
+    "C003": {
+      "nist-csf-2.0": { "rating": "full", "basis": "Applying patches is software maintenance (PR.PS-02).", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "partial", "basis": "Patching is the remediation part of A.8.8; identifying vulnerabilities is not described.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "partial", "basis": "Covers OS/app patching (7.3, 7.4), not stated as automated; scans (7.5, 7.6) not described.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "Patches are changes, but authorization, testing and approval (CC8.1) are not described.", "status": "draft, pending Bernadette" }
+    },
+    "C004": {
+      "nist-csf-2.0": { "rating": "full", "basis": "Annual training for employees matches PR.AT-01.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "full", "basis": "Awareness training and phishing simulations match A.6.3.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "partial", "basis": "Program and phishing (14.1, 14.2) described; topic-specific training (14.3-14.8) not stated.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "Training is one channel of the internal communication in CC2.2.", "status": "draft, pending Bernadette" }
+    },
+    "C005": {
+      "nist-csf-2.0": { "rating": "full", "basis": "IR procedures exist and are exercised (ID.IM-04).", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "full", "basis": "Executing IR procedures and investigations matches A.5.26.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "partial", "basis": "Process and exercises (17.4, 17.7) described; roles, contacts, reporting and post-incident reviews (17.1-17.3, 17.5, 17.6, 17.8) not stated.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "full", "basis": "Responding through defined procedures matches CC7.4.", "status": "draft, pending Bernadette" }
+    },
+    "C006": {
+      "nist-csf-2.0": { "rating": "full", "basis": "Due diligence before onboarding matches GV.SC-06.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "partial", "basis": "Reviews at renewal touch A.5.22; ongoing monitoring of supplier services not described.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "partial", "basis": "Assessing providers (15.5) described; inventory, policy, classification, contracts, monitoring, decommissioning (15.1-15.4, 15.6, 15.7) not.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "none", "basis": "Security assessments do not obtain vendor privacy or breach-notification commitments (P6.4, P6.5). CC9.2 may fit better (your call).", "status": "draft, pending Bernadette" }
+    },
+    "C007": {
+      "nist-csf-2.0": { "rating": "partial", "basis": "DR testing exercises a plan; improving plans from lessons learned (ID.IM-04) not described.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "partial", "basis": "Backups (A.8.13) and DR readiness (A.5.30) described; security during disruption (A.5.29) not.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "partial", "basis": "Recovery process and restore tests (11.1, 11.5) described; automated, protected and isolated backups (11.2-11.4) not stated.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "Recovery testing (A1.3) and backups described; environmental protections in A1.2 not.", "status": "draft, pending Bernadette" }
+    },
+    "C008": {
+      "nist-csf-2.0": { "rating": "full", "basis": "Developing and periodically reviewing policy matches GV.PO-01 and GV.PO-02.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "full", "basis": "Defining and reviewing policies matches A.5.1.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "na", "naReason": "Outside CIS Scope", "basis": "v1 marked N/A; reason kept verbatim.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "Policies deploy controls (CC5.3); staff competence (CC1.4) not addressed.", "status": "draft, pending Bernadette" }
+    },
+    "C009": {
+      "nist-csf-2.0": { "rating": "partial", "basis": "Risk register and assessments support GV.RM-03; agreed risk objectives (GV.RM-01) not described.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "na", "naReason": "see ISO 31000", "basis": "v1 marked N/A; reason kept verbatim.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "na", "naReason": "Outside CIS Scope", "basis": "v1 marked N/A; reason kept verbatim.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "Risk identification and analysis (CC3.2) described; objective setting (CC3.1) not.", "status": "draft, pending Bernadette" }
+    },
+    "C010": {
+      "nist-csf-2.0": { "rating": "full", "basis": "Periodic metrics to leadership support review of risk management performance (GV.OV-03).", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "none", "basis": "Reporting upward does not make management require staff to apply security (A.5.4).", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "na", "naReason": "Outside CIS Scope", "basis": "v1 marked N/A; reason kept verbatim.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "Implies a reporting line; structures and authorities in CC1.3 not described.", "status": "draft, pending Bernadette" }
+    },
+    "C011": {
+      "nist-csf-2.0": { "rating": "full", "basis": "Identity lifecycle and access review cover PR.AA-01, PR.AA-03 and PR.AA-05.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "full", "basis": "Provisioning through removal implements access control and identity management (A.5.15, A.5.16).", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "partial", "basis": "Granting, revoking, central control (6.1, 6.2, 6.7) described; unique passwords, dedicated admin and service accounts (5.2, 5.4, 5.5) not.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "full", "basis": "Registration, modification and removal of access match CC6.1-CC6.3.", "status": "draft, pending Bernadette" }
+    },
+    "C012": {
+      "nist-csf-2.0": { "rating": "full", "basis": "SIEM plus MSSP analysis and correlation match DE.AE-02 and DE.AE-03.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "full", "basis": "Continuous event monitoring covers logging and monitoring (A.8.15, A.8.16).", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "partial", "basis": "Central alerting (13.1) and log collection described; intrusion prevention and filtering (13.7-13.10) are not SIEM functions.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "partial", "basis": "Event monitoring is not an evaluation of whether controls work (CC4.1, CC4.2). CC7.2 may fit better (your call).", "status": "draft, pending Bernadette" }
+    },
+    "C013": {
+      "nist-csf-2.0": { "rating": "full", "basis": "Monitoring endpoints for adverse events matches DE.CM-09.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "full", "basis": "Endpoint anti-malware matches A.8.7.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "partial", "basis": "Anti-malware deployed (10.1); updates, removable media, anti-exploit and central management (10.2-10.7) not stated.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "none", "basis": "Endpoint protection does not address the logical access or transmission controls in CC6.1 and CC6.7. CC6.8 may fit better (your call).", "status": "draft, pending Bernadette" }
+    },
+    "C014": {
+      "nist-csf-2.0": { "rating": "partial", "basis": "Adds policy for a new technology (GV.PO-02); review, communication and enforcement not described.", "status": "draft, pending Bernadette" },
+      "iso-27001-2022": { "rating": "na", "naReason": "see ISO 42001", "basis": "v1 marked N/A; reason kept verbatim.", "status": "draft, pending Bernadette" },
+      "cis-v8.1": { "rating": "na", "naReason": "Outside CIS Scope", "basis": "v1 marked N/A; reason kept verbatim.", "status": "draft, pending Bernadette" },
+      "soc2-tsc-2017": { "rating": "na", "naReason": "Out of Scope", "basis": "v1 marked N/A; reason kept verbatim.", "status": "draft, pending Bernadette" }
+    }
+  }
+}
