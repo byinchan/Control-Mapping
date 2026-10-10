@@ -1,0 +1,136 @@
+[
+  {
+    "id": "C001",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.75,
+    "agrees": false,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C002",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.75,
+    "agrees": false,
+    "limitedCoverage": false,
+    "correctedFrameworks": [
+      "nist-csf-2.0"
+    ]
+  },
+  {
+    "id": "C003",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.625,
+    "agrees": true,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C004",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.75,
+    "agrees": true,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C005",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.875,
+    "agrees": false,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C006",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.625,
+    "agrees": true,
+    "limitedCoverage": false,
+    "correctedFrameworks": [
+      "soc2-tsc-2017"
+    ]
+  },
+  {
+    "id": "C007",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": false,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C008",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.8333333333333334,
+    "agrees": true,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C009",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": true,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C010",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": true,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C011",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.875,
+    "agrees": false,
+    "limitedCoverage": false,
+    "correctedFrameworks": []
+  },
+  {
+    "id": "C012",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.875,
+    "agrees": false,
+    "limitedCoverage": false,
+    "correctedFrameworks": [
+      "soc2-tsc-2017"
+    ]
+  },
+  {
+    "id": "C013",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.875,
+    "agrees": false,
+    "limitedCoverage": false,
+    "correctedFrameworks": [
+      "soc2-tsc-2017"
+    ]
+  },
+  {
+    "id": "C014",
+    "v1Status": "Gap Identified",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": false,
+    "limitedCoverage": true,
+    "correctedFrameworks": []
+  }
+]
