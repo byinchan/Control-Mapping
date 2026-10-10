@@ -6,9 +6,11 @@ import type { Guardrails, MappingMode, Proposal, ControlInput } from "../mapping
 import type { Rating } from "../scoring/config.ts";
 import type { ControlRatings } from "../scoring/score.ts";
 
-export const WORKSPACE_VERSION = 1;
+export const WORKSPACE_VERSION = 2;
 export const MAX_CONTROLS = 50;
 export const MAX_HISTORY = 50;
+/** AI suggestions kept per control: the current one plus this many earlier ones (3 in total). */
+export const MAX_EARLIER_AI = 2;
 
 export type FrameworkWork = {
   ids: string[];
@@ -33,6 +35,16 @@ export type AiRecord = {
   notices: string[];
 };
 
+/** Short record of an earlier AI suggestion that was replaced (kept for History). */
+export type EarlierAi = {
+  requestId: string;
+  mode: MappingMode;
+  model: string | null;
+  receivedAt: string;
+  replacedAt: string;
+  frameworks: Record<FrameworkId, { ids: string[]; rating: Rating }>;
+};
+
 export type HistoryEvent = { at: string; event: "created" | "ai-proposal" | "edited" | "confirmed" | "reopened"; detail: string };
 
 export type ConfirmedRecord = {
@@ -50,6 +62,8 @@ export type ControlRecord = {
   /** Control text now (after analyst edits). */
   current: ControlInput;
   ai: AiRecord | null;
+  /** Earlier AI suggestions, newest first, at most MAX_EARLIER_AI. */
+  earlierAi: EarlierAi[];
   mapping: Record<FrameworkId, FrameworkWork>;
   confirmed: ConfirmedRecord | null;
   history: HistoryEvent[];
@@ -117,6 +131,7 @@ export function addControl(ws: Workspace, input: ControlInput, now: string): { w
     original: input,
     current: input,
     ai: null,
+    earlierAi: [],
     mapping: emptyMapping(),
     confirmed: null,
     history: [{ at: now, event: "created", detail: "Entered by analyst" }],
@@ -137,6 +152,7 @@ export function loadSample(ws: Workspace, samples: readonly { id: string; input:
       original: s.input,
       current: s.input,
       ai: null,
+      earlierAi: [],
       mapping: emptyMapping(),
       confirmed: null,
       history: [{ at: now, event: "created", detail: "Loaded from PUC sample (v1)" }],
@@ -158,19 +174,55 @@ export function editControlText(ws: Workspace, id: string, field: keyof ControlI
   });
 }
 
-/** Replaces the working mapping with an AI proposal. Earlier AI and analyst values are overwritten. */
-export function applyAiResult(ws: Workspace, id: string, ai: AiRecord, now: string): Workspace {
+/** Frameworks the analyst has changed since the last AI suggestion (or entered by hand). */
+export const editedFrameworks = (r: ControlRecord): FrameworkId[] => FRAMEWORK_IDS.filter((f) => r.mapping[f].edited);
+
+const summarizeAi = (ai: AiRecord, replacedAt: string): EarlierAi => ({
+  requestId: ai.requestId,
+  mode: ai.mode,
+  model: ai.model,
+  receivedAt: ai.receivedAt,
+  replacedAt,
+  frameworks: Object.fromEntries(
+    FRAMEWORK_IDS.map((f) => [f, { ids: [...ai.proposal.frameworks[f].ids], rating: ai.proposal.frameworks[f].rating }]),
+  ) as EarlierAi["frameworks"],
+});
+
+/**
+ * Puts a new AI proposal into the working mapping. With keepEdited, frameworks the analyst changed
+ * keep the analyst's values; otherwise every framework is replaced. The previous suggestion is kept
+ * (in short form) in earlierAi, so at most three suggestions per control are stored.
+ */
+export function applyAiResult(ws: Workspace, id: string, ai: AiRecord, now: string, keepEdited = false): Workspace {
   return update(ws, id, (r) => {
     if (r.confirmed) return r;
     const mapping = Object.fromEntries(
       FRAMEWORK_IDS.map((f) => {
+        if (keepEdited && r.mapping[f].edited) return [f, r.mapping[f]];
         const p = ai.proposal.frameworks[f];
         return [f, { ids: [...p.ids], rating: p.rating, rationale: p.rationale, naReason: p.naReason ?? "", source: "ai", edited: false }];
       }),
     ) as Record<FrameworkId, FrameworkWork>;
-    const detail = `${ai.mode === "live" ? "Live AI" : ai.mode === "demo" ? "Demo (saved AI output)" : "Mock mapper"}${ai.model ? `, ${ai.model}` : ""}`;
-    return withHistory({ ...r, ai, mapping }, { at: now, event: "ai-proposal", detail });
+    const earlierAi = r.ai ? [summarizeAi(r.ai, now), ...r.earlierAi].slice(0, MAX_EARLIER_AI) : r.earlierAi;
+    const kept = keepEdited ? FRAMEWORK_IDS.filter((f) => r.mapping[f].edited) : [];
+    const detail = `${ai.mode === "live" ? "Live AI" : ai.mode === "demo" ? "Demo (saved AI output)" : "Mock mapper"}${ai.model ? `, ${ai.model}` : ""}${
+      kept.length ? `; kept analyst edits in ${kept.join(", ")}` : ""
+    }`;
+    return withHistory({ ...r, ai, earlierAi, mapping }, { at: now, event: "ai-proposal", detail });
   });
+}
+
+/** True when the analyst's value for this framework differs from the AI's original suggestion. */
+export function differsFromAi(r: ControlRecord, f: FrameworkId): boolean {
+  const p = r.ai?.proposal.frameworks[f];
+  if (!p) return false;
+  const w = r.confirmed ? r.confirmed.mapping[f] : r.mapping[f];
+  return (
+    p.rating !== w.rating ||
+    p.rationale !== w.rationale ||
+    (p.naReason ?? "") !== w.naReason ||
+    JSON.stringify(p.ids) !== JSON.stringify(w.ids)
+  );
 }
 
 export type FrameworkPatch = Partial<Pick<FrameworkWork, "ids" | "rating" | "rationale" | "naReason">>;

@@ -21,6 +21,9 @@ import {
   findControl,
   itemBadge,
   loadSample,
+  MAX_EARLIER_AI,
+  differsFromAi,
+  editedFrameworks,
   reopenControl,
   textEdited,
   type AiRecord,
@@ -168,7 +171,7 @@ test("storage: round-trips a valid workspace under the versioned key", () => {
   ws = confirmControl(ws, "C001", ID_INDEX, T).ws;
   const s = fakeStorage();
   assert.equal(saveWorkspace(s, ws), true);
-  assert.equal(STORAGE_KEY, "puc-control-mapping:workspace:v1");
+  assert.equal(STORAGE_KEY, "puc-control-mapping:workspace:v2");
   const loaded = loadWorkspace(s, ID_INDEX);
   assert.equal(loaded.discarded, false);
   assert.deepEqual(loaded.ws, ws);
@@ -177,7 +180,8 @@ test("storage: round-trips a valid workspace under the versioned key", () => {
 test("storage: anything that fails validation is discarded, not partly used", () => {
   const good = applyAiResult(loadSample(emptyWorkspace(), PUC_SAMPLES, T), "C001", ai(), T);
   const cases: [string, (w: any) => void][] = [
-    ["wrong version", (w) => (w.version = 2)],
+    ["wrong version", (w) => (w.version = 1)],
+    ["too many earlier AI suggestions", (w) => (w.controls[0].earlierAi = [1, 2, 3].map(() => w.controls[0].earlierAi[0] ?? {}))],
     ["unknown ID in mapping", (w) => (w.controls[0].mapping["cis-v8.1"].ids = ["99.9"])],
     ["bad rating", (w) => (w.controls[0].mapping["nist-csf-2.0"].rating = "high")],
     ["bad control id", (w) => (w.controls[0].id = "<script>")],
@@ -208,4 +212,44 @@ test("storage: missing or blocked storage starts empty without errors", () => {
   const throwing = { getItem: () => { throw new Error("blocked"); }, setItem: () => { throw new Error("blocked"); }, removeItem: () => {} };
   assert.equal(loadWorkspace(throwing, ID_INDEX).discarded, false);
   assert.equal(saveWorkspace(throwing, emptyWorkspace()), false);
+});
+
+test("re-running AI: keeps at most 3 suggestions per control (current + 2 earlier), newest first", () => {
+  let ws = loadSample(emptyWorkspace(), PUC_SAMPLES, T);
+  for (let i = 1; i <= 5; i++) ws = applyAiResult(ws, "C001", { ...ai(), requestId: `req-${i}` }, T);
+  const r = findControl(ws, "C001")!;
+  assert.equal(r.ai?.requestId, "req-5");
+  assert.equal(MAX_EARLIER_AI, 2);
+  assert.deepEqual(r.earlierAi.map((e) => e.requestId), ["req-4", "req-3"]);
+  assert.deepEqual(r.earlierAi[0].frameworks[ISO], { ids: ["A.8.5"], rating: "partial" });
+  // The capped workspace still passes storage validation.
+  assert.notEqual(validateWorkspace(JSON.parse(JSON.stringify(ws)), ID_INDEX), null);
+});
+
+test("re-running AI: replace everything, or keep the analyst's edited frameworks", () => {
+  let ws = applyAiResult(loadSample(emptyWorkspace(), PUC_SAMPLES, T), "C001", ai(), T);
+  ws = editFramework(ws, "C001", SOC2, { rating: "full", rationale: "My call" }, T);
+  assert.deepEqual(editedFrameworks(findControl(ws, "C001")!), [SOC2]);
+
+  const kept = findControl(applyAiResult(ws, "C001", { ...ai(), requestId: "req-2" }, T, true), "C001")!;
+  assert.equal(kept.mapping[SOC2].rationale, "My call");
+  assert.equal(itemBadge(kept, SOC2), "Human-edited");
+  assert.equal(itemBadge(kept, NIST), "AI-suggested");
+  assert.match(kept.history.at(-1)!.detail, /kept analyst edits in soc2-tsc-2017/);
+
+  const replaced = findControl(applyAiResult(ws, "C001", { ...ai(), requestId: "req-2" }, T, false), "C001")!;
+  assert.equal(replaced.mapping[SOC2].rationale, "r");
+  assert.deepEqual(editedFrameworks(replaced), []);
+});
+
+test("AI original suggestion is shown only where the analyst's values differ from it", () => {
+  let ws = applyAiResult(loadSample(emptyWorkspace(), PUC_SAMPLES, T), "C001", ai(), T);
+  assert.equal(differsFromAi(findControl(ws, "C001")!, ISO), false);
+  ws = editFramework(ws, "C001", ISO, { rationale: "r" }, T); // edited, but same value
+  assert.equal(differsFromAi(findControl(ws, "C001")!, ISO), false);
+  ws = editFramework(ws, "C001", ISO, { rating: "full" }, T);
+  assert.equal(differsFromAi(findControl(ws, "C001")!, ISO), true);
+  ws = confirmControl(ws, "C001", ID_INDEX, T).ws;
+  assert.equal(differsFromAi(findControl(ws, "C001")!, ISO), true); // still shown on the confirmed control
+  assert.equal(differsFromAi(findControl(ws, "C001")!, NIST), false);
 });

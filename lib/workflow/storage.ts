@@ -4,7 +4,7 @@ import { isValidId, type IdIndex } from "../catalog/ids.ts";
 import { FRAMEWORK_IDS } from "../catalog/types.ts";
 import { INPUT_LIMITS } from "../mapping/config.ts";
 import { RATINGS } from "../scoring/config.ts";
-import { MAX_CONTROLS, MAX_HISTORY, WORKSPACE_VERSION, emptyWorkspace, type Workspace } from "./workspace.ts";
+import { MAX_CONTROLS, MAX_EARLIER_AI, MAX_HISTORY, WORKSPACE_VERSION, emptyWorkspace, type Workspace } from "./workspace.ts";
 
 export const STORAGE_KEY = `puc-control-mapping:workspace:v${WORKSPACE_VERSION}`;
 
@@ -51,6 +51,16 @@ function validRecord(v: unknown, index: IdIndex): boolean {
   if (!isObj(v) || !isStr(v.id, 10) || !/^(C0(0[1-9]|1[0-4])|A\d{3})$/.test(v.id)) return false;
   if (v.sampleId !== null && v.sampleId !== v.id) return false;
   if (!validInput(v.original) || !validInput(v.current) || !validAi(v.ai, index)) return false;
+  if (!Array.isArray(v.earlierAi) || v.earlierAi.length > MAX_EARLIER_AI) return false;
+  for (const e of v.earlierAi) {
+    if (!isObj(e) || !isStr(e.requestId, 100) || !MODES.includes(e.mode as string) || !isStr(e.receivedAt, 40) || !isStr(e.replacedAt, 40)) return false;
+    if (e.model !== null && !isStr(e.model, 100)) return false;
+    if (!isObj(e.frameworks)) return false;
+    for (const f of FRAMEWORK_IDS) {
+      const w = (e.frameworks as Obj)[f];
+      if (!isObj(w) || !validIds(w.ids, f, index) || !isRating(w.rating)) return false;
+    }
+  }
   if (!isObj(v.mapping)) return false;
   for (const f of FRAMEWORK_IDS) {
     const w = (v.mapping as Obj)[f];
