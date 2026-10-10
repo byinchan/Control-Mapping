@@ -5,7 +5,7 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 ## Step 3: Mapping API route and demo mode (2026-10-09)
 
 ### Model and API
-- **Model: `claude-haiku-5-5` (provisional).** It's the cheapest current Claude model ($0.10 / $0.50 per
+- **Model: `claude-haiku-5-5`** (confirmed after the sample test below). It's the cheapest current Claude model ($0.10 / $0.50 per
   million input / output tokens for prompts up to 100K, per Anthropic's pricing as of 2026-10-09) and
   supports structured outputs. CLAUDE.md asks for testing on the 14 v1 controls before the choice is final.
   That needs the API key (`npm run mapping:samples`). The model name is one setting (`MAPPING_MODEL`,
@@ -21,6 +21,27 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
   prompt caching.
 - Estimated cost: about $0.001 per control, about $0.015 for the 14 samples. The daily cap of 300 calls
   limits the worst case to about $0.30 per day.
+
+### Model test on the 14 sample controls (2026-10-10)
+Three live runs of `claude-haiku-5-5` over the 14 PUC sample controls, about $0.021 in total.
+- **Reliability:** 42 of 42 calls returned schema-valid JSON, and no suggested ID was outside the
+  catalogs (0 removed). Runs 1 and 2 used the same prompt and gave nearly identical results.
+  Rationales are grounded in the control text, and uncertainties and missing information are specific.
+- **Prompt fix after run 2:** the first prompt defined None and N/A almost identically, so the model
+  forced loosely related IDs with "none" where the analyst has N/A. The prompt now matches the scoring
+  meaning: None = the framework has requirements on the topic but the control doesn't meet them; N/A =
+  the framework doesn't cover the topic. Empty optional fields are no longer sent, so the model no
+  longer comments on them ("activity field is null"). In run 3, N/A appeared for C008 and C010 CIS
+  (matching the analyst) and 0 uncertainties mentioned empty fields.
+- **Remaining differences are judgment, for the analyst:** the model still proposes loose Partial matches
+  where the analyst has N/A (C009 ISO/CIS; C014 ISO, CIS, SOC 2). It often suggests extra plausible IDs
+  (e.g. RS.MA-01 for incident response, PR.DS-11 for backups). Once (C008 CIS) it said N/A but still
+  listed an ID, which the sanitizer flags as a warning.
+- Run 3 vs the analyst's sample mappings (56 cells): 9 exact, 33 overlap, 7 disjoint, 2 both N/A,
+  5 N/A on one side only.
+- **Decision: keep `claude-haiku-5-5`.** It is reliable on format and catalog IDs at about $0.0005 per
+  control with caching. A stronger model would cost more without fixing the remaining differences, which
+  are judgment calls for the analyst.
 
 ### Guardrails (all in `lib/mapping/`, unit-tested)
 - **Model treated as untrusted:** output is checked against the schema at runtime, every ID is re-validated
