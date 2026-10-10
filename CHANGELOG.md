@@ -4,6 +4,36 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 4: Intake, review and confirm screens (2026-10-10)
 
+### Wording and validation changes after Bernadette's testing (no change to scoring or the data model)
+1. **Batch button:** "Ask AI to map controls" (no count), with the helper line "The AI fills in all four
+   frameworks for each control. You review and edit everything before confirming." The single-control button
+   reads "Ask AI to map this control".
+2. **"Check this" notices in plain language with framework display names.** For example: "CIS Controls
+   v8.1: the AI said this framework has no requirement on this topic, but it also listed requirements from
+   it. Decide which is right: remove the IDs, or change the rating."
+   - Display names live in `lib/catalog/names.ts` and are used in every message and History line.
+   - A test checks that no internal ID such as `cis-v8.1` appears in blockers, warnings or History.
+   - Suggestions saved in a tab before this change keep their old warning text. A fresh tab shows the new
+     wording.
+3. **Rationale required:**
+   - A control can't be confirmed unless every rated framework (Fully meets, Partly meets, Does not meet)
+     has a non-empty rationale. For "No requirement here", the required reason counts instead.
+   - The red "Not ready to confirm: n things to fix" box lists every blocker at once in plain language.
+     After the first attempt it updates live as each one is fixed.
+   - Tests cover an empty rationale on Fully meets and Does not meet, a whitespace-only rationale, and the
+     reason-counts case.
+4. **Rating display labels** (stored values `full/partial/none/na` and scoring unchanged): Fully meets,
+   Partly meets, Does not meet, No requirement here.
+   - The helper text for the selected value appears under the dropdown.
+   - A one-line ratings key sits under the AI/Code/Analyst legend.
+   - The scoring rule text uses the new labels. The matrix, report and CSV (steps 5-6) will use the same
+     `RATING_LABELS` and `RATING_HELP`.
+5. **Re-run button:** "Replace with a new AI suggestion", with helper text saying it replaces the
+   requirement IDs, ratings, rationales, uncertainties and missing information for all four frameworks; the
+   control text is unchanged; and the current suggestion stays in History. The edit dialog spells out that
+   "Keep my edited frameworks" protects the IDs, rating, rationale and reason in the named frameworks,
+   while the other frameworks, uncertainties and missing information are replaced.
+
 ### Revision after Bernadette's testing (guided flow)
 - **Guided flow with real routes** (the browser Back button works):
   - `/` start screen with exactly two choices, Choose sample controls and Enter your own control, plus
