@@ -1,0 +1,707 @@
+{
+  "generatedBy": {
+    "mapper": "mock",
+    "model": null,
+    "generatedAt": "2026-10-10",
+    "note": "Mock mapper output (keyword overlap, not AI). Placeholder until the live model run."
+  },
+  "controls": {
+    "C001": {
+      "input": {
+        "name": "Multi-Factor Authentication (MFA)",
+        "description": "Enforce multi-factor authentication through Microsoft Entra ID for enterprise users.",
+        "objective": "Ensure only authorized users can access enterprise systems.",
+        "owner": "Infrastructure Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "PR.AA-01"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"authorized\", \"user\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.5"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"user\", \"authentication\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "6.5",
+              "6.6"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"mfa\", \"acces\", \"authentication\", \"system\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "P5.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"can\", \"acces\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C002": {
+      "input": {
+        "name": "Vulnerability Management",
+        "description": "Perform scheduled vulnerability scanning, risk prioritization, and remediation tracking using Tenable.io.",
+        "objective": "Identify and reduce security vulnerabilities before they can be exploited.",
+        "owner": "SOC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.SC-06",
+              "GV.SC-09",
+              "ID.RA-05"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"reduce\", \"risk\", \"before\", \"security\", \"management\", \"vulnerabilit\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.19",
+              "A.7.8",
+              "A.8.29"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"risk\", \"reduce\", \"before\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "7.1",
+              "7.2",
+              "7.5"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"vulnerability\", \"management\", \"risk\", \"remediation\", \"scheduled\", \"scanning\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC5.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"reduce\", \"risk\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C003": {
+      "input": {
+        "name": "Patch Management",
+        "description": "Apply security patches to enterprise systems through the patch management program",
+        "objective": "Reduce exposure to known software vulnerabilities.",
+        "owner": "Infrastructure Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.SC-09",
+              "GV.RM-03",
+              "GV.SC-01"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"enterprise\", \"management\", \"program\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.19"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"software\", \"system\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "14.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"program\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C004": {
+      "input": {
+        "name": "Security Awareness",
+        "description": "Deliver annual security awareness training and phishing simulations to employees.",
+        "objective": "Promote secure employee behavior and reduce human-related cyber risks.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "PR.AT-01",
+              "PR.AT-02",
+              "GV.RR-02"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"awarenes\", \"training\", \"risk\", \"related\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.6.3",
+              "A.5.19",
+              "A.7.8"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"awarenes\", \"training\", \"risk\", \"reduce\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "14.1",
+              "14.7",
+              "14.9"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"awarenes\", \"training\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC5.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"reduce\", \"risk\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C005": {
+      "input": {
+        "name": "Incident Response",
+        "description": "Execute incident response procedures, investigations, and tabletop exercises for security events.",
+        "objective": "Detect, respond to, and recover from cybersecurity incidents.",
+        "owner": "SOC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "ID.IM-04",
+              "DE.AE-08",
+              "GV.SC-08"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"incident\", \"response\", \"cybersecurity\", \"event\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.25",
+              "A.6.8"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"event\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "17.7",
+              "17.4",
+              "17.5"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"incident\", \"response\", \"exercis\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC7.3",
+              "CC7.4",
+              "CC7.5"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"event\", \"incident\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C006": {
+      "input": {
+        "name": "Vendor Due Diligence",
+        "description": "Perform vendor security assessments and due diligence during onboarding and contract renewals.",
+        "objective": "Evaluate cybersecurity risks before engaging third-party vendors.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.SC-06",
+              "GV.SC-05",
+              "GV.RM-05"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"due\", \"diligence\", \"risk\", \"before\", \"third\", \"party\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.6",
+              "A.5.19",
+              "A.5.20"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"engaging\", \"security\", \"risk\", \"contract\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "15.4",
+              "16.4",
+              "16.5"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"contract\", \"third\", \"party\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC9.2",
+              "P6.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"vendor\", \"risk\", \"third\", \"party\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C007": {
+      "input": {
+        "name": "Backup & Disaster Recovery",
+        "description": "Perform regular data backups and test disaster recovery procedures.",
+        "objective": "Ensure business continuity and recovery following disruptive events.",
+        "owner": "Infrastructure Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "DE.CM-09",
+              "PR.DS-11"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"data\", \"event\", \"backup\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.30",
+              "A.8.33"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"continuity\", \"event\", \"test\", \"data\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "11.1",
+              "11.3",
+              "11.4"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"data\", \"recovery\", \"backup\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "A1.2"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"backup\", \"recovery\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C008": {
+      "input": {
+        "name": "Cybersecurity Policies & Standards",
+        "description": "Develop, maintain, and periodically review cybersecurity policies and standards.",
+        "objective": "Establish governance requirements for enterprise cybersecurity.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.OC-03",
+              "GV.OV-02",
+              "GV.PO-02"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"requirement\", \"cybersecurity\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C009": {
+      "input": {
+        "name": "Enterprise Risk Management",
+        "description": "Maintain the enterprise risk register and conduct periodic cyber risk assessments.",
+        "objective": "Identify, assess, and monitor enterprise cybersecurity risks.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.SC-03",
+              "GV.RM-03",
+              "GV.SC-09"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"cybersecurity\", \"risk\", \"management\", \"enterprise\", \"assessment\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC3.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"asses\", \"risk\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C010": {
+      "input": {
+        "name": "Executive Risk Reporting",
+        "description": "Prepare and present periodic cyber risk metrics and executive dashboards.",
+        "objective": "Provide leadership with timely information to support cyber risk decisions.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "DE.AE-07",
+              "GV.RR-01",
+              "ID.RA-02"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"cyber\", \"information\", \"leadership\", \"risk\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC2.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"information\", \"support\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C011": {
+      "input": {
+        "name": "Identity & Access Management (IAM)",
+        "description": "Provision, modify, review, and remove user access through Microsoft Entra ID.",
+        "objective": "Ensure appropriate user access to enterprise systems throughout the identity lifecycle.",
+        "owner": "Infrastructure Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.SC-09",
+              "GV.OV-02",
+              "GV.RM-03"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"enterprise\", \"management\", \"throughout\", \"ensure\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.16",
+              "A.5.18"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"identity\", \"lifecycle\", \"management\", \"review\", \"acces\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C012": {
+      "input": {
+        "name": "Security Monitoring & SIEM",
+        "description": "Continuously monitor security events using Microsoft Sentinel and the managed security service provider (MSSP).",
+        "objective": "Detect suspicious activity and support timely incident response.",
+        "owner": "SOC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "DE.CM-06",
+              "DE.AE-08",
+              "DE.CM-03"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"service\", \"provider\", \"event\", \"incident\", \"activity\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.25",
+              "A.6.8",
+              "A.8.15"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"event\", \"activity\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "8.12",
+              "13.1",
+              "15.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"service\", \"provider\", \"security\", \"siem\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC7.3",
+              "CC7.4",
+              "CC7.5"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"security\", \"event\", \"incident\".",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C013": {
+      "input": {
+        "name": "Endpoint Protection",
+        "description": "Monitor and protect endpoints using Microsoft Defender",
+        "objective": "Protect enterprise endpoints from malware and other cyber threats.",
+        "owner": "SOC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "DE.AE-07",
+              "ID.RA-02"
+            ],
+            "rating": "partial",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"cyber\", \"threat\", \"other\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"other\", \"endpoint\".",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "10.1"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"malware\", \"enterprise\".",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    },
+    "C014": {
+      "input": {
+        "name": "AI Governance",
+        "description": "Establish AI governance policies, approval processes, and oversight for enterprise AI solutions.",
+        "objective": "Ensure the secure, responsible, and compliant use of artificial intelligence.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.RM-03",
+              "GV.SC-01",
+              "GV.SC-03"
+            ],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): matched \"enterprise\", \"process\", \"polic\".",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [],
+            "rating": "none",
+            "rationale": "Mock mapper (keyword overlap, not AI): no catalog label shared two or more words with the control text.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "This is mock output based on word overlap, not an AI or analyst judgment."
+        ],
+        "missing_information": []
+      }
+    }
+  }
+}

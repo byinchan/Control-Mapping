@@ -2,6 +2,61 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 3: Mapping API route and demo mode (2026-10-09)
+
+### Model and API
+- **Model: `claude-haiku-5-5` (provisional).** It's the cheapest current Claude model ($0.10 / $0.50 per
+  million input / output tokens for prompts up to 100K, per Anthropic's pricing as of 2026-10-09) and
+  supports structured outputs. CLAUDE.md asks for testing on the 14 v1 controls before the choice is final.
+  That needs the API key (`npm run mapping:samples`). The model name is one setting (`MAPPING_MODEL`,
+  default in `lib/mapping/config.ts`).
+- **Dependency added: `@anthropic-ai/sdk` 0.131.0 (exact pin).** Anthropic's guidance for TypeScript
+  projects is the official SDK rather than raw HTTP: typed errors, retries, timeouts. 0.131.0 was released
+  9 days ago and was chosen over 0.133.0 (released today) as a supply-chain precaution. `npm audit`: 0
+  vulnerabilities.
+- Request settings: structured JSON output (`output_config.format` with a JSON schema whose objects all
+  have `additionalProperties: false`), `effort: "low"`, `max_tokens` 4000 (Haiku 5.5 thinks by default and
+  thinking counts toward the cap), no temperature (Haiku 5.5 rejects non-default values). The system
+  prompt (rules plus all four catalogs, about 7.7K tokens) is identical on every call and marked for
+  prompt caching.
+- Estimated cost: about $0.001 per control, about $0.015 for the 14 samples. The daily cap of 300 calls
+  limits the worst case to about $0.30 per day.
+
+### Guardrails (all in `lib/mapping/`, unit-tested)
+- **Model treated as untrusted:** output is checked against the schema at runtime, every ID is re-validated
+  against the catalogs, and unknown IDs are removed and reported ("2 suggested IDs were not in the catalog
+  and were removed: ..."). Refusals, cut-off answers and non-JSON output are rejected (502), never shown.
+- **IDs are free strings in the schema, not an enum** of all ~400 catalog IDs. The prompt lists the catalogs;
+  the server is the enforcement point. This keeps the schema small, and real model mistakes (e.g. ISO 2013
+  numbering) are caught and shown rather than hidden by constrained decoding.
+- **Nothing is silently filled in:** an N/A without a reason, an N/A with IDs, or a rating whose IDs were all
+  removed becomes a warning for the analyst. No values are invented.
+- **User text is data:** the control is sent as JSON inside `<control_data>`, with `<` and `>` escaped so it
+  can't close the block. The system prompt tells the model to ignore instructions inside it.
+- **Input caps:** name 120, description 1500, objective 500, activity 800, owner 80 characters (longer
+  text is truncated and reported); body ≤ 16 KB (413); exactly one control per request; unknown fields
+  rejected; control and bidi-override characters stripped.
+- **Output caps:** 12 IDs per framework, rationale 300, N/A reason 200, at most 5 uncertainties and 5
+  missing-information items.
+- **Limits:** 20 requests per IP per 10 minutes (sliding window; IPs kept only as salted hashes in memory)
+  and 300 live calls per UTC day. Both are in-memory per server instance, so they're a basic safeguard
+  rather than a guarantee. The real cap is the Anthropic account's prepaid credit with auto-reload off.
+- **Logging:** only `{route, requestId, status}`. No control text, model output or error details.
+- **Key:** `ANTHROPIC_API_KEY` is read only on the server (`lib/mapping/server.ts`, `lib/mapping/anthropic.ts`).
+  It is never returned, logged or prefixed with `NEXT_PUBLIC_`. `.env.example` documents the settings.
+
+### Modes
+- `live` (key set): Claude API. `mock` (`MAPPER=mock`): keyword-overlap mock mapper, labelled "not AI" in
+  every rationale. It echoes ID-like text from the input, so the removed-ID warning can be reproduced
+  without a key (e.g. type "ISO A.9.2.1" into a description).
+- **Demo mode** (automatic): when no key is set, the per-IP limit or daily cap is reached, or the API is
+  unavailable (billing, auth, rate limit, outage), the route serves the saved output from
+  `data/demo-mappings.json`. It does so only for an unchanged PUC sample control. Custom controls get a
+  clear 503/429 message. After a billing or auth failure, live calls pause for 10 minutes.
+- **`data/demo-mappings.json` currently holds mock output** (labelled `mapper: "mock"`) as a placeholder.
+  It will be regenerated from one live run once the key is available, which also gives the static AI
+  baseline for showcase 2.
+
 ## Step 2: Scoring engine and v1 back-test (2026-10-09)
 
 ### Scoring engine
