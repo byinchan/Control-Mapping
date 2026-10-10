@@ -142,6 +142,11 @@ test("rating display labels and helper text; stored values unchanged", () => {
   assert.deepEqual(RATINGS, ["full", "partial", "none", "na"]);
   assert.deepEqual(RATING_LABELS, { full: "Fully meets", partial: "Partly meets", none: "Does not meet", na: "No requirement here" });
   for (const r of RATINGS) assert.ok(RATING_HELP[r].length > 10, r);
+  // "Meets" describes the control text, not proof that the control works.
+  assert.equal(RATING_HELP.full, "As described, the control meets the requirement(s).");
+  assert.equal(RATING_HELP.partial, "As described, the control meets some of the requirement(s).");
+  assert.equal(RATING_HELP.none, "Framework has a requirement, the control doesn't meet it. Scores 0.");
+  assert.equal(RATING_HELP.na, "Framework has nothing on this topic. Left out of the score.");
   assert.match(RATING_HELP.none, /Scores 0/);
   assert.match(RATING_HELP.na, /Left out of the score/);
 });

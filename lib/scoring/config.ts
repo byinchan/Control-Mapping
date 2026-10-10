@@ -14,8 +14,8 @@ export const RATING_LABELS: Record<Rating, string> = {
 
 /** One-line explanation shown under the rating dropdown and in the legend. */
 export const RATING_HELP: Record<Rating, string> = {
-  full: "Control meets the requirement(s).",
-  partial: "Control meets some of the requirement(s).",
+  full: "As described, the control meets the requirement(s).",
+  partial: "As described, the control meets some of the requirement(s).",
   none: "Framework has a requirement, the control doesn't meet it. Scores 0.",
   na: "Framework has nothing on this topic. Left out of the score.",
 };
