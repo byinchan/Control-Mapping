@@ -1,5 +1,5 @@
 import { FRAMEWORK_IDS, type FrameworkId } from "../catalog/types.ts";
-import { RATINGS, RATING_HALF_POINTS, THRESHOLDS, type Rating, type Status } from "./config.ts";
+import { LIMITED_COVERAGE_MAX_IN_SCOPE, RATINGS, RATING_HALF_POINTS, THRESHOLDS, type Rating, type Status } from "./config.ts";
 
 export type FrameworkRating = {
   rating: Rating;
@@ -15,6 +15,8 @@ export type ControlScore = {
   inScope: number;
   hasNone: boolean;
   status: Status;
+  /** True when 1..LIMITED_COVERAGE_MAX_IN_SCOPE frameworks are in scope. Does not affect status. */
+  limitedCoverage: boolean;
 };
 
 // Thresholds as whole hundredths so comparisons are exact integer arithmetic.
@@ -77,8 +79,13 @@ export function scoreControl(ratings: ControlRatings): ControlScore {
     halfPoints += RATING_HALF_POINTS[rating];
     if (rating === "none") hasNone = true;
   }
-  const status = statusFor(halfPoints, inScope, hasNone);
-  return { score: inScope === 0 ? null : halfPoints / (2 * inScope), inScope, hasNone, status };
+  return {
+    score: inScope === 0 ? null : halfPoints / (2 * inScope),
+    inScope,
+    hasNone,
+    status: statusFor(halfPoints, inScope, hasNone),
+    limitedCoverage: inScope > 0 && inScope <= LIMITED_COVERAGE_MAX_IN_SCOPE,
+  };
 }
 
 export type ConfirmedControl = {
@@ -101,6 +108,7 @@ export type Summary = {
   statusCounts: Record<Exclude<Status, "Not scorable">, number>;
   notScorable: string[];
   controlsWithNone: string[];
+  controlsWithLimitedCoverage: string[];
   frameworks: Record<FrameworkId, FrameworkCoverage>;
 };
 
@@ -109,6 +117,7 @@ export function summarize(controls: readonly ConfirmedControl[]): Summary {
   const statusCounts = { "Fully Aligned": 0, "Partially Aligned": 0, "Gap Identified": 0 };
   const notScorable: string[] = [];
   const controlsWithNone: string[] = [];
+  const controlsWithLimitedCoverage: string[] = [];
   const frameworks = Object.fromEntries(
     FRAMEWORK_IDS.map((f) => [f, { inScope: 0, mapped: 0, counts: { full: 0, partial: 0, none: 0, na: 0 }, coverage: null }]),
   ) as Record<FrameworkId, FrameworkCoverage>;
@@ -119,6 +128,7 @@ export function summarize(controls: readonly ConfirmedControl[]): Summary {
     if (result.status === "Not scorable") notScorable.push(control.id);
     else statusCounts[result.status] += 1;
     if (result.hasNone) controlsWithNone.push(control.id);
+    if (result.limitedCoverage) controlsWithLimitedCoverage.push(control.id);
 
     for (const f of FRAMEWORK_IDS) {
       const { rating } = control.ratings[f];
@@ -135,5 +145,5 @@ export function summarize(controls: readonly ConfirmedControl[]): Summary {
     const fw = frameworks[f];
     fw.coverage = fw.inScope > 0 ? halfPoints[f] / (2 * fw.inScope) : null;
   }
-  return { statusCounts, notScorable, controlsWithNone, frameworks };
+  return { statusCounts, notScorable, controlsWithNone, controlsWithLimitedCoverage, frameworks };
 }

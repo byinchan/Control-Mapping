@@ -39,7 +39,7 @@ test("threshold boundaries are exact (score = halfPoints / (2 * inScope))", () =
 });
 
 test("worked examples", () => {
-  assert.deepEqual(scoreControl(r("full", "full", "full", "full")), { score: 1, inScope: 4, hasNone: false, status: "Fully Aligned" });
+  assert.deepEqual(scoreControl(r("full", "full", "full", "full")), { score: 1, inScope: 4, hasNone: false, status: "Fully Aligned", limitedCoverage: false });
   assert.equal(scoreControl(r("full", "full", "full", "partial")).status, "Partially Aligned"); // 0.875
   assert.equal(scoreControl(r("full", "full", "full", "na")).status, "Fully Aligned"); // N/A excluded
   assert.equal(scoreControl(r("full", "none", "full", "full")).status, "Partially Aligned"); // 0.75 with None
@@ -47,7 +47,20 @@ test("worked examples", () => {
   assert.equal(scoreControl(r("partial", "none", "na", "na")).status, "Gap Identified"); // 0.25
   assert.equal(scoreControl(r("full", "none", "na", "na")).status, "Partially Aligned"); // 0.5 with None
   assert.equal(scoreControl(r("partial", "na", "na", "na")).status, "Partially Aligned"); // one framework in scope
-  assert.deepEqual(scoreControl(r("na", "na", "na", "na")), { score: null, inScope: 0, hasNone: false, status: "Not scorable" });
+  assert.deepEqual(scoreControl(r("na", "na", "na", "na")), { score: null, inScope: 0, hasNone: false, status: "Not scorable", limitedCoverage: false });
+});
+
+test("limited framework coverage is a flag, not a status: it never changes score or status", () => {
+  const one = scoreControl(r("partial", "na", "na", "na"));
+  assert.equal(one.limitedCoverage, true);
+  assert.equal(one.status, "Partially Aligned");
+  assert.equal(one.score, 0.5);
+  assert.equal(scoreControl(r("full", "na", "na", "na")).status, "Fully Aligned");
+  assert.equal(scoreControl(r("none", "na", "na", "na")).status, "Gap Identified");
+  assert.equal(scoreControl(r("partial", "partial", "na", "na")).limitedCoverage, false);
+  assert.equal(scoreControl(r("na", "na", "na", "na")).limitedCoverage, false); // Not scorable instead
+  const ids = Object.fromEntries(FRAMEWORK_IDS.map((f) => [f, []])) as unknown as Record<FrameworkId, string[]>;
+  assert.deepEqual(summarize([{ id: "X", ratings: r("na", "full", "na", "na"), ids }]).controlsWithLimitedCoverage, ["X"]);
 });
 
 test("validateRatings requires every framework and a reason for N/A", () => {
@@ -83,6 +96,8 @@ test("exhaustive sweep of all 4^4 = 256 rating combinations holds the rule's inv
     }
     if (result.status === "Fully Aligned") assert.ok(!result.hasNone && (result.score as number) >= 0.9);
     if (result.hasNone && result.status !== "Not scorable") assert.notEqual(result.status, "Fully Aligned");
+    // The limited-coverage flag is raised exactly when one framework is in scope.
+    assert.equal(result.limitedCoverage, inScope.length === 1);
     // With at most four frameworks, Fully Aligned means every in-scope framework is Full.
     assert.equal(result.status === "Fully Aligned", inScope.length > 0 && inScope.every((v) => v === "full"));
 
@@ -115,6 +130,7 @@ test("summarize counts statuses, coverage and Nones over confirmed controls", ()
   assert.deepEqual(s.statusCounts, { "Fully Aligned": 1, "Partially Aligned": 1, "Gap Identified": 1 });
   assert.deepEqual(s.notScorable, ["D"]);
   assert.deepEqual(s.controlsWithNone, ["B", "C"]);
+  assert.deepEqual(s.controlsWithLimitedCoverage, []);
   assert.deepEqual(s.frameworks[NIST], { inScope: 3, mapped: 3, counts: { full: 2, partial: 0, none: 1, na: 1 }, coverage: 2 / 3 });
   assert.deepEqual(s.frameworks[ISO].coverage, 1 / 3);
   assert.deepEqual(s.frameworks[CIS], { inScope: 2, mapped: 2, counts: { full: 1, partial: 1, none: 0, na: 2 }, coverage: 0.75 });

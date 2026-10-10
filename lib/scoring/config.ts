@@ -23,7 +23,13 @@ export const THRESHOLDS = {
   gapWithNoneBelow: 0.5,
 } as const;
 
-export const STATUSES = ["Fully Aligned", "Partially Aligned", "Gap Identified", "Not scorable"] as const;
+/**
+ * "Limited framework coverage" flag: raised when this many or fewer frameworks are in scope
+ * (but at least one). It is shown next to the status and never changes the score or status.
+ */
+export const LIMITED_COVERAGE_MAX_IN_SCOPE = 1;
+
+export const STATUSES =["Fully Aligned", "Partially Aligned", "Gap Identified", "Not scorable"] as const;
 export type Status = (typeof STATUSES)[number];
 
 export const SCORING_RULE_TEXT = [
@@ -33,4 +39,5 @@ export const SCORING_RULE_TEXT = [
   `Gap Identified: score below ${THRESHOLDS.gapBelow}, or any framework rated None with a score below ${THRESHOLDS.gapWithNoneBelow}.`,
   "Partially Aligned: everything else.",
   "Not scorable: every framework is N/A.",
+  "Limited framework coverage (flag, not a status): only one framework is in scope, so the result rests on a single framework.",
 ] as const;
