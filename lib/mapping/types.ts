@@ -55,11 +55,16 @@ export type Guardrails = {
 
 export type MappingMode = "live" | "mock" | "demo";
 
+/** Why demo mode answered instead of the live model. */
+export type DemoReason = "no-key" | "rate-limited" | "daily-cap" | "unavailable";
+
 export type MappingResponse = {
   requestId: string;
   mode: MappingMode;
   /** Model name for live and demo output; null for the mock mapper. */
   model: string | null;
+  /** Set when mode is "demo". */
+  demoReason: DemoReason | null;
   proposal: Proposal;
   guardrails: Guardrails;
   /** Plain-language notices, e.g. why demo mode is active. */

@@ -258,9 +258,11 @@ test("service: no API key -> demo mode for samples, 503 for custom controls", as
   assert.equal(s.status, 200);
   assert.equal((s.body as { mode: string }).mode, "demo");
   assert.ok((s.body as { notices: string[] }).notices.includes(MESSAGES.demoNoKey));
+  assert.equal((s.body as { demoReason: string }).demoReason, "no-key");
   const c = await handleMapRequest(customBody, "ip", "r", d);
   assert.equal(c.status, 503);
   assert.equal((c.body as { error: string }).error, MESSAGES.unavailable);
+  assert.equal((c.body as { code: string }).code, "unavailable");
 });
 
 test("service: mock mapper works for any control and says it is not AI", async () => {
@@ -300,7 +302,11 @@ test("service: per-IP limit -> demo for samples, 429 for custom", async () => {
   const s = await handleMapRequest(sampleBody, "ip", "r", d);
   assert.equal((s.body as { mode: string }).mode, "demo");
   assert.ok((s.body as { notices: string[] }).notices.includes(MESSAGES.demoRateLimited));
-  assert.equal((await handleMapRequest(customBody, "ip", "r", d)).status, 429);
+  assert.equal((s.body as { demoReason: string }).demoReason, "rate-limited");
+  const c = await handleMapRequest(customBody, "ip", "r", d);
+  assert.equal(c.status, 429);
+  assert.equal((c.body as { code: string }).code, "rate-limited");
+  assert.match((c.body as { error: string }).error, /limit of AI suggestions for now \(5 every 1 minutes per visitor\)/);
 });
 
 test("service: daily cap -> demo mode without calling the API", async () => {
