@@ -4,6 +4,17 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 4: Intake, review and confirm screens (2026-10-10)
 
+### Wording and style follow-up (no logic or scoring changes)
+- **A. "As described" in the positive helpers:** Fully meets reads "As described, the control meets the
+  requirement(s)." and Partly meets reads "As described, the control meets some of the requirement(s)."
+  This keeps the labels while making clear that a rating judges the control text, not proof that the
+  control works. The Does not meet and No requirement here helpers are unchanged. The ratings key reads the
+  same text, and a test pins all four helpers.
+- **B. Re-run helper box:** a rectangular box with a light violet background and violet border (matching the
+  AI badge) and dark violet text. It starts with the exact button label in bold quotes, then the agreed
+  wording. The three AI button labels live in one place (`app/components/labels.ts`). The button, helper box,
+  "you changed…" choice box, stale-text notice and batch summary all read from it, so they can't drift.
+
 ### Wording and validation changes after Bernadette's testing (no change to scoring or the data model)
 1. **Batch button:** "Ask AI to map controls" (no count), with the helper line "The AI fills in all four
    frameworks for each control. You review and edit everything before confirming." The single-control button
