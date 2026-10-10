@@ -1,14 +1,9 @@
 import type { ReactNode } from "react";
-import type { FrameworkId } from "@/lib/catalog/types.ts";
 import type { MappingMode } from "@/lib/mapping/types.ts";
+import { RATINGS, RATING_HELP, RATING_LABELS } from "@/lib/scoring/config.ts";
 import type { ControlStatus, ItemBadge } from "@/lib/workflow/workspace.ts";
 
-export const FRAMEWORK_NAMES: Record<FrameworkId, string> = {
-  "nist-csf-2.0": "NIST CSF 2.0",
-  "iso-27001-2022": "ISO/IEC 27001:2022",
-  "cis-v8.1": "CIS Controls v8.1",
-  "soc2-tsc-2017": "SOC 2 TSC",
-};
+export { FRAMEWORK_NAMES } from "@/lib/catalog/names.ts";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
 
@@ -29,6 +24,21 @@ export function Legend() {
       <span className="flex items-center gap-1.5"><RoleBadge role="Code" /> calculates</span>
       <span className="flex items-center gap-1.5"><RoleBadge role="Analyst" /> decides</span>
     </div>
+  );
+}
+
+/** Short key for the four rating labels, shown with the legend. */
+export function RatingKey() {
+  return (
+    <p className="text-xs text-slate-600" aria-label="What the ratings mean">
+      <span className="font-medium text-slate-700">Ratings:</span>{" "}
+      {RATINGS.map((r, i) => (
+        <span key={r}>
+          <span className="font-medium text-slate-800">{RATING_LABELS[r]}</span>: {RATING_HELP[r]}
+          {i < RATINGS.length - 1 ? " " : ""}
+        </span>
+      ))}
+    </p>
   );
 }
 

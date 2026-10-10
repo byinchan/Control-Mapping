@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ID_INDEX } from "@/lib/catalog/catalogs.ts";
 import { FRAMEWORK_IDS, type FrameworkId } from "@/lib/catalog/types.ts";
 import { INPUT_LIMITS } from "@/lib/mapping/config.ts";
 import type { ControlInput } from "@/lib/mapping/types.ts";
@@ -8,6 +9,7 @@ import { RATING_LABELS } from "@/lib/scoring/config.ts";
 import { formatScore, scoreControl } from "@/lib/scoring/score.ts";
 import {
   aiIsStale,
+  confirmBlockers,
   confirmedRatings,
   controlStatus,
   editedFrameworks,
@@ -34,7 +36,7 @@ export function ReviewPanel({
   record,
   aiBusy,
   aiError,
-  blockers,
+  showBlockers,
   onEditText,
   onRunAi,
   onPatch,
@@ -45,7 +47,8 @@ export function ReviewPanel({
   record: ControlRecord;
   aiBusy: boolean;
   aiError: string | null;
-  blockers: string[];
+  /** True after the analyst tried to confirm; the blocker list then updates live. */
+  showBlockers: boolean;
   onEditText: (field: keyof ControlInput, value: string) => void;
   onRunAi: (keepEdited: boolean) => void;
   onPatch: (f: FrameworkId, patch: FrameworkPatch) => void;
@@ -62,6 +65,7 @@ export function ReviewPanel({
   const ai = record.ai;
   const edited = editedFrameworks(record);
   const textReady = record.current.name.trim() && record.current.description.trim();
+  const blockers = showBlockers && !locked ? confirmBlockers(record, ID_INDEX) : [];
 
   const startAi = () => {
     if (ai && edited.length > 0) setAskReplace(true);
@@ -129,7 +133,7 @@ export function ReviewPanel({
           </div>
           {!locked && !askReplace && (
             <Button variant="ai" onClick={startAi} disabled={aiBusy || !textReady}>
-              {aiBusy ? "Asking AI…" : ai ? "Get a new AI suggestion" : "Suggest mapping with AI"}
+              {aiBusy ? "Asking AI…" : ai ? "Replace with a new AI suggestion" : "Ask AI to map this control"}
             </Button>
           )}
         </div>
@@ -138,14 +142,23 @@ export function ReviewPanel({
           <p className="mt-1 text-xs text-slate-600">
             {ai.mode === "demo"
               ? "Demo mode returns the same saved suggestion for an unchanged sample control."
-              : "AI choices and wording can vary between runs. A new suggestion replaces the current one."}
+              : "Asks the AI again for all four frameworks and replaces the requirement IDs, ratings, rationales, uncertainties and missing information shown here. The control text is not changed, and the current suggestion stays in History. AI choices and wording can vary between runs."}
           </p>
         )}
 
         {askReplace && (
           <div className="mt-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950" role="alertdialog" aria-label="Replace your edits?">
             <p className="font-semibold">You changed {frameworkList(edited)}.</p>
-            <p className="mt-0.5">A new AI suggestion can replace everything, or only the frameworks you have not changed.</p>
+            <ul className="mt-1 list-disc space-y-0.5 pl-4">
+              <li>
+                <span className="font-medium">Keep my edited frameworks:</span> your requirement IDs, rating, rationale and reason in {frameworkList(edited)} stay
+                exactly as they are. The other frameworks, the uncertainties and the missing information are replaced.
+              </li>
+              <li>
+                <span className="font-medium">Replace everything:</span> all four frameworks, the uncertainties and the missing information are replaced, including
+                your edits.
+              </li>
+            </ul>
             <div className="mt-2 flex flex-wrap gap-2">
               <Button variant="ai" onClick={() => { setAskReplace(false); onRunAi(true); }}>Keep my edited frameworks, replace the rest</Button>
               <Button onClick={() => { setAskReplace(false); onRunAi(false); }}>Replace everything</Button>
@@ -168,7 +181,7 @@ export function ReviewPanel({
               {time(ai.receivedAt)} · {locked ? "AI-generated, human-reviewed" : "AI-generated, awaiting your review"}
             </p>
             {aiIsStale(record) && !locked && (
-              <Notice tone="warn">The control text changed after this suggestion was made. Get a new AI suggestion, or check the mapping yourself.</Notice>
+              <Notice tone="warn">The control text changed after this suggestion was made. Replace it with a new AI suggestion, or check the mapping yourself.</Notice>
             )}
             {ai.notices.map((n) => (
               <Notice key={n} tone={n.startsWith("Saved suggestion") ? "info" : "warn"}>{n}</Notice>
@@ -222,10 +235,10 @@ export function ReviewPanel({
             </div>
             <p className="text-sm text-slate-600">Only confirmed controls count in scores, the matrix and the report.</p>
             {blockers.length > 0 && (
-              <Notice tone="error" title="Not ready to confirm">
+              <Notice tone="error" title={`Not ready to confirm: ${blockers.length} thing${blockers.length === 1 ? "" : "s"} to fix`}>
                 <ul className="list-disc pl-4">
                   {blockers.map((b) => (
-                    <li key={b}>{b.replace(/^[a-z0-9.-]+(?=:)/, (f) => FRAMEWORK_NAMES[f as FrameworkId] ?? f)}</li>
+                    <li key={b}>{b}</li>
                   ))}
                 </ul>
               </Notice>
@@ -251,7 +264,7 @@ export function ReviewPanel({
                   {result.limitedCoverage && <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-900">Limited framework coverage</span>}
                 </div>
                 <p className="mt-1 text-xs text-sky-900">
-                  {FRAMEWORK_IDS.map((f) => `${FRAMEWORK_NAMES[f]} ${RATING_LABELS[ratings![f].rating]}`).join(" · ")}. Calculated by code from your
+                  {FRAMEWORK_IDS.map((f) => `${FRAMEWORK_NAMES[f]}: ${RATING_LABELS[ratings![f].rating]}`).join(" · ")}. Calculated by code from your
                   confirmed ratings. This shows alignment to frameworks, not that the control is implemented or effective.
                 </p>
               </div>
@@ -289,7 +302,7 @@ export function ReviewPanel({
                   <li key={e.requestId}>
                     {modeName(e.mode)}, {time(e.receivedAt)}, replaced {time(e.replacedAt)}:{" "}
                     <span className="text-slate-600">
-                      {FRAMEWORK_IDS.map((f) => `${FRAMEWORK_NAMES[f]} ${RATING_LABELS[e.frameworks[f].rating]}${e.frameworks[f].ids.length ? ` (${e.frameworks[f].ids.join(", ")})` : ""}`).join("; ")}
+                      {FRAMEWORK_IDS.map((f) => `${FRAMEWORK_NAMES[f]}: ${RATING_LABELS[e.frameworks[f].rating]}${e.frameworks[f].ids.length ? ` (${e.frameworks[f].ids.join(", ")})` : ""}`).join("; ")}
                     </span>
                   </li>
                 ))}

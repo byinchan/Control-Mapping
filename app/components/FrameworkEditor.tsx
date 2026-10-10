@@ -2,7 +2,7 @@
 
 import { getCatalog } from "@/lib/catalog/catalogs.ts";
 import type { FrameworkId } from "@/lib/catalog/types.ts";
-import { RATINGS, RATING_LABELS, type Rating } from "@/lib/scoring/config.ts";
+import { RATINGS, RATING_HELP, RATING_LABELS, type Rating } from "@/lib/scoring/config.ts";
 import { differsFromAi, itemBadge, type ControlRecord, type FrameworkPatch } from "@/lib/workflow/workspace.ts";
 import { CatalogPicker } from "./CatalogPicker.tsx";
 import { FRAMEWORK_NAMES, ItemStatusBadge, RoleBadge } from "./ui.tsx";
@@ -43,7 +43,7 @@ export function FrameworkEditor({
         <div>
           <p className="text-xs font-medium text-slate-600">Requirement IDs</p>
           {w.ids.length === 0 ? (
-            <p className="mt-1 text-xs text-slate-500">{w.rating === "na" ? "None (rated N/A)." : "No IDs selected."}</p>
+            <p className="mt-1 text-xs text-slate-500">{w.rating === "na" ? `None (${RATING_LABELS.na}).` : "No IDs selected."}</p>
           ) : (
             <ul className="mt-1 flex flex-wrap gap-1.5">
               {w.ids.map((id) => (
@@ -71,7 +71,7 @@ export function FrameworkEditor({
           )}
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-[10rem_1fr]">
+        <div className="grid gap-2 sm:grid-cols-[13rem_1fr]">
           <label className="text-xs font-medium text-slate-600" htmlFor={`${fieldId}-rating`}>
             Rating
             <select
@@ -86,10 +86,11 @@ export function FrameworkEditor({
                 <option key={r} value={r}>{RATING_LABELS[r]}</option>
               ))}
             </select>
+            {w.rating && <span className="mt-1 block font-normal text-slate-500">{RATING_HELP[w.rating]}</span>}
           </label>
           {w.rating === "na" && (
             <label className="text-xs font-medium text-slate-600" htmlFor={`${fieldId}-na`}>
-              Reason for N/A (required)
+              Why there is no requirement here (required)
               <input
                 id={`${fieldId}-na`}
                 value={w.naReason}
@@ -103,7 +104,7 @@ export function FrameworkEditor({
         </div>
 
         <label className="block text-xs font-medium text-slate-600" htmlFor={`${fieldId}-rationale`}>
-          Rationale
+          {w.rating === "na" ? "Rationale (optional)" : "Rationale (required)"}
           <textarea
             id={`${fieldId}-rationale`}
             value={w.rationale}
@@ -130,7 +131,7 @@ export function FrameworkEditor({
             <p className="mt-1">
               <span className="font-semibold">{RATING_LABELS[aiProposal.rating]}</span>
               {aiProposal.ids.length > 0 && <span className="font-mono"> · {aiProposal.ids.join(", ")}</span>}
-              {aiProposal.naReason && <span> · N/A reason: {aiProposal.naReason}</span>}
+              {aiProposal.naReason && <span> · Reason: {aiProposal.naReason}</span>}
             </p>
             <p className="mt-0.5 text-violet-900">{aiProposal.rationale}</p>
           </details>

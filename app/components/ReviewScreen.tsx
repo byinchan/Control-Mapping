@@ -22,7 +22,7 @@ import {
 import { requestMapping } from "./mappingClient.ts";
 import { ReviewPanel } from "./ReviewPanel.tsx";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, Legend, Notice, cx } from "./ui.tsx";
+import { Button, Legend, Notice, RatingKey, cx } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const now = () => new Date().toISOString();
@@ -33,7 +33,7 @@ const DOT: Record<ControlStatus, string> = {
   confirmed: "bg-emerald-600",
 };
 
-/** What happened in one "Suggest with AI" run, for a plain-language summary. */
+/** What happened in one "Ask AI to map controls" run, for a plain-language summary. */
 type BatchReport = {
   total: number;
   done: number;
@@ -64,7 +64,7 @@ function BatchSummary({ r }: { r: BatchReport }) {
           )}
           {r.limitSkipped.length > 0 && (
             <li>
-              Not sent yet: {r.limitSkipped.join(", ")}. Wait a few minutes and use &ldquo;Get a new AI suggestion&rdquo;, or map{" "}
+              Not sent yet: {r.limitSkipped.join(", ")}. Wait a few minutes and use &ldquo;Ask AI to map this control&rdquo;, or map{" "}
               {r.limitSkipped.length === 1 ? "it" : "them"} by hand.
             </li>
           )}
@@ -93,7 +93,7 @@ export function ReviewScreen() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busy, setBusy] = useState<Set<string>>(new Set());
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [blockers, setBlockers] = useState<Record<string, string[]>>({});
+  const [triedConfirm, setTriedConfirm] = useState<Set<string>>(new Set());
   const [batch, setBatch] = useState<BatchReport | null>(null);
 
   // Select the control named in ?focus=, or the first one, once the workspace has loaded.
@@ -171,6 +171,7 @@ export function ReviewScreen() {
         <h1 className="text-xl font-semibold text-slate-900">Review and confirm</h1>
         <Legend />
       </div>
+      <RatingKey />
       {discarded && <Notice tone="warn">Saved data in this tab failed validation and was discarded.</Notice>}
       {!storageOk && <Notice tone="warn">This browser blocked tab storage, so your work will be lost if the page reloads.</Notice>}
 
@@ -208,9 +209,14 @@ export function ReviewScreen() {
             </p>
           </div>
           {toSuggest.length > 0 && (
-            <Button variant="ai" className="w-full" disabled={busy.size > 0} onClick={suggestAll}>
-              Suggest with AI ({toSuggest.length})
-            </Button>
+            <div>
+              <Button variant="ai" className="w-full" disabled={busy.size > 0} onClick={suggestAll}>
+                Ask AI to map controls
+              </Button>
+              <p className="mt-1 text-xs text-slate-600">
+                The AI fills in all four frameworks for each control. You review and edit everything before confirming.
+              </p>
+            </div>
           )}
           {batch && <BatchSummary r={batch} />}
           <Link href="/" className="block rounded-md px-3 py-1.5 text-center text-sm font-medium text-slate-800 ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
@@ -237,16 +243,15 @@ export function ReviewScreen() {
               record={selected}
               aiBusy={busy.has(selected.id)}
               aiError={errors[selected.id] ?? null}
-              blockers={blockers[selected.id] ?? []}
+              showBlockers={triedConfirm.has(selected.id)}
               onEditText={(field, value) => change((w) => editControlText(w, selected.id, field, value, now()))}
               onRunAi={(keepEdited) => void runOne(selected, keepEdited)}
               onPatch={(f: FrameworkId, patch: FrameworkPatch) => {
                 change((w) => editFramework(w, selected.id, f, patch, now()));
-                setBlockers(({ [selected.id]: _, ...rest }) => rest);
               }}
               onConfirm={() => {
                 const res = confirmControl(ws, selected.id, ID_INDEX, now());
-                setBlockers((b) => ({ ...b, [selected.id]: res.blockers }));
+                setTriedConfirm((s) => new Set(s).add(selected.id));
                 if (res.blockers.length === 0) setWs(res.ws);
               }}
               onReopen={() => change((w) => reopenControl(w, selected.id, now()))}
