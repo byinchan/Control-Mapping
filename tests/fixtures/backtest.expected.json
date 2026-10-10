@@ -12,7 +12,7 @@
     "id": "C002",
     "v1Status": "Fully Aligned",
     "ruleStatus": "Partially Aligned",
-    "score": 0.875,
+    "score": 0.75,
     "agrees": false,
     "limitedCoverage": false,
     "correctedFrameworks": [

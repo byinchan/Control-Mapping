@@ -17,7 +17,7 @@ test("the four approved corrections are applied to the sample", () => {
     const cell = sample.find((x) => x.id === c)!.frameworks[f];
     return cell.kind === "ids" ? cell.ids : null;
   };
-  assert.deepEqual(ids("C002", "nist-csf-2.0"), ["ID.RA-01"]);
+  assert.deepEqual(ids("C002", "nist-csf-2.0"), ["PR.PS-02", "ID.RA-01"]);
   assert.deepEqual(ids("C006", "soc2-tsc-2017"), ["CC9.2"]);
   assert.deepEqual(ids("C012", "soc2-tsc-2017"), ["CC7.2"]);
   assert.deepEqual(ids("C013", "soc2-tsc-2017"), ["CC6.8"]);

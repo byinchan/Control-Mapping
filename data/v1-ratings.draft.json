@@ -27,8 +27,8 @@
     },
     "C002": {
       "nist-csf-2.0": {
-        "rating": "full",
-        "basis": "Corrected mapping ID.RA-01: scanning, prioritization and tracking identify and record asset vulnerabilities.",
+        "rating": "partial",
+        "basis": "Corrected mapping PR.PS-02, ID.RA-01: scanning and tracking identify and record vulnerabilities (ID.RA-01); remediation is tracked, but maintaining or replacing software itself (PR.PS-02) is not described.",
         "status": "draft, pending Bernadette"
       },
       "iso-27001-2022": {
