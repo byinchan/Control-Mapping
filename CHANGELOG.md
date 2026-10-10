@@ -2,6 +2,42 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 2: Scoring engine and v1 back-test (2026-10-09)
+
+### Scoring engine
+- `lib/scoring/config.ts` is the only place with rating values, thresholds (0.9 / 0.4 / 0.5) and the
+  plain-English rule shown in the UI.
+- `lib/scoring/score.ts`: `scoreControl`, `statusFor`, `validateRatings` (N/A needs a reason), and
+  `summarize` (status counts, "Not scorable" list, controls with any None, per-framework in-scope /
+  mapped / rating counts / coverage). Arithmetic is in integer half-points and hundredths, so the
+  threshold boundaries are exact.
+- Tests: exact boundary cases, worked examples, and all 256 rating combinations checked against
+  invariants (N/A never changes the score; upgrading a rating never worsens the status; Fully Aligned
+  never has a None).
+
+### Draft v1 ratings: `data/v1-ratings.draft.json` (draft, pending Bernadette)
+Drafted by Claude from the v1 control text and mapped IDs only, **not tuned to the v1 statuses**. Every
+cell is marked "draft, pending Bernadette" and has a one-line basis. N/A cells keep the v1 reason verbatim.
+
+### Back-test result (for Bernadette to decide; these are not bugs)
+6 of 14 match the v1 labels and 8 differ. With the draft ratings, the rule rates all 14 controls Partially Aligned.
+`npm run backtest` prints both tables.
+1. **Fully Aligned needs every framework Full.** With four frameworks in scope, one Partial gives
+   0.875 < 0.9. All seven v1 "Fully Aligned" controls (C001, C002, C005, C007, C011, C012, C013) have at
+   least one Partial in the draft. Either some draft ratings should be Full, or the 0.9 threshold is
+   stricter than the v1 judgment.
+2. **Broad CIS ranges pull ratings down.** v1 maps whole safeguard ranges (e.g. 17.1-17.8, 8.1-8.6 +
+   13.7-13.10). A one-line control description rarely covers every safeguard, so CIS is Partial for 8 of
+   the 10 controls with CIS IDs (C001 and C002 are Full). Narrower CIS mappings would change this.
+3. **C014 AI Governance (disclosed disagreement, default #1):** v1 says Gap Identified. ISO, CIS and SOC 2
+   are N/A and excluded, so NIST alone (Partial, 0.5) decides, giving Partially Aligned. The rule
+   can't produce a gap from "frameworks don't cover this topic".
+4. **No control is a Gap under the rule.** C006 (SOC 2 None, 0.5), C010 (ISO None, 0.5) and C013 (SOC 2
+   None, 0.625) have a None but score at least 0.5.
+5. **Mapping observations raised by the ratings (unchanged, your call):** C006 SOC 2 P6.4/P6.5 (CC9.2
+   may fit better), C012 SOC 2 CC4.1/CC4.2 (CC7.2 may fit better), C013 SOC 2 CC6.1/CC6.7 (CC6.8 may fit
+   better), C002 NIST PR.PS-02/ID.IM-04 (ID.RA-01 may fit better), and C005/C007 NIST ID.IM-04 only.
+
 ## Step 1: Reference catalogs and ID validator (2026-10-09)
 
 ### Catalogs in `reference/`
