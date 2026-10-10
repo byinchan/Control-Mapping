@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { MappingMode } from "@/lib/mapping/types.ts";
-import { RATINGS, RATING_HELP, RATING_LABELS } from "@/lib/scoring/config.ts";
+import { RATINGS, RATING_EFFECT, RATING_HELP, RATING_LABELS } from "@/lib/scoring/config.ts";
 import type { ControlStatus, ItemBadge } from "@/lib/workflow/workspace.ts";
 
 export { FRAMEWORK_NAMES } from "@/lib/catalog/names.ts";
@@ -34,8 +34,8 @@ export function RatingKey() {
       <span className="font-medium text-slate-700">Ratings:</span>{" "}
       {RATINGS.map((r, i) => (
         <span key={r}>
-          <span className="font-medium text-slate-800">{RATING_LABELS[r]}</span>: {RATING_HELP[r]}
-          {i < RATINGS.length - 1 ? " " : ""}
+          <span className="font-medium text-slate-800">{RATING_LABELS[r]}</span>: {RATING_HELP[r]} ({RATING_EFFECT[r].replace(`${RATING_LABELS[r]} `, "").replace(/^is /, "").replace(/\.$/, "")})
+          {i < RATINGS.length - 1 ? " · " : ""}
         </span>
       ))}
     </p>

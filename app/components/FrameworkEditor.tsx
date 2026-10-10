@@ -2,7 +2,7 @@
 
 import { getCatalog } from "@/lib/catalog/catalogs.ts";
 import type { FrameworkId } from "@/lib/catalog/types.ts";
-import { RATINGS, RATING_HELP, RATING_LABELS, type Rating } from "@/lib/scoring/config.ts";
+import { RATINGS, RATING_EFFECT, RATING_HELP, RATING_LABELS, type Rating } from "@/lib/scoring/config.ts";
 import { differsFromAi, itemBadge, type ControlRecord, type FrameworkPatch } from "@/lib/workflow/workspace.ts";
 import { CatalogPicker } from "./CatalogPicker.tsx";
 import { FRAMEWORK_NAMES, ItemStatusBadge, RoleBadge } from "./ui.tsx";
@@ -43,7 +43,7 @@ export function FrameworkEditor({
         <div>
           <p className="text-xs font-medium text-slate-600">Requirement IDs</p>
           {w.ids.length === 0 ? (
-            <p className="mt-1 text-xs text-slate-500">{w.rating === "na" ? `None (${RATING_LABELS.na}).` : "No IDs selected."}</p>
+            <p className="mt-1 text-xs text-slate-500">{w.rating === "na" ? "None (rated N/A)." : "No IDs selected."}</p>
           ) : (
             <ul className="mt-1 flex flex-wrap gap-1.5">
               {w.ids.map((id) => (
@@ -71,37 +71,54 @@ export function FrameworkEditor({
           )}
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-[13rem_1fr]">
-          <label className="text-xs font-medium text-slate-600" htmlFor={`${fieldId}-rating`}>
-            Rating
-            <select
-              id={`${fieldId}-rating`}
-              value={w.rating ?? ""}
-              disabled={locked}
-              onChange={(e) => onPatch({ rating: (e.target.value || null) as Rating | null })}
-              className="mt-1 block w-full rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900 disabled:bg-slate-50"
-            >
-              <option value="">Choose…</option>
+        <fieldset>
+          <legend className="text-xs font-medium text-slate-600">Rating{!locked && w.rating === null && " (choose one)"}</legend>
+          {locked ? (
+            <p className="mt-1 text-sm text-slate-900">
+              <span className="font-semibold">{w.rating ? RATING_LABELS[w.rating] : "Not rated"}</span>
+              {w.rating && <span className="text-slate-600">: {RATING_HELP[w.rating]}</span>}
+            </p>
+          ) : (
+            <div className="mt-1 space-y-1">
               {RATINGS.map((r) => (
-                <option key={r} value={r}>{RATING_LABELS[r]}</option>
+                <label
+                  key={r}
+                  className={`flex cursor-pointer items-start gap-2 rounded-md px-2 py-1 text-sm ${
+                    w.rating === r ? "bg-slate-100 ring-1 ring-slate-300" : "hover:bg-slate-50"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name={`${fieldId}-rating`}
+                    value={r}
+                    checked={w.rating === r}
+                    onChange={() => onPatch({ rating: r as Rating })}
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                  />
+                  <span>
+                    <span className="font-semibold text-slate-900">{RATING_LABELS[r]}</span>
+                    <span className="text-slate-600">: {RATING_HELP[r]}</span>
+                  </span>
+                </label>
               ))}
-            </select>
-            {w.rating && <span className="mt-1 block font-normal text-slate-500">{RATING_HELP[w.rating]}</span>}
-          </label>
-          {w.rating === "na" && (
-            <label className="text-xs font-medium text-slate-600" htmlFor={`${fieldId}-na`}>
-              Why there is no requirement here (required)
-              <input
-                id={`${fieldId}-na`}
-                value={w.naReason}
-                disabled={locked}
-                maxLength={200}
-                onChange={(e) => onPatch({ naReason: e.target.value })}
-                className="mt-1 block w-full rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900 disabled:bg-slate-50"
-              />
-            </label>
+            </div>
           )}
-        </div>
+          {w.rating && <p className="mt-1 text-xs text-slate-500">{RATING_EFFECT[w.rating]}</p>}
+        </fieldset>
+
+        {w.rating === "na" && (
+          <label className="block text-xs font-medium text-slate-600" htmlFor={`${fieldId}-na`}>
+            Why there is no requirement here (required)
+            <input
+              id={`${fieldId}-na`}
+              value={w.naReason}
+              disabled={locked}
+              maxLength={200}
+              onChange={(e) => onPatch({ naReason: e.target.value })}
+              className="mt-1 block w-full rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900 disabled:bg-slate-50"
+            />
+          </label>
+        )}
 
         <label className="block text-xs font-medium text-slate-600" htmlFor={`${fieldId}-rationale`}>
           {w.rating === "na" ? "Rationale (optional)" : "Rationale (required)"}

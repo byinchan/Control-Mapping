@@ -13,6 +13,7 @@ import {
   editFramework,
   emptyWorkspace,
   findControl,
+  nextAwaitingId,
   removeControl,
   reopenControl,
   type ControlRecord,
@@ -145,6 +146,12 @@ export function ReviewScreen() {
   }
 
   const selected = selectedId ? findControl(ws, selectedId) : null;
+  const nextId = selected ? nextAwaitingId(ws, selected.id) : null;
+  // Open a control and start at the top of its review panel.
+  const openControl = (id: string) => {
+    setSelectedId(id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const toSuggest = ws.controls.filter((r) => !r.ai && !r.confirmed);
 
   const suggestAll = async () => {
@@ -250,11 +257,15 @@ export function ReviewScreen() {
               onPatch={(f: FrameworkId, patch: FrameworkPatch) => {
                 change((w) => editFramework(w, selected.id, f, patch, now()));
               }}
-              onConfirm={() => {
+              onConfirm={(next) => {
                 const res = confirmControl(ws, selected.id, ID_INDEX, now());
                 setTriedConfirm((s) => new Set(s).add(selected.id));
-                if (res.blockers.length === 0) setWs(res.ws);
+                if (res.blockers.length > 0) return;
+                setWs(res.ws);
+                const target = next ? nextAwaitingId(res.ws, selected.id) : null;
+                if (target) openControl(target);
               }}
+              onNext={nextId ? () => openControl(nextId) : null}
               onReopen={() => change((w) => reopenControl(w, selected.id, now()))}
               onRemove={() => {
                 if (!window.confirm(`Remove ${selected.id} from this tab?`)) return;

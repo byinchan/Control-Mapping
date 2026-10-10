@@ -43,6 +43,7 @@ export function ReviewPanel({
   onPatch,
   onConfirm,
   onReopen,
+  onNext,
   onRemove,
 }: {
   record: ControlRecord;
@@ -53,8 +54,11 @@ export function ReviewPanel({
   onEditText: (field: keyof ControlInput, value: string) => void;
   onRunAi: (keepEdited: boolean) => void;
   onPatch: (f: FrameworkId, patch: FrameworkPatch) => void;
-  onConfirm: () => void;
+  /** Confirm this control; with next=true, then open the next control awaiting review. */
+  onConfirm: (next: boolean) => void;
   onReopen: () => void;
+  /** Open the next control awaiting review (null when there is none). */
+  onNext: (() => void) | null;
   onRemove: () => void;
 }) {
   const [editingText, setEditingText] = useState(false);
@@ -67,6 +71,15 @@ export function ReviewPanel({
   const edited = editedFrameworks(record);
   const textReady = record.current.name.trim() && record.current.description.trim();
   const blockers = showBlockers && !locked ? confirmBlockers(record, ID_INDEX) : [];
+
+  // Confirm (and optionally move on). If something blocks it, bring the full list into view.
+  const confirm = (next: boolean) => {
+    const pending = confirmBlockers(record, ID_INDEX);
+    onConfirm(next);
+    if (pending.length > 0) {
+      setTimeout(() => document.getElementById(`${record.id}-confirm`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+    }
+  };
 
   const startAi = () => {
     if (ai && edited.length > 0) setAskReplace(true);
@@ -229,17 +242,16 @@ export function ReviewPanel({
       </section>
 
       {/* Confirm, then code calculates */}
-      <section className="rounded-lg border border-slate-200 p-3">
+      <section id={`${record.id}-confirm`} className="scroll-mt-4 rounded-lg border border-slate-200 p-3">
         {!locked ? (
           <div className="space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <RoleBadge role="Analyst" />
-                <h3 className="text-sm font-semibold">Confirm</h3>
-              </div>
-              <Button variant="confirm" onClick={onConfirm}>Confirm mapping</Button>
+            <div className="flex items-center gap-2">
+              <RoleBadge role="Analyst" />
+              <h3 className="text-sm font-semibold">Confirm</h3>
             </div>
-            <p className="text-sm text-slate-600">Only confirmed controls count in scores, the matrix and the report.</p>
+            <p className="text-sm text-slate-600">
+              Use the bar at the bottom of the screen. Only confirmed controls count in scores, the matrix and the report.
+            </p>
             {blockers.length > 0 && (
               <Notice tone="error" title={`Not ready to confirm: ${blockers.length} thing${blockers.length === 1 ? "" : "s"} to fix`}>
                 <ul className="list-disc pl-4">
@@ -252,12 +264,9 @@ export function ReviewPanel({
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <RoleBadge role="Analyst" />
-                <h3 className="text-sm font-semibold">Confirmed {time(record.confirmed!.at)}</h3>
-              </div>
-              <Button onClick={onReopen}>Reopen for edits</Button>
+            <div className="flex items-center gap-2">
+              <RoleBadge role="Analyst" />
+              <h3 className="text-sm font-semibold">Confirmed {time(record.confirmed!.at)}</h3>
             </div>
             {result && (
               <div className="rounded-md bg-sky-50 p-2 text-sm text-sky-950">
@@ -325,6 +334,54 @@ export function ReviewPanel({
           </div>
         </div>
       </details>
+      {/* Confirm bar: stays at the bottom of the screen while the control is open */}
+      <div className="sticky bottom-0 z-20 -mx-1 rounded-t-lg border border-slate-300 bg-white/95 px-3 py-2 shadow-[0_-4px_12px_rgba(15,23,42,0.08)] backdrop-blur">
+        {!locked ? (
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="flex items-center gap-2 text-sm text-slate-700">
+              <RoleBadge role="Analyst" />
+              {blockers.length > 0 ? (
+                <a href={`#${record.id}-confirm`} className="font-medium text-red-700 underline">
+                  Not ready: {blockers.length} thing{blockers.length === 1 ? "" : "s"} to fix
+                </a>
+              ) : (
+                <span>
+                  <span className="font-mono text-xs">{record.id}</span> · your decision
+                </span>
+              )}
+            </p>
+            <div className="flex gap-2">
+              {onNext ? (
+                <>
+                  <Button onClick={() => confirm(false)}>Confirm</Button>
+                  <Button variant="confirm" onClick={() => confirm(true)}>
+                    Confirm and next
+                  </Button>
+                </>
+              ) : (
+                <Button variant="confirm" onClick={() => confirm(false)}>
+                  Confirm
+                </Button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="flex items-center gap-2 text-sm text-emerald-800">
+              <RoleBadge role="Analyst" />
+              Confirmed
+            </p>
+            <div className="flex gap-2">
+              <Button onClick={onReopen}>Reopen for edits</Button>
+              {onNext ? (
+                <Button variant="primary" onClick={onNext}>Next awaiting review</Button>
+              ) : (
+                <span className="self-center text-sm text-emerald-800">All controls are confirmed.</span>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </article>
   );
 }
