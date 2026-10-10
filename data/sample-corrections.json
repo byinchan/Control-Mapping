@@ -1,0 +1,41 @@
+{
+  "note": "Corrections to the PUC sample mappings, applied on top of the v1 transcription (data/v1-controls.json). The original v1 files are not edited. Each entry replaces the v1 IDs for one control and framework.",
+  "corrections": [
+    {
+      "control": "C002",
+      "framework": "nist-csf-2.0",
+      "v1": ["PR.PS-02", "ID.IM-04"],
+      "corrected": ["ID.RA-01"],
+      "reason": "Vulnerability scanning and tracking identify and record asset vulnerabilities (ID.RA-01); PR.PS-02 and ID.IM-04 were weaker fits.",
+      "approvedBy": "Bernadette Chan",
+      "approved": "2026-10-09"
+    },
+    {
+      "control": "C006",
+      "framework": "soc2-tsc-2017",
+      "v1": ["P6.4", "P6.5"],
+      "corrected": ["CC9.2"],
+      "reason": "Vendor due diligence is vendor risk assessment (CC9.2); P6.4 and P6.5 concern vendor privacy commitments.",
+      "approvedBy": "Bernadette Chan",
+      "approved": "2026-10-09"
+    },
+    {
+      "control": "C012",
+      "framework": "soc2-tsc-2017",
+      "v1": ["CC4.1", "CC4.2"],
+      "corrected": ["CC7.2"],
+      "reason": "Security event monitoring is anomaly detection (CC7.2); CC4.1 and CC4.2 concern evaluating whether controls work.",
+      "approvedBy": "Bernadette Chan",
+      "approved": "2026-10-09"
+    },
+    {
+      "control": "C013",
+      "framework": "soc2-tsc-2017",
+      "v1": ["CC6.1", "CC6.7"],
+      "corrected": ["CC6.8"],
+      "reason": "Endpoint protection prevents and detects malicious software (CC6.8); CC6.1 and CC6.7 concern logical access and data transmission.",
+      "approvedBy": "Bernadette Chan",
+      "approved": "2026-10-09"
+    }
+  ]
+}

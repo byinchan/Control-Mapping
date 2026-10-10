@@ -1,6 +1,6 @@
 // CI gate: checks every committed catalog and the v1 sample IDs. Run: npm run validate:catalogs
 import { readFileSync } from "node:fs";
-import { buildIdIndex } from "../lib/catalog/ids.ts";
+import { buildIdIndex, isValidId } from "../lib/catalog/ids.ts";
 import { FRAMEWORK_IDS, type Catalog, type FrameworkId } from "../lib/catalog/types.ts";
 import { validateCatalog, validateV1Ids, type V1Document } from "../lib/catalog/validate.ts";
 
@@ -25,10 +25,20 @@ for (const framework of FRAMEWORK_IDS) {
 }
 
 if (catalogs.length === FRAMEWORK_IDS.length) {
+  const index = buildIdIndex(catalogs);
   const v1: V1Document = JSON.parse(readFileSync("data/v1-controls.json", "utf8"));
-  const v1Errors = validateV1Ids(buildIdIndex(catalogs), v1);
+  const v1Errors = validateV1Ids(index, v1);
   errors.push(...v1Errors);
   if (v1Errors.length === 0) console.log(`ok  v1 sample: every ID in ${v1.controls.length} controls is in the catalogs`);
+
+  const { corrections }: { corrections: { control: string; framework: FrameworkId; corrected: string[] }[] } = JSON.parse(
+    readFileSync("data/sample-corrections.json", "utf8"),
+  );
+  const correctionErrors = corrections.flatMap((c) =>
+    c.corrected.filter((id) => !isValidId(index, c.framework, id)).map((id) => `${c.control}: corrected ${c.framework} id ${id} is not in the catalog`),
+  );
+  errors.push(...correctionErrors);
+  if (correctionErrors.length === 0) console.log(`ok  sample corrections: ${corrections.length} corrections, every ID is in the catalogs`);
 }
 
 if (errors.length > 0) {
