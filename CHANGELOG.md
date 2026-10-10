@@ -2,6 +2,51 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 5: Matrix, gaps and CSV export (2026-10-10)
+
+### Results logic (`lib/results/`, pure and unit-tested; the screen only displays it)
+- `buildResults` uses **confirmed controls only**. Controls awaiting review are counted as "not included"
+  and never scored. Each row's score, status and limited-coverage flag come from the existing scoring
+  engine, and the totals come from `summarize`. No new scoring rules. Works with 1 or more confirmed
+  controls.
+- **Gaps (decided default):** every control with status Gap Identified, plus every control rated None on
+  any framework, listing those frameworks with their IDs and rationale. **"To check (not gaps)":** limited
+  framework coverage (only one framework rated) and Not scorable (every framework N/A), with the N/A
+  reasons.
+- **CSV (`lib/results/csv.ts`):**
+  - Columns: the v1 matrix columns (Control ID, Name, Description, Objective, Activity, Owner, the four
+    framework ID columns), then for each framework the rating and its rationale or N/A reason, then
+    Score, Status, Limited framework coverage and Confirmed at (UTC). **No AI source or model**
+    (decided default). Labels come from the shared constants.
+  - Format: every cell quoted (doubled quotes, commas and line breaks stay inside one cell), CRLF line
+    ends, and a UTF-8 marker at the start so Excel reads accents correctly.
+  - **Formula-injection guard:** any cell starting with `=`, `+`, `-`, `@`, tab or carriage return (also
+    after leading spaces) gets a leading `'`.
+  - Built in the browser and downloaded as `puc-control-matrix-YYYY-MM-DD.csv`. Nothing is uploaded.
+  - No disclaimer or notes rows inside the file (they break spreadsheet imports); the note sits next to
+    the button.
+
+### `/matrix` screen
+- "Matrix & gaps" in the step indicator becomes a link once 1 control is confirmed. The review sidebar
+  shows "See matrix and gaps (n confirmed)". With 0 confirmed, the page explains why it is empty.
+- **Code summary:** status counts; per framework the average rating, rated, N/A and None counts; "n
+  awaiting review are not included"; the scoring rule in plain words; and the note that alignment is not
+  implementation or effectiveness. With one control it says the results describe that control only.
+- **Matrix table:** short rating label and IDs per framework (catalog label on hover), N/A reason
+  (limited to 3 lines, full text on hover), score and status. Control names link back to review. The
+  table scrolls sideways inside its box on small screens.
+- Gaps and "To check" sections, and **Download CSV**.
+
+### Verified in the browser (production build, demo mode)
+- 0 confirmed: empty-state message. 1 confirmed: one row, "13 awaiting review not included". All 14
+  confirmed with "Confirm and next".
+- A control named `=HYPERLINK("http://example.com","click")`, rated None on NIST and N/A elsewhere, shows
+  as plain text on the page. It appears under Gaps (Gap Identified, score 0) and under "To check" (limited
+  coverage).
+- The downloaded CSV starts with the UTF-8 marker and has 15 data rows. The test control's row has the
+  name and description prefixed with `'`, and the comma and line break kept in one cell.
+- At 375 px the page doesn't scroll sideways; only the matrix box does.
+
 ## Step 4: Intake, review and confirm screens (2026-10-10)
 
 ### Rating radio buttons and "Confirm and next" (Bernadette's decisions)
