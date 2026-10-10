@@ -1,5 +1,6 @@
 import { FRAMEWORK_IDS, type FrameworkId } from "./catalog/types.ts";
 import type { V1Cell } from "./catalog/v1.ts";
+import type { ControlInput } from "./mapping/types.ts";
 
 export type V1Control = {
   id: string;
@@ -61,4 +62,9 @@ export function applySampleCorrections(
     const { frameworks: _, ...rest } = control;
     return { ...rest, frameworks, correctedFrameworks };
   });
+}
+
+/** The intake form fields for a sample control, as "Load PUC sample" fills them. */
+export function sampleIntake(control: Pick<V1Control, "name" | "objective" | "activity" | "owner">): ControlInput {
+  return { name: control.name, description: control.activity, objective: control.objective, owner: control.owner };
 }

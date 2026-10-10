@@ -1,0 +1,829 @@
+{
+  "generatedBy": {
+    "mapper": "live",
+    "model": "claude-haiku-5-5",
+    "generatedAt": "2026-10-10",
+    "promptVersion": "v2 (2026-10-10)",
+    "label": "AI-generated, not reviewed",
+    "notes": [
+      "One offline run (run 3) of the live mapper over the 14 PUC sample controls.",
+      "Not a blind test: the prompt was refined once (v1 to v2) after the outputs of runs 1 and 2 on these same 14 controls were reviewed.",
+      "Small sample: 14 controls (56 control-framework cells). The results do not show how the mapper performs on other controls.",
+      "These are AI suggestions, not validated mappings. The analyst reviews and confirms every item."
+    ]
+  },
+  "controls": {
+    "C001": {
+      "input": {
+        "name": "Multi-Factor Authentication (MFA)",
+        "description": "Enforce multi-factor authentication through Microsoft Entra ID for enterprise users.",
+        "objective": "Ensure only authorized users can access enterprise systems.",
+        "owner": "Infrastructure Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "PR.AA-03",
+              "PR.AA-01"
+            ],
+            "rating": "partial",
+            "rationale": "MFA enforcement for enterprise users in Entra ID supports authentication of users under PR.AA-03, and the objective of restricting access to authorized users touches identity management under PR.AA-01, but the description does not cover credential lifecycle management.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.5"
+            ],
+            "rating": "full",
+            "rationale": "Enforcing multi-factor authentication for enterprise users directly meets the strong user authentication requirement of A.8.5.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "6.3",
+              "6.4"
+            ],
+            "rating": "partial",
+            "rationale": "MFA enforcement covers the intent of CIS 6.3 for internet-facing applications only if Entra ID fronts them, and 6.4 for remote connections is not explicitly stated, so coverage is partial.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC6.1",
+              "CC6.2"
+            ],
+            "rating": "partial",
+            "rationale": "Requiring MFA through Entra ID supports the logical access security architecture in CC6.1 and user authorization in CC6.2, but access provisioning and removal processes are not described.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "The description does not say which applications are covered by Entra ID MFA, so CIS 6.3 and CC6.1 coverage is assumed.",
+          "Whether MFA applies to administrators or remote access specifically is not stated."
+        ],
+        "missing_information": [
+          "Scope of applications and access paths where MFA is enforced.",
+          "Whether MFA is required for administrator accounts and remote connections.",
+          "Whether conditional access or MFA exemptions exist.",
+          "How access provisioning and removal are handled alongside MFA."
+        ]
+      }
+    },
+    "C002": {
+      "input": {
+        "name": "Vulnerability Management",
+        "description": "Perform scheduled vulnerability scanning, risk prioritization, and remediation tracking using Tenable.io.",
+        "objective": "Identify and reduce security vulnerabilities before they can be exploited.",
+        "owner": "SOC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "ID.RA-01",
+              "ID.RA-06",
+              "PR.PS-02"
+            ],
+            "rating": "partial",
+            "rationale": "Scheduled scanning and risk-based prioritization with remediation tracking map to vulnerability identification (ID.RA-01) and risk response tracking (ID.RA-06), but the description does not explicitly cover software maintenance commitments in PR.PS-02.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.8"
+            ],
+            "rating": "full",
+            "rationale": "Scheduled scanning, prioritization and remediation tracking directly address finding and fixing technical vulnerabilities under A.8.8.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "7.5",
+              "7.7"
+            ],
+            "rating": "partial",
+            "rationale": "Scheduled internal scanning matches CIS 7.5 and remediation of detected vulnerabilities matches CIS 7.7, but the description does not mention internet-facing scans (7.6) or automated patching (7.3, 7.4).",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC7.1"
+            ],
+            "rating": "partial",
+            "rationale": "Scanning to detect new vulnerabilities fits CC7.1, though the description does not show how configuration changes are monitored or how the process is documented against that criterion.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "Scan scope, frequency and whether internet-facing assets are included are not stated.",
+          "The remediation SLAs and risk scoring method are not described, so the prioritization depth is assumed."
+        ],
+        "missing_information": [
+          "Scan frequency and target scope (internal, external, cloud).",
+          "Remediation timelines and exception/risk-acceptance process.",
+          "Whether patching is automated or manual and who approves changes.",
+          "Evidence retention and reporting cadence to management."
+        ]
+      }
+    },
+    "C003": {
+      "input": {
+        "name": "Patch Management",
+        "description": "Apply security patches to enterprise systems through the patch management program",
+        "objective": "Reduce exposure to known software vulnerabilities.",
+        "owner": "Infrastructure Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "ID.RA-01",
+              "PR.PS-02"
+            ],
+            "rating": "partial",
+            "rationale": "The control applies security patches to fix known vulnerabilities, which matches PR.PS-02 software maintenance and partly ID.RA-01 vulnerability identification, but it does not describe identifying or recording vulnerabilities in assets.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.8"
+            ],
+            "rating": "full",
+            "rationale": "Applying security patches to enterprise systems directly addresses A.8.8 finding and fixing technical vulnerabilities.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "7.3",
+              "7.4",
+              "7.7"
+            ],
+            "rating": "partial",
+            "rationale": "The control covers patching, which matches 7.3 and 7.4 automated OS and application patching and 7.7 fixing detected vulnerabilities, but the description does not state whether patching is automated or whether vulnerabilities are scanned for first.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC7.1"
+            ],
+            "rating": "partial",
+            "rationale": "Patching addresses new vulnerabilities under CC7.1, but the description does not show detection of configuration changes or vulnerabilities as CC7.1 requires.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "Patch timelines, prioritization by risk and whether patching is automated are not stated.",
+          "The mapping assumes the patch management program includes vulnerability identification."
+        ],
+        "missing_information": [
+          "How vulnerabilities are identified and prioritized before patching",
+          "Whether OS and application patching is automated",
+          "Patch timeframes by severity",
+          "How patch success and exceptions are tracked"
+        ]
+      }
+    },
+    "C004": {
+      "input": {
+        "name": "Security Awareness",
+        "description": "Deliver annual security awareness training and phishing simulations to employees.",
+        "objective": "Promote secure employee behavior and reduce human-related cyber risks.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "PR.AT-01"
+            ],
+            "rating": "full",
+            "rationale": "PR.AT-01 requires personnel awareness and training to handle cybersecurity risks, which annual awareness training and phishing simulations directly address.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.6.3"
+            ],
+            "rating": "full",
+            "rationale": "A.6.3 requires security awareness and training for staff, which the annual training and phishing simulations cover.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "14.1",
+              "14.2",
+              "14.6"
+            ],
+            "rating": "partial",
+            "rationale": "The control covers the security awareness program (14.1) and social engineering training (14.2) through phishing simulations, but does not state that staff are trained to spot and report incidents (14.6) or the other topics CIS 14 lists.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC1.4"
+            ],
+            "rating": "partial",
+            "rationale": "CC1.4 concerns developing and keeping staff competent, and the training supports that, but the control does not address hiring or broader competence management.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "Phishing simulations are assumed to be a form of training that changes behavior; effectiveness is not described.",
+          "SOC 2 mapping is a loose fit since the control targets security behavior rather than competence management in general."
+        ],
+        "missing_information": [
+          "Whether training completion is tracked and enforced, and how non-completion is handled.",
+          "Whether the training covers social engineering, incident reporting and password practices as separate topics.",
+          "Whether role-specific training exists for specialized roles such as administrators or developers.",
+          "Whether contractors and third parties are included in the training."
+        ]
+      }
+    },
+    "C005": {
+      "input": {
+        "name": "Incident Response",
+        "description": "Execute incident response procedures, investigations, and tabletop exercises for security events.",
+        "objective": "Detect, respond to, and recover from cybersecurity incidents.",
+        "owner": "SOC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "RS.MA-01",
+              "RS.AN-03",
+              "RC.RP-01",
+              "DE.AE-02"
+            ],
+            "rating": "partial",
+            "rationale": "The control covers executing incident response procedures and investigations, which maps to RS.MA-01, RS.AN-03 and RC.RP-01, while tabletop exercises partly address improvement from tests, but recovery and analysis coverage is not described in detail.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.24",
+              "A.5.26",
+              "A.5.28",
+              "A.5.27"
+            ],
+            "rating": "partial",
+            "rationale": "Handling incidents per procedure and collecting evidence during investigations match A.5.26 and A.5.28, and exercises support preparation under A.5.24, but lessons learned under A.5.27 is not explicitly described.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "17.4",
+              "17.5",
+              "17.7",
+              "17.8"
+            ],
+            "rating": "partial",
+            "rationale": "A documented incident response process with tabletop exercises aligns with CIS 17.4 and 17.7, and investigations relate to post-incident reviews in 17.8, but roles assignment (17.5) is not stated.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC7.3",
+              "CC7.4",
+              "CC7.5"
+            ],
+            "rating": "partial",
+            "rationale": "Investigating and executing procedures for security events maps to CC7.3 and CC7.4, and the objective of recovering from incidents partly covers CC7.5, but recovery steps are not described.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "The mapping assumes 'investigations' refers to security incident analysis rather than general audits.",
+          "Tabletop exercises are treated as preparation and testing evidence; their frequency and outcomes are unknown."
+        ],
+        "missing_information": [
+          "Whether incident roles and a named incident lead are defined (CIS 17.5, 17.1).",
+          "Whether lessons-learned or post-incident reviews are performed and tracked (ISO A.5.27, CIS 17.8).",
+          "How recovery from incidents is executed and verified (NIST RC.RP-03, RC.RP-05; SOC 2 CC7.5).",
+          "Frequency of tabletop exercises and how results feed improvements."
+        ]
+      }
+    },
+    "C006": {
+      "input": {
+        "name": "Vendor Due Diligence",
+        "description": "Perform vendor security assessments and due diligence during onboarding and contract renewals.",
+        "objective": "Evaluate cybersecurity risks before engaging third-party vendors.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.SC-06",
+              "GV.SC-07"
+            ],
+            "rating": "full",
+            "rationale": "Due diligence before entering supplier relationships maps to GV.SC-06, and assessing supplier risk during onboarding and renewals maps to GV.SC-07.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.19",
+              "A.5.22"
+            ],
+            "rating": "partial",
+            "rationale": "A.5.19 covers supplier security risk assessment at onboarding, which the control addresses, while A.5.22 requires ongoing oversight of supplier services, which the description only partly covers through renewal reviews.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "15.5",
+              "15.3"
+            ],
+            "rating": "partial",
+            "rationale": "Assessing service providers maps to 15.5 and the description does not mention risk-based classification of providers, which 15.3 requires, and monitoring between renewals is not described.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC9.2"
+            ],
+            "rating": "partial",
+            "rationale": "CC9.2 expects vendor and business partner risk to be managed, and the control covers the pre-engagement part of that, but not ongoing management between renewals.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "The description covers onboarding and renewals only; ongoing monitoring between renewals is not stated, so the ongoing-oversight IDs are rated partial.",
+          "It is unclear whether vendors are risk-tiered before assessment, which affects the CIS 15.3 fit."
+        ],
+        "missing_information": [
+          "Whether vendor risk tiering or criticality classification is performed before assessments.",
+          "Whether continuous or periodic monitoring of vendors occurs between renewals.",
+          "Whether security terms are written into vendor contracts as a result of assessments.",
+          "Assessment method and evidence collected (for example questionnaires, audit reports)."
+        ]
+      }
+    },
+    "C007": {
+      "input": {
+        "name": "Backup & Disaster Recovery",
+        "description": "Perform regular data backups and test disaster recovery procedures.",
+        "objective": "Ensure business continuity and recovery following disruptive events.",
+        "owner": "Infrastructure Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "PR.DS-11",
+              "RC.RP-03"
+            ],
+            "rating": "partial",
+            "rationale": "PR.DS-11 covers creating, protecting and testing backups, and the control's regular backups and DR testing match it, while RC.RP-03 (backup integrity verified before restoration) is only implied by the DR testing and not stated.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.13",
+              "A.5.30"
+            ],
+            "rating": "partial",
+            "rationale": "A.8.13 covers backing up information and A.5.30 covers keeping ICT ready for continuity events, which the control addresses through backups and DR procedures, though readiness and testing details are not fully described.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "11.2",
+              "11.5"
+            ],
+            "rating": "partial",
+            "rationale": "CIS 11.2 (backups run automatically) and 11.5 (data restores tested) are relevant, but the description says only 'regular' backups, so automation and restore testing are not confirmed.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "A1.2",
+              "A1.3"
+            ],
+            "rating": "partial",
+            "rationale": "A1.2 covers backup and recovery infrastructure and A1.3 covers testing recovery plans, which the control addresses directly, but the description does not mention environmental protection of that infrastructure.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "Frequency of 'regular' backups and DR tests is not defined.",
+          "Whether backups are automated, encrypted, or stored in an isolated copy is unknown.",
+          "Whether DR test results are documented and acted on is not stated."
+        ],
+        "missing_information": [
+          "Backup frequency, scope and retention periods.",
+          "DR test frequency, scope and documented results.",
+          "Whether backup integrity is verified and whether backups are isolated or encrypted.",
+          "Recovery time and recovery point objectives."
+        ]
+      }
+    },
+    "C008": {
+      "input": {
+        "name": "Cybersecurity Policies & Standards",
+        "description": "Develop, maintain, and periodically review cybersecurity policies and standards.",
+        "objective": "Establish governance requirements for enterprise cybersecurity.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.PO-01",
+              "GV.PO-02"
+            ],
+            "rating": "full",
+            "rationale": "The control covers developing, maintaining and periodically reviewing cybersecurity policies and standards, which matches GV.PO-01 (policy established and enforced) and GV.PO-02 (policy reviewed and updated).",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.1"
+            ],
+            "rating": "full",
+            "rationale": "The control covers developing, maintaining and periodically reviewing security policies, which matches A.5.1 (security policy set, approved and reviewed).",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "3.1"
+            ],
+            "rating": "na",
+            "rationale": "",
+            "na_reason": "CIS v8.1 has no safeguard that directly requires a general cybersecurity policy set; the closest item (3.1, documented data management process) is limited to data and was not used."
+          },
+          "soc2": {
+            "ids": [
+              "CC5.3"
+            ],
+            "rating": "full",
+            "rationale": "The control covers establishing and maintaining cybersecurity policies and standards, which matches CC5.3 (controls put in place through policies).",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "The description does not state whether policies are approved by named leadership, which A.5.1 and GV.PO-01 expect.",
+          "CIS has no clear policy-governance safeguard, so the CIS mapping is marked na on that basis."
+        ],
+        "missing_information": [
+          "Approval authority and enforcement mechanisms for policies and standards.",
+          "Review frequency and the trigger for out-of-cycle updates.",
+          "How policies are communicated to staff and how compliance is checked."
+        ]
+      }
+    },
+    "C009": {
+      "input": {
+        "name": "Enterprise Risk Management",
+        "description": "Maintain the enterprise risk register and conduct periodic cyber risk assessments.",
+        "objective": "Identify, assess, and monitor enterprise cybersecurity risks.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.RM-03",
+              "ID.RA-05",
+              "ID.RA-06"
+            ],
+            "rating": "partial",
+            "rationale": "The control maintains a risk register and periodic cyber risk assessments, which covers integrating cyber risk into enterprise risk processes and identifying and assessing risks, but it does not explicitly cover risk response prioritization or tracking of risk responses.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.7"
+            ],
+            "rating": "partial",
+            "rationale": "A.5.7 concerns threat intelligence and the control's risk assessments only partly address threat identification, with no explicit threat intelligence gathering described.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "7.2"
+            ],
+            "rating": "partial",
+            "rationale": "CIS 7.2 calls for a risk-based remediation process, and the control's risk register and assessments provide risk input but the description does not state that remediation is prioritized or tracked from them.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC3.2",
+              "CC3.4"
+            ],
+            "rating": "full",
+            "rationale": "CC3.2 requires risks to be identified and analysed and CC3.4 requires significant changes to be assessed for risk, which the periodic risk assessments and maintained register directly cover.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "The description does not state how often periodic assessments occur or whether changes to the environment trigger reassessment, which affects the CC3.4 rating.",
+          "Mapping to NIST GV.RM-03 assumes the register feeds enterprise risk management processes, which the text implies but does not state."
+        ],
+        "missing_information": [
+          "Assessment frequency and triggers for ad hoc reassessment.",
+          "Whether identified risks have documented response plans, owners and tracking.",
+          "Whether third-party and supplier risks are included in the register.",
+          "Whether threat intelligence is used as an input to the assessments."
+        ]
+      }
+    },
+    "C010": {
+      "input": {
+        "name": "Executive Risk Reporting",
+        "description": "Prepare and present periodic cyber risk metrics and executive dashboards.",
+        "objective": "Provide leadership with timely information to support cyber risk decisions.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.RM-03",
+              "GV.OV-03"
+            ],
+            "rating": "partial",
+            "rationale": "GV.RM-03 covers integrating cyber risk into enterprise risk processes and GV.OV-03 covers evaluating risk management performance, and periodic metrics and dashboards address the performance reporting part but not the integration into enterprise processes.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.7"
+            ],
+            "rating": "partial",
+            "rationale": "A.5.7 covers gathering and analysing threat intelligence, and executive risk reporting only partially supports this by informing leadership, without describing threat intelligence collection.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [],
+            "rating": "na",
+            "rationale": "",
+            "na_reason": "CIS Controls v8.1 has no safeguard that addresses executive reporting of cyber risk metrics and dashboards."
+          },
+          "soc2": {
+            "ids": [
+              "CC4.1"
+            ],
+            "rating": "partial",
+            "rationale": "CC4.1 covers ongoing control evaluations, and periodic metrics reporting to leadership supports monitoring but the description does not state that controls are evaluated.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "Mapping assumes the metrics report on control and risk performance; the exact content of the dashboards is not specified.",
+          "ISO A.5.7 is a loose fit and may be better left out after analyst review."
+        ],
+        "missing_information": [
+          "Which metrics are reported and whether they measure control effectiveness.",
+          "Who receives the reports and how their input drives decisions or remediation.",
+          "Reporting frequency and whether it is tied to an enterprise risk management process."
+        ]
+      }
+    },
+    "C011": {
+      "input": {
+        "name": "Identity & Access Management (IAM)",
+        "description": "Provision, modify, review, and remove user access through Microsoft Entra ID.",
+        "objective": "Ensure appropriate user access to enterprise systems throughout the identity lifecycle.",
+        "owner": "Infrastructure Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "PR.AA-05",
+              "PR.AA-01"
+            ],
+            "rating": "partial",
+            "rationale": "The control covers provisioning, modification, review and removal of user access, which matches PR.AA-05 access management, but it does not state least privilege or separation of duties, and PR.AA-01 identity management is only implied.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.18",
+              "A.5.16"
+            ],
+            "rating": "full",
+            "rationale": "The control explicitly covers provisioning, review and removal of access (A.5.18) and the identity lifecycle from creation through removal (A.5.16).",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "6.1",
+              "6.2"
+            ],
+            "rating": "full",
+            "rationale": "The described process for provisioning, modifying, reviewing and removing user access directly matches CIS 6.1 granting access and 6.2 removing access.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC6.2",
+              "CC6.3"
+            ],
+            "rating": "partial",
+            "rationale": "The control covers user registration, authorization and removal of access (CC6.2 and CC6.3), but the description does not mention role-based access changes in detail.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "Mapping assumes Microsoft Entra ID is the system of record for all enterprise access, which the description does not confirm.",
+          "The description does not state whether authentication controls such as MFA are part of this control, so authentication-related IDs were not selected."
+        ],
+        "missing_information": [
+          "Whether access reviews are performed on a defined schedule and how often.",
+          "Whether least privilege, separation of duties or role-based access models are applied.",
+          "Whether MFA or privileged access controls are in scope.",
+          "How inactive or orphaned accounts are detected and disabled."
+        ]
+      }
+    },
+    "C012": {
+      "input": {
+        "name": "Security Monitoring & SIEM",
+        "description": "Continuously monitor security events using Microsoft Sentinel and the managed security service provider (MSSP).",
+        "objective": "Detect suspicious activity and support timely incident response.",
+        "owner": "SOC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "DE.CM-01",
+              "DE.AE-02",
+              "DE.AE-03",
+              "DE.CM-06"
+            ],
+            "rating": "partial",
+            "rationale": "Continuous monitoring of security events via Sentinel and an MSSP covers network and external service provider monitoring and event analysis, but the description does not state coverage of hardware, software, personnel activity or formal incident declaration criteria.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.16",
+              "A.8.15",
+              "A.5.25"
+            ],
+            "rating": "partial",
+            "rationale": "Monitoring for anomalous behaviour and triage of security events align with the control, but log recording and retention practices are not described in detail.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "13.1",
+              "8.11"
+            ],
+            "rating": "partial",
+            "rationale": "Centralized security alerting through a SIEM matches CIS 13.1 and regular log review relates to 8.11, but log collection scope, alert tuning and review frequency are not stated.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC7.2",
+              "CC7.3"
+            ],
+            "rating": "full",
+            "rationale": "Continuous monitoring for anomalies and evaluation of security events directly match the control's stated objective of detecting suspicious activity.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "Whether the MSSP's monitoring scope and Sentinel data sources are the same as the internal scope is unknown.",
+          "The SOC Manager owner suggests incident response linkage, but the mapping only covers detection and analysis."
+        ],
+        "missing_information": [
+          "Which log sources and systems are onboarded to Sentinel and the MSSP.",
+          "Alert triage and escalation procedures, including incident declaration criteria.",
+          "Review frequency and evidence retention for security events.",
+          "Contractual terms and oversight of the MSSP."
+        ]
+      }
+    },
+    "C013": {
+      "input": {
+        "name": "Endpoint Protection",
+        "description": "Monitor and protect endpoints using Microsoft Defender",
+        "objective": "Protect enterprise endpoints from malware and other cyber threats.",
+        "owner": "SOC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "PR.PS-05",
+              "DE.CM-09",
+              "PR.PS-02"
+            ],
+            "rating": "partial",
+            "rationale": "Monitoring and protecting endpoints with Defender covers runtime monitoring of hardware and software (DE.CM-09) and blocking unauthorized software execution (PR.PS-05), but the description does not address software maintenance lifecycle (PR.PS-02).",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.8.7",
+              "A.8.1"
+            ],
+            "rating": "full",
+            "rationale": "Using Microsoft Defender to protect endpoints maps directly to anti-malware defenses (A.8.7) and securing laptops, phones and other endpoints (A.8.1).",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "10.1",
+              "10.6",
+              "13.2"
+            ],
+            "rating": "partial",
+            "rationale": "Anti-malware on enterprise assets (10.1) and centrally managed anti-malware (10.6) are covered, while host-based intrusion detection (13.2) is only implied and not stated.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC6.8",
+              "CC7.2"
+            ],
+            "rating": "partial",
+            "rationale": "Stopping unauthorized or malicious software (CC6.8) is addressed by endpoint protection, and monitoring for anomalies (CC7.2) is implied by the monitoring wording but not detailed.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "The description does not confirm whether Defender is centrally managed or whether alerts are fed into a SIEM.",
+          "Whether endpoint monitoring is continuous or periodic is not stated.",
+          "The owner is a SOC Manager, so the control may be operational rather than governance-oriented, which affects framework fit."
+        ],
+        "missing_information": [
+          "Coverage scope: which endpoints are in scope and whether all enterprise devices are included.",
+          "Whether Defender policies enforce application allowlisting, firewalls or device isolation.",
+          "How alerts are triaged, escalated and reviewed, and the review frequency.",
+          "Whether endpoint software and patching are handled by this control or a separate one."
+        ]
+      }
+    },
+    "C014": {
+      "input": {
+        "name": "AI Governance",
+        "description": "Establish AI governance policies, approval processes, and oversight for enterprise AI solutions.",
+        "objective": "Ensure the secure, responsible, and compliant use of artificial intelligence.",
+        "owner": "GRC Manager"
+      },
+      "output": {
+        "frameworks": {
+          "nist": {
+            "ids": [
+              "GV.OC-03",
+              "GV.PO-01",
+              "GV.RR-02"
+            ],
+            "rating": "partial",
+            "rationale": "The control covers AI policy, approval and oversight, which maps to GV.PO-01 policy establishment and GV.RR-02 accountability, and partly to GV.OC-03 legal and regulatory obligations, though the description does not explicitly address regulatory requirements.",
+            "na_reason": null
+          },
+          "iso": {
+            "ids": [
+              "A.5.1",
+              "A.5.2",
+              "A.5.36"
+            ],
+            "rating": "partial",
+            "rationale": "Establishing AI governance policies maps to A.5.1 and oversight roles to A.5.2, while checking adherence to policies under A.5.36 is only implied by the oversight wording.",
+            "na_reason": null
+          },
+          "cis": {
+            "ids": [
+              "2.5",
+              "15.5"
+            ],
+            "rating": "partial",
+            "rationale": "Approval processes for enterprise AI solutions loosely resemble CIS 2.5 application allowlisting and CIS 15.5 provider assessment, but the description does not state technical enforcement or vendor assessment specifics.",
+            "na_reason": null
+          },
+          "soc2": {
+            "ids": [
+              "CC2.1",
+              "CC5.3"
+            ],
+            "rating": "partial",
+            "rationale": "Governance policies and oversight relate to CC5.3 controls put in place through policies and CC2.1 quality information supporting controls, though the description gives no evidence of monitoring or enforcement.",
+            "na_reason": null
+          }
+        },
+        "uncertainties": [
+          "The description does not state whether AI approval covers third-party AI services or only internally built models, which affects the supplier-related mappings.",
+          "Mapping to CIS 2.5 assumes approval processes are technically enforced, which the text does not confirm.",
+          "The objective mentions responsible use, which has no direct catalog equivalent beyond general policy and oversight IDs."
+        ],
+        "missing_information": [
+          "Whether AI solutions are approved through a defined review or risk assessment process with criteria.",
+          "Whether AI vendors and third-party models are assessed under supplier security requirements.",
+          "How compliance with AI policies is monitored, enforced and reported.",
+          "Whether the control covers regulatory obligations for AI, such as privacy or sector rules."
+        ]
+      }
+    }
+  }
+}

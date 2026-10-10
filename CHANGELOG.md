@@ -2,6 +2,88 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 3: Mapping API route and demo mode (2026-10-09)
+
+### Model and API
+- **Model: `claude-haiku-5-5`** (confirmed after the sample test below). It's the cheapest current Claude model ($0.10 / $0.50 per
+  million input / output tokens for prompts up to 100K, per Anthropic's pricing as of 2026-10-09) and
+  supports structured outputs. CLAUDE.md asks for testing on the 14 v1 controls before the choice is final.
+  That needs the API key (`npm run mapping:samples`). The model name is one setting (`MAPPING_MODEL`,
+  default in `lib/mapping/config.ts`).
+- **Dependency added: `@anthropic-ai/sdk` 0.131.0 (exact pin).** Anthropic's guidance for TypeScript
+  projects is the official SDK rather than raw HTTP: typed errors, retries, timeouts. 0.131.0 was released
+  9 days ago and was chosen over 0.133.0 (released today) as a supply-chain precaution. `npm audit`: 0
+  vulnerabilities.
+- Request settings: structured JSON output (`output_config.format` with a JSON schema whose objects all
+  have `additionalProperties: false`), `effort: "low"`, `max_tokens` 4000 (Haiku 5.5 thinks by default and
+  thinking counts toward the cap), no temperature (Haiku 5.5 rejects non-default values). The system
+  prompt (rules plus all four catalogs, about 7.7K tokens) is identical on every call and marked for
+  prompt caching.
+- Estimated cost: about $0.001 per control, about $0.015 for the 14 samples. The daily cap of 300 calls
+  limits the worst case to about $0.30 per day.
+
+### Model test on the 14 sample controls (2026-10-10)
+Three live runs of `claude-haiku-5-5` over the 14 PUC sample controls, about $0.021 in total.
+- **Reliability:** 42 of 42 calls returned schema-valid JSON, and no suggested ID was outside the
+  catalogs (0 removed). Runs 1 and 2 used the same prompt and gave nearly identical results.
+  Rationales are grounded in the control text, and uncertainties and missing information are specific.
+- **Prompt fix after run 2:** the first prompt defined None and N/A almost identically, so the model
+  forced loosely related IDs with "none" where the analyst has N/A. The prompt now matches the scoring
+  meaning: None = the framework has requirements on the topic but the control doesn't meet them; N/A =
+  the framework doesn't cover the topic. Empty optional fields are no longer sent, so the model no
+  longer comments on them ("activity field is null"). In run 3, N/A appeared for C008 and C010 CIS
+  (matching the analyst) and 0 uncertainties mentioned empty fields.
+- **Remaining differences are judgment, for the analyst:** the model still proposes loose Partial matches
+  where the analyst has N/A (C009 ISO/CIS; C014 ISO, CIS, SOC 2). It often suggests extra plausible IDs
+  (e.g. RS.MA-01 for incident response, PR.DS-11 for backups). Once (C008 CIS) it said N/A but still
+  listed an ID, which the sanitizer flags as a warning.
+- Run 3 vs the analyst's sample mappings (56 cells): 9 exact, 33 overlap, 7 disjoint, 2 both N/A,
+  5 N/A on one side only.
+- **Decision: keep `claude-haiku-5-5`.** It is reliable on format and catalog IDs at about $0.0005 per
+  control with caching. A stronger model would cost more without fixing the remaining differences, which
+  are judgment calls for the analyst.
+
+### Guardrails (all in `lib/mapping/`, unit-tested)
+- **Model treated as untrusted:** output is checked against the schema at runtime, every ID is re-validated
+  against the catalogs, and unknown IDs are removed and reported ("2 suggested IDs were not in the catalog
+  and were removed: ..."). Refusals, cut-off answers and non-JSON output are rejected (502), never shown.
+- **IDs are free strings in the schema, not an enum** of all ~400 catalog IDs. The prompt lists the catalogs;
+  the server is the enforcement point. This keeps the schema small, and real model mistakes (e.g. ISO 2013
+  numbering) are caught and shown rather than hidden by constrained decoding.
+- **Nothing is silently filled in:** an N/A without a reason, an N/A with IDs, or a rating whose IDs were all
+  removed becomes a warning for the analyst. No values are invented.
+- **User text is data:** the control is sent as JSON inside `<control_data>`, with `<` and `>` escaped so it
+  can't close the block. The system prompt tells the model to ignore instructions inside it.
+- **Input caps:** name 120, description 1500, objective 500, activity 800, owner 80 characters (longer
+  text is truncated and reported); body ≤ 16 KB (413); exactly one control per request; unknown fields
+  rejected; control and bidi-override characters stripped.
+- **Output caps:** 12 IDs per framework, rationale 300, N/A reason 200, at most 5 uncertainties and 5
+  missing-information items.
+- **Limits:** 20 requests per IP per 10 minutes (sliding window; IPs kept only as salted hashes in memory)
+  and 300 live calls per UTC day. Both are in-memory per server instance, so they're a basic safeguard
+  rather than a guarantee. The real cap is the Anthropic account's prepaid credit with auto-reload off.
+- **Logging:** only `{route, requestId, status}`. No control text, model output or error details.
+- **Key:** `ANTHROPIC_API_KEY` is read only on the server (`lib/mapping/server.ts`, `lib/mapping/anthropic.ts`).
+  It is never returned, logged or prefixed with `NEXT_PUBLIC_`. `.env.example` documents the settings.
+
+### Modes
+- `live` (key set): Claude API. `mock` (`MAPPER=mock`): keyword-overlap mock mapper, labelled "not AI" in
+  every rationale. It echoes ID-like text from the input, so the removed-ID warning can be reproduced
+  without a key (e.g. type "ISO A.9.2.1" into a description).
+- **Demo mode** (automatic): when no key is set, the per-IP limit or daily cap is reached, or the API is
+  unavailable (billing, auth, rate limit, outage), the route serves the saved output from
+  `data/demo-mappings.json`. It does so only for an unchanged PUC sample control. Custom controls get a
+  clear 503/429 message. After a billing or auth failure, live calls pause for 10 minutes.
+- **`data/demo-mappings.json` holds run 3** (approved by Bernadette, 2026-10-10). It's labelled "AI-generated,
+  not reviewed" and records the model (`claude-haiku-5-5`), date (2026-10-10) and prompt version
+  (`v2 (2026-10-10)`, also `PROMPT_VERSION` in `lib/mapping/prompt.ts`). Demo responses show the label,
+  model, date and prompt version. The file's notes state two caveats:
+  - **Not a blind test:** the prompt was refined once (v1 to v2) after the outputs of runs 1 and 2 on these
+    same 14 controls were reviewed.
+  - **Small sample:** 14 controls (56 cells), not evidence of how the mapper does on other controls.
+
+  The same file is the static AI baseline for showcase 2 (AI vs analyst).
+
 ## Step 2: Scoring engine and v1 back-test (2026-10-09)
 
 ### Scoring engine
