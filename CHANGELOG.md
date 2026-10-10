@@ -2,6 +2,59 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 4: Intake, review and confirm screens (2026-10-10)
+
+### Workflow state (`lib/workflow/`, pure and unit-tested; the UI only calls it)
+- Each control keeps its **original text**, **current text**, the **AI proposal exactly as received**
+  (mode, model, request id, guardrails, notices, and the text it was made for), the analyst's
+  **working mapping**, the **confirmed snapshot** and a short **history**. That is the in-tab traceability
+  from principle 3. It is not a durable audit trail, and the UI says so.
+- Item badges: AI-suggested, Human-edited, Confirmed, Not mapped. Control status: Not mapped yet,
+  Awaiting review, Confirmed. Only confirmed controls feed scoring (`confirmedRatings`).
+- **Confirm is blocked** until every framework has a rating; N/A has a reason and no IDs; every other
+  rating has at least one ID; and every ID is in the catalog. Confirmed controls are locked until reopened.
+- Editing the control text after the AI suggestion marks the suggestion **stale**, with a visible warning.
+- Analyst-entered controls get IDs A001, A002, and so on. Sample controls keep C001-C014. Limit: 50
+  controls per tab.
+
+### Tab storage (`lib/workflow/storage.ts`)
+- `sessionStorage` under the versioned key `puc-control-mapping:workspace:v1`. Every load is
+  schema-checked: shape, lengths, ratings, control ids, and every stored ID against the catalogs.
+  **Anything that fails is discarded as a whole** and the analyst sees "Saved data in this tab failed
+  validation and was discarded." Blocked storage (private mode) shows a warning instead of failing.
+- Default: a React ref guards the one-time load so React's double effect run in development can't hide
+  the discard notice. This was found during browser testing.
+
+### Screens (`app/components/`)
+- One workspace page: intake (Load PUC sample, or enter a control), a control list with status counts,
+  and a review panel. The panel has five parts:
+  1. Control text (Analyst).
+  2. AI suggestion (AI), with mode badge, guardrail notices, and uncertainties and missing information
+     shown next to the mapping.
+  3. Per-framework editors (Analyst): searchable catalog picker that can only add catalog IDs, rating,
+     N/A reason, rationale, and the AI's original suggestion kept visible ("analyst changed this").
+  4. Confirm (Analyst), then the Code-calculated score and status with the limited-coverage flag and the
+     "alignment, not implementation or effectiveness" note.
+  5. Traceability.
+- Legend at the top: AI suggests, Code calculates, Analyst decides. Footer: verbatim disclaimer, fictional
+  organization note, short prototype boundaries.
+- "Suggest mappings with AI (n)" maps all unmapped controls one at a time and stops on the first error.
+  The per-IP limit of 20 per 10 minutes allows all 14 samples.
+- The AI line reads "AI-generated, awaiting your review" until the control is confirmed, then
+  "AI-generated, human-reviewed".
+
+### Verified in the browser (dev server)
+- Demo mode (no key): all 14 samples get saved suggestions with the demo and source notices. A custom
+  control gets the "demo mode only covers unchanged samples" message.
+- Confirm blockers, Human-edited badge, AI-original panel, confirmation with the code score (C001: 0.625,
+  Partially Aligned), reload keeps the work, tampered storage is discarded with a notice, 375 px phone
+  width has no horizontal scroll.
+- Live mode: one real call (about $0.0005) for a custom control that mentioned outdated IDs (ISO
+  A.9.2.5, CIS 18.6). The model ignored them, so the removed-ID warning did not appear.
+- **Open point for screenshots (step 7):** the live model rarely produces invalid IDs, so the removed-ID
+  warning is easiest to show with the mock mapper (`MAPPER=mock`, labelled "Mock mapper: not AI") and a
+  description that mentions an outdated ID such as "ISO A.9.2.1".
+
 ## Step 3: Mapping API route and demo mode (2026-10-09)
 
 ### Model and API
