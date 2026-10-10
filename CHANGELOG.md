@@ -143,3 +143,13 @@ reports 0 vulnerabilities. Built and tested on Node 24.21.0 / npm 11.19.0.
 - Tests run through `node --test` with Node 24 native type stripping; no test or transpile dependency.
   `erasableSyntaxOnly` in tsconfig keeps `lib/` code runnable that way.
 - `.claude/settings.local.json` is git-ignored (local tool settings).
+
+## Documentation notes
+
+### README plan: "About the sample data" (2026-10-09)
+Added to the README plan in CLAUDE.md at Bernadette's request: the README must include a short,
+first-person "About the sample data" paragraph. It says Version 1 was her first manual mapping; that in
+this version she reviewed and corrected four sample mappings against the official framework text (C002
+NIST, C006 SOC 2, C012 SOC 2, C013 SOC 2); that every change is recorded in
+`data/sample-corrections.json` with old IDs, new IDs and reason; and that the draft ratings were
+AI-drafted and reviewed by her. The README itself is written in step 7.

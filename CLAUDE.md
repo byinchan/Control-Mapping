@@ -147,6 +147,11 @@ owns / deterministic logic handles), workflow with screenshots in docs/images, e
 architecture, the six principles, intentional prototype boundaries, closing reflection. Also the
 framework content/copyright notice and a note that it was built with Claude Code and uses the
 Claude API. Fictional organization; never imply professional experience or validated mappings.
+Include a short, honest "About the sample data" paragraph in first person: Version 1 was my first
+manual mapping; in this version I reviewed and corrected four sample mappings against the official
+framework text (C002 NIST, C006 SOC 2, C012 SOC 2, C013 SOC 2); every change is recorded in
+data/sample-corrections.json with the old IDs, new IDs and reason; and the draft ratings were
+AI-drafted and reviewed by me. Keep it accurate to what has actually happened when the README is written.
 
 ## Showcase features (all in scope; keep each small)
 The project must show two things to hiring managers: (1) I understand control mapping as a GRC
