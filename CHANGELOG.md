@@ -19,24 +19,41 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 Drafted by Claude from the v1 control text and mapped IDs only, **not tuned to the v1 statuses**. Every
 cell is marked "draft, pending Bernadette" and has a one-line basis. N/A cells keep the v1 reason verbatim.
 
+### Sample mappings corrected (approved by Bernadette, 2026-10-09)
+The PUC sample mappings were corrected for four cells. The original v1 files and the v1 transcription
+(`data/v1-controls.json`) are unchanged. The corrections live in `data/sample-corrections.json` and are
+applied by `lib/sample.ts`, which refuses a correction that no longer matches the v1 IDs it replaces.
+| Control | Framework | v1 IDs | Corrected | New draft rating |
+|---|---|---|---|---|
+| C002 Vulnerability Management | NIST CSF 2.0 | PR.PS-02, ID.IM-04 | ID.RA-01 | Partial -> Full |
+| C006 Vendor Due Diligence | SOC 2 | P6.4, P6.5 | CC9.2 | None -> Partial |
+| C012 Security Monitoring & SIEM | SOC 2 | CC4.1, CC4.2 | CC7.2 | Partial -> Full |
+| C013 Endpoint Protection | SOC 2 | CC6.1, CC6.7 | CC6.8 | None -> Full |
+
+The re-rated cells use the same standard as the rest of the draft and were not tuned to the v1 statuses.
+The other Partial cells are Bernadette's to review.
+
+### Limited framework coverage flag (decided for C014)
+Thresholds stay at 0.9 / 0.4 / 0.5. A control with exactly one framework in scope gets a "limited
+framework coverage" flag (`LIMITED_COVERAGE_MAX_IN_SCOPE = 1` in config). The flag appears next to the
+status and in `summarize`. It never changes the score or the status. C014 AI Governance is the only
+sample control with the flag.
+
 ### Back-test result (for Bernadette to decide; these are not bugs)
-6 of 14 match the v1 labels and 8 differ. With the draft ratings, the rule rates all 14 controls Partially Aligned.
-`npm run backtest` prints both tables.
+6 of 14 match the v1 labels and 8 differ. With the draft ratings, the rule rates all 14 controls Partially
+Aligned. The corrections raised four scores (C002, C012, C013 to 0.875; C006 to 0.625) but changed no
+status. `npm run backtest` prints both tables.
 1. **Fully Aligned needs every framework Full.** With four frameworks in scope, one Partial gives
    0.875 < 0.9. All seven v1 "Fully Aligned" controls (C001, C002, C005, C007, C011, C012, C013) have at
-   least one Partial in the draft. Either some draft ratings should be Full, or the 0.9 threshold is
-   stricter than the v1 judgment.
+   least one Partial in the draft. Five of them now sit at 0.875, one Partial away.
 2. **Broad CIS ranges pull ratings down.** v1 maps whole safeguard ranges (e.g. 17.1-17.8, 8.1-8.6 +
    13.7-13.10). A one-line control description rarely covers every safeguard, so CIS is Partial for 8 of
-   the 10 controls with CIS IDs (C001 and C002 are Full). Narrower CIS mappings would change this.
-3. **C014 AI Governance (disclosed disagreement, default #1):** v1 says Gap Identified. ISO, CIS and SOC 2
-   are N/A and excluded, so NIST alone (Partial, 0.5) decides, giving Partially Aligned. The rule
-   can't produce a gap from "frameworks don't cover this topic".
-4. **No control is a Gap under the rule.** C006 (SOC 2 None, 0.5), C010 (ISO None, 0.5) and C013 (SOC 2
-   None, 0.625) have a None but score at least 0.5.
-5. **Mapping observations raised by the ratings (unchanged, your call):** C006 SOC 2 P6.4/P6.5 (CC9.2
-   may fit better), C012 SOC 2 CC4.1/CC4.2 (CC7.2 may fit better), C013 SOC 2 CC6.1/CC6.7 (CC6.8 may fit
-   better), C002 NIST PR.PS-02/ID.IM-04 (ID.RA-01 may fit better), and C005/C007 NIST ID.IM-04 only.
+   the 10 controls with CIS IDs (C001 and C002 are Full).
+3. **C014 AI Governance (disclosed disagreement):** v1 says Gap Identified. ISO, CIS and SOC 2 are N/A and
+   excluded, so NIST alone (Partial, 0.5) gives Partially Aligned, now with the limited framework coverage
+   flag.
+4. **No control is a Gap under the rule.** Only C010 has a None (ISO A.5.4) and it scores 0.5.
+5. **Still noted, unchanged:** C005 and C007 map to NIST ID.IM-04 only.
 
 ## Step 1: Reference catalogs and ID validator (2026-10-09)
 
