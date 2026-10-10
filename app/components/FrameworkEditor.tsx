@@ -3,7 +3,7 @@
 import { getCatalog } from "@/lib/catalog/catalogs.ts";
 import type { FrameworkId } from "@/lib/catalog/types.ts";
 import { RATINGS, RATING_LABELS, type Rating } from "@/lib/scoring/config.ts";
-import { itemBadge, type ControlRecord, type FrameworkPatch } from "@/lib/workflow/workspace.ts";
+import { differsFromAi, itemBadge, type ControlRecord, type FrameworkPatch } from "@/lib/workflow/workspace.ts";
 import { CatalogPicker } from "./CatalogPicker.tsx";
 import { FRAMEWORK_NAMES, ItemStatusBadge, RoleBadge } from "./ui.tsx";
 
@@ -25,12 +25,8 @@ export function FrameworkEditor({
   const badge = itemBadge(record, framework);
   const aiProposal = record.ai?.proposal.frameworks[framework];
   const dropped = record.ai?.guardrails.droppedIds.filter((d) => d.framework === framework) ?? [];
-  const aiChanged =
-    aiProposal &&
-    (aiProposal.rating !== w.rating ||
-      aiProposal.rationale !== w.rationale ||
-      JSON.stringify(aiProposal.ids) !== JSON.stringify(w.ids) ||
-      (aiProposal.naReason ?? "") !== w.naReason);
+  // Shown only where the analyst's values differ from the AI's suggestion; always starts collapsed.
+  const showAiOriginal = Boolean(aiProposal) && differsFromAi(record, framework);
   const fieldId = `${record.id}-${framework}`;
 
   return (
@@ -126,10 +122,10 @@ export function FrameworkEditor({
           </p>
         )}
 
-        {aiProposal && (
-          <details className="rounded bg-violet-50/60 px-2 py-1 text-xs text-violet-950" open={Boolean(aiChanged) && !locked}>
+        {showAiOriginal && aiProposal && (
+          <details className="rounded bg-violet-50/60 px-2 py-1 text-xs text-violet-950">
             <summary className="cursor-pointer select-none">
-              <RoleBadge role="AI" /> original suggestion{aiChanged ? " (analyst changed this)" : ""}
+              <RoleBadge role="AI" /> Original suggestion (you changed this)
             </summary>
             <p className="mt-1">
               <span className="font-semibold">{RATING_LABELS[aiProposal.rating]}</span>

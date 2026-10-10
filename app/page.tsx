@@ -1,5 +1,5 @@
-import { WorkspaceApp } from "./components/WorkspaceApp.tsx";
+import { StartScreen } from "./components/StartScreen.tsx";
 
 export default function Home() {
-  return <WorkspaceApp />;
+  return <StartScreen />;
 }
