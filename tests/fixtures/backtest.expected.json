@@ -1,0 +1,100 @@
+[
+  {
+    "id": "C001",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.75,
+    "agrees": false
+  },
+  {
+    "id": "C002",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.75,
+    "agrees": false
+  },
+  {
+    "id": "C003",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.625,
+    "agrees": true
+  },
+  {
+    "id": "C004",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.75,
+    "agrees": true
+  },
+  {
+    "id": "C005",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.875,
+    "agrees": false
+  },
+  {
+    "id": "C006",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": true
+  },
+  {
+    "id": "C007",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": false
+  },
+  {
+    "id": "C008",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.8333333333333334,
+    "agrees": true
+  },
+  {
+    "id": "C009",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": true
+  },
+  {
+    "id": "C010",
+    "v1Status": "Partially Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": true
+  },
+  {
+    "id": "C011",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.875,
+    "agrees": false
+  },
+  {
+    "id": "C012",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.75,
+    "agrees": false
+  },
+  {
+    "id": "C013",
+    "v1Status": "Fully Aligned",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.625,
+    "agrees": false
+  },
+  {
+    "id": "C014",
+    "v1Status": "Gap Identified",
+    "ruleStatus": "Partially Aligned",
+    "score": 0.5,
+    "agrees": false
+  }
+]
