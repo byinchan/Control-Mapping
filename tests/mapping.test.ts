@@ -132,7 +132,7 @@ test("sanitize: nothing silently filled in; problems become warnings", () => {
   assert.equal(proposal.frameworks["iso-27001-2022"].naReason, null); // no reason invented
   assert.equal(proposal.frameworks["soc2-tsc-2017"].naReason, null);
   assert.deepEqual(guardrails.warnings, [
-    'NIST CSF 2.0: the AI rated this "Fully meets" but listed no requirement from the catalog. Add the requirement IDs, or change the rating.',
+    'NIST CSF 2.0: the AI rated this "Full" but listed no requirement from the catalog. Add the requirement IDs, or change the rating.',
     "ISO/IEC 27001:2022: the AI said this framework has no requirement on this topic but gave no reason. Add a reason, or change the rating.",
   ]);
 });

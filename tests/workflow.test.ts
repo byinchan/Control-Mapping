@@ -22,6 +22,7 @@ import {
   itemBadge,
   loadSample,
   MAX_EARLIER_AI,
+  nextAwaitingId,
   differsFromAi,
   editedFrameworks,
   reopenControl,
@@ -118,7 +119,7 @@ test("confirm: blocked until every framework is complete and valid", () => {
   const blockers = confirmBlockers(findControl(ws, "C001")!, ID_INDEX);
   assert.deepEqual(blockers, [
     "CIS Controls v8.1: say why there is no requirement here.",
-    'SOC 2 TSC: add at least one requirement ID, or choose "No requirement here".',
+    'SOC 2 TSC: add at least one requirement ID, or choose "N/A".',
   ]);
   const res = confirmControl(ws, "C001", ID_INDEX, T);
   assert.equal(res.ws, ws);
@@ -259,15 +260,15 @@ test("AI original suggestion is shown only where the analyst's values differ fro
 
 const INTERNAL_IDS = /\b(nist-csf-2\.0|iso-27001-2022|cis-v8\.1|soc2-tsc-2017)\b/;
 
-test("confirm: a rationale is required for every rated framework; for 'No requirement here' the reason counts", () => {
+test("confirm: a rationale is required for every rated framework; for N/A the reason counts", () => {
   let ws = applyAiResult(loadSample(emptyWorkspace(), PUC_SAMPLES, T), "C001", ai(), T);
   ws = editFramework(ws, "C001", NIST, { rating: "full", rationale: "" }, T);
   ws = editFramework(ws, "C001", SOC2, { rating: "none", rationale: "   " }, T);
   ws = editFramework(ws, "C001", CIS, { rationale: "" }, T); // rated "No requirement here" with a reason: no rationale needed
   const blockers = confirmBlockers(findControl(ws, "C001")!, ID_INDEX);
   assert.deepEqual(blockers, [
-    'NIST CSF 2.0: write a rationale explaining the "Fully meets" rating.',
-    'SOC 2 TSC: write a rationale explaining the "Does not meet" rating.',
+    'NIST CSF 2.0: write a rationale explaining the "Full" rating.',
+    'SOC 2 TSC: write a rationale explaining the "None" rating.',
   ]);
   assert.deepEqual(confirmControl(ws, "C001", ID_INDEX, T).blockers, blockers);
   ws = editFramework(ws, "C001", NIST, { rationale: "MFA authenticates users." }, T);
@@ -285,10 +286,24 @@ test("confirm: lists every blocker at once, in plain language without internal I
     "Add a control name and a description.",
     "NIST CSF 2.0: choose a rating.",
     "ISO/IEC 27001:2022: say why there is no requirement here.",
-    'ISO/IEC 27001:2022: "No requirement here" can\'t list requirement IDs. Remove the IDs, or change the rating.',
+    'ISO/IEC 27001:2022: "N/A" can\'t list requirement IDs. Remove the IDs, or change the rating.',
     "CIS Controls v8.1: choose a rating.",
-    'SOC 2 TSC: write a rationale explaining the "Partly meets" rating.',
+    'SOC 2 TSC: write a rationale explaining the "Partial" rating.',
   ]);
   for (const b of blockers) assert.doesNotMatch(b, INTERNAL_IDS);
   for (const h of findControl(ws, "C002")!.history) assert.doesNotMatch(h.detail, INTERNAL_IDS);
+});
+
+test("confirm and next: finds the next control awaiting review, wrapping around, or none when all are confirmed", () => {
+  const three = PUC_SAMPLES.slice(0, 3);
+  let ws = loadSample(emptyWorkspace(), three, T);
+  for (const s of three) ws = applyAiResult(ws, s.id, { ...ai(s.input), requestId: s.id }, T);
+  assert.equal(nextAwaitingId(ws, "C001"), "C002");
+  ws = confirmControl(ws, "C002", ID_INDEX, T).ws;
+  assert.equal(nextAwaitingId(ws, "C001"), "C003"); // skips confirmed C002
+  assert.equal(nextAwaitingId(ws, "C003"), "C001"); // wraps around
+  ws = confirmControl(ws, "C001", ID_INDEX, T).ws;
+  assert.equal(nextAwaitingId(ws, "C003"), null); // only C003 left, and it is the current one
+  ws = confirmControl(ws, "C003", ID_INDEX, T).ws;
+  assert.equal(nextAwaitingId(ws, "C003"), null);
 });

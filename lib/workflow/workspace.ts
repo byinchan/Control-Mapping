@@ -300,6 +300,20 @@ export function reopenControl(ws: Workspace, id: string, now: string): Workspace
   return update(ws, id, (r) => (r.confirmed ? withHistory({ ...r, confirmed: null }, { at: now, event: "reopened", detail: "Reopened for review" }) : r));
 }
 
+/**
+ * The next control that still needs a decision, searching forward from `currentId` in list order and
+ * wrapping around. Returns null when every control is confirmed.
+ */
+export function nextAwaitingId(ws: Workspace, currentId: string): string | null {
+  const list = ws.controls;
+  const start = Math.max(0, list.findIndex((c) => c.id === currentId));
+  for (let step = 1; step <= list.length; step++) {
+    const c = list[(start + step) % list.length];
+    if (c.id !== currentId && !c.confirmed) return c.id;
+  }
+  return null;
+}
+
 export const removeControl = (ws: Workspace, id: string): Workspace => ({ ...ws, controls: ws.controls.filter((c) => c.id !== id) });
 
 /** Ratings of a confirmed control, in the shape the scoring engine takes. */

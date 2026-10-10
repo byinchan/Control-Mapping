@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { FRAMEWORK_IDS, type FrameworkId } from "../lib/catalog/types.ts";
-import { RATINGS, RATING_HELP, RATING_LABELS, STATUSES, type Rating, type Status } from "../lib/scoring/config.ts";
+import { RATINGS, RATING_EFFECT, RATING_HELP, RATING_LABELS, STATUSES, type Rating, type Status } from "../lib/scoring/config.ts";
 import {
   formatScore,
   scoreControl,
@@ -138,17 +138,27 @@ test("summarize counts statuses, coverage and Nones over confirmed controls", ()
   assert.equal(summarize([]).frameworks[NIST].coverage, null);
 });
 
-test("rating display labels and helper text; stored values unchanged", () => {
+test("rating display labels, descriptions and scoring effects; stored values unchanged", () => {
   assert.deepEqual(RATINGS, ["full", "partial", "none", "na"]);
-  assert.deepEqual(RATING_LABELS, { full: "Fully meets", partial: "Partly meets", none: "Does not meet", na: "No requirement here" });
-  for (const r of RATINGS) assert.ok(RATING_HELP[r].length > 10, r);
+  assert.deepEqual(RATING_LABELS, { full: "Full", partial: "Partial", none: "None", na: "N/A" });
   // "Meets" describes the control text, not proof that the control works.
-  assert.equal(RATING_HELP.full, "As described, the control meets the requirement(s).");
-  assert.equal(RATING_HELP.partial, "As described, the control meets some of the requirement(s).");
-  assert.equal(RATING_HELP.none, "Framework has a requirement, the control doesn't meet it. Scores 0.");
-  assert.equal(RATING_HELP.na, "Framework has nothing on this topic. Left out of the score.");
-  assert.match(RATING_HELP.none, /Scores 0/);
-  assert.match(RATING_HELP.na, /Left out of the score/);
+  assert.deepEqual(RATING_HELP, {
+    full: "as described, the control meets the requirement(s)",
+    partial: "as described, the control meets some of the requirement(s)",
+    none: "the framework has a requirement, the control doesn't meet it",
+    na: "the framework has no requirement on this topic",
+  });
+  assert.deepEqual(RATING_EFFECT, {
+    full: "Full scores 1.",
+    partial: "Partial scores 0.5.",
+    none: "None scores 0.",
+    na: "N/A is left out of the score.",
+  });
+  // The effect text must agree with the scoring engine.
+  assert.equal(scoreControl(r("full", "na", "na", "na")).score, 1);
+  assert.equal(scoreControl(r("partial", "na", "na", "na")).score, 0.5);
+  assert.equal(scoreControl(r("none", "na", "na", "na")).score, 0);
+  assert.equal(scoreControl(r("full", "none", "na", "na")).inScope, 2);
 });
 
 test("formatScore shows up to three decimals", () => {

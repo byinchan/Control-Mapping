@@ -4,20 +4,28 @@
 export const RATINGS = ["full", "partial", "none", "na"] as const;
 export type Rating = (typeof RATINGS)[number];
 
-/** Display labels. The stored values (full, partial, none, na) and the scoring do not change. */
+/** Short display labels. The stored values (full, partial, none, na) and the scoring do not change. */
 export const RATING_LABELS: Record<Rating, string> = {
-  full: "Fully meets",
-  partial: "Partly meets",
-  none: "Does not meet",
-  na: "No requirement here",
+  full: "Full",
+  partial: "Partial",
+  none: "None",
+  na: "N/A",
 };
 
-/** One-line explanation shown under the rating dropdown and in the legend. */
+/** What each rating means, shown beside its radio button and in the ratings key. */
 export const RATING_HELP: Record<Rating, string> = {
-  full: "As described, the control meets the requirement(s).",
-  partial: "As described, the control meets some of the requirement(s).",
-  none: "Framework has a requirement, the control doesn't meet it. Scores 0.",
-  na: "Framework has nothing on this topic. Left out of the score.",
+  full: "as described, the control meets the requirement(s)",
+  partial: "as described, the control meets some of the requirement(s)",
+  none: "the framework has a requirement, the control doesn't meet it",
+  na: "the framework has no requirement on this topic",
+};
+
+/** Scoring effect of each rating, shown for the selected one. Must match RATING_HALF_POINTS. */
+export const RATING_EFFECT: Record<Rating, string> = {
+  full: "Full scores 1.",
+  partial: "Partial scores 0.5.",
+  none: "None scores 0.",
+  na: "N/A is left out of the score.",
 };
 
 /** Rating values in half-points (Full = 1.0, Partial = 0.5, None = 0) so all arithmetic is exact. N/A is excluded. */
@@ -42,11 +50,11 @@ export const STATUSES =["Fully Aligned", "Partially Aligned", "Gap Identified", 
 export type Status = (typeof STATUSES)[number];
 
 export const SCORING_RULE_TEXT = [
-  "Each framework is rated Fully meets (1.0), Partly meets (0.5) or Does not meet (0). No requirement here is left out of the score and needs a reason.",
+  "Each framework is rated Full (1.0), Partial (0.5) or None (0). N/A is left out of the score and needs a reason.",
   "Control score = average of the rated frameworks.",
-  `Fully Aligned: score ${THRESHOLDS.fullyAlignedMin} or higher and no framework rated Does not meet.`,
-  `Gap Identified: score below ${THRESHOLDS.gapBelow}, or any framework rated Does not meet with a score below ${THRESHOLDS.gapWithNoneBelow}.`,
+  `Fully Aligned: score ${THRESHOLDS.fullyAlignedMin} or higher and no framework rated None.`,
+  `Gap Identified: score below ${THRESHOLDS.gapBelow}, or any framework rated None with a score below ${THRESHOLDS.gapWithNoneBelow}.`,
   "Partially Aligned: everything else.",
-  "Not scorable: every framework is No requirement here.",
+  "Not scorable: every framework is N/A.",
   "Limited framework coverage (flag, not a status): only one framework is rated, so the result rests on a single framework.",
 ] as const;
