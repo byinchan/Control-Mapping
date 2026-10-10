@@ -74,9 +74,15 @@ Three live runs of `claude-haiku-5-5` over the 14 PUC sample controls, about $0.
   unavailable (billing, auth, rate limit, outage), the route serves the saved output from
   `data/demo-mappings.json`. It does so only for an unchanged PUC sample control. Custom controls get a
   clear 503/429 message. After a billing or auth failure, live calls pause for 10 minutes.
-- **`data/demo-mappings.json` currently holds mock output** (labelled `mapper: "mock"`) as a placeholder.
-  It will be regenerated from one live run once the key is available, which also gives the static AI
-  baseline for showcase 2.
+- **`data/demo-mappings.json` holds run 3** (approved by Bernadette, 2026-10-10). It's labelled "AI-generated,
+  not reviewed" and records the model (`claude-haiku-5-5`), date (2026-10-10) and prompt version
+  (`v2 (2026-10-10)`, also `PROMPT_VERSION` in `lib/mapping/prompt.ts`). Demo responses show the label,
+  model, date and prompt version. The file's notes state two caveats:
+  - **Not a blind test:** the prompt was refined once (v1 to v2) after the outputs of runs 1 and 2 on these
+    same 14 controls were reviewed.
+  - **Small sample:** 14 controls (56 cells), not evidence of how the mapper does on other controls.
+
+  The same file is the static AI baseline for showcase 2 (AI vs analyst).
 
 ## Step 2: Scoring engine and v1 back-test (2026-10-09)
 
