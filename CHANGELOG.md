@@ -4,6 +4,43 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 4: Intake, review and confirm screens (2026-10-10)
 
+### Revision after Bernadette's testing (guided flow)
+- **Guided flow with real routes** (the browser Back button works):
+  - `/` start screen with exactly two choices, Choose sample controls and Enter your own control, plus
+    "Continue reviewing (n)" when the tab has controls. No tutorials or videos.
+  - `/samples` checklist with Select all, a live "n of 14 selected" count, and Continue (disabled at 0).
+    Samples already added are greyed out.
+  - `/new` for your own control.
+  - `/review` with a step indicator: Choose, Review & confirm, Matrix & gaps, Report. The last two show as
+    locked until at least 1 control is confirmed, and as "coming next" until steps 5-6 exist. It also has a
+    compact control list with status dots and "+ Add controls".
+- **Control text** collapses to a one-line summary with "Edit text", so the mapping sits higher.
+- **History:** renamed to "History for this control" ("Kept in this browser tab only."), collapsed, with
+  plain sections: What was entered, AI suggestion, Earlier AI suggestions, Changes and decisions.
+- **AI original suggestion:** shown only for frameworks where the analyst's values differ from it, always
+  collapsed, labelled "Original suggestion (you changed this)" next to the AI badge.
+- **"Get a new AI suggestion"** (was "Ask AI again"), with the note "AI choices and wording can vary between
+  runs. A new suggestion replaces the current one." Demo mode says it returns the same saved suggestion.
+  When the analyst has edited frameworks, an in-page choice replaces the browser pop-up: Keep my edited
+  frameworks and replace the rest, Replace everything, or Cancel.
+- **At most 3 AI suggestions per control:** the current one plus the last 2 in short form (IDs and
+  ratings per framework). This keeps tab storage small: about 64 KB for 15 controls, far below the
+  browser limit even at 50 controls. Storage key is now `...:v2`; v1 tab data is ignored.
+- **Per-visitor limit while suggesting several controls:** the server now returns a reason code
+  (`rate-limited`, `unavailable`, `invalid-output`, `bad-request`) and, in demo mode, `demoReason`. The batch
+  no longer stops at the first problem: it carries on and ends with one friendly summary. "You've reached
+  the AI suggestion limit for now" explains how many controls got live suggestions, how many sample
+  controls got saved demo suggestions instead, which of the analyst's own controls were not sent ("wait a
+  few minutes… or map them by hand"), and that nothing was lost. The single-control message uses the real
+  configured limit ("20 every 10 minutes per visitor").
+- **Click count to confirm all 14 samples,** accepting every suggestion as is: 32 clicks.
+  - 4 to get started: Choose sample controls, Select all, Continue, Suggest with AI.
+  - 1 to confirm C001, which is already open.
+  - 26 to select and confirm each of the other 13.
+  - 1 to remove C008's CIS ID 3.1, because the AI rated CIS N/A but still listed it.
+
+  13 of 14 saved suggestions pass the confirm rules unchanged.
+
 ### Workflow state (`lib/workflow/`, pure and unit-tested; the UI only calls it)
 - Each control keeps its **original text**, **current text**, the **AI proposal exactly as received**
   (mode, model, request id, guardrails, notices, and the text it was made for), the analyst's
