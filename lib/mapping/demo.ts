@@ -2,7 +2,15 @@ import type { ControlInput } from "./types.ts";
 
 /** Saved mapper outputs for the 14 PUC sample controls (data/demo-mappings.json). */
 export type DemoFile = {
-  generatedBy: { mapper: "live" | "mock"; model: string | null; generatedAt: string; note: string };
+  generatedBy: {
+    mapper: "live" | "mock";
+    model: string | null;
+    generatedAt: string;
+    promptVersion: string | null;
+    /** Shown to the analyst, e.g. "AI-generated, not reviewed". */
+    label: string;
+    notes: string[];
+  };
   controls: Record<string, { input: ControlInput; output: unknown }>;
 };
 

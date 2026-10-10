@@ -10,7 +10,7 @@ import { INPUT_LIMITS, OUTPUT_LIMITS, readSettings, type MappingSettings } from 
 import { findDemoOutput, type DemoFile } from "../lib/mapping/demo.ts";
 import { parseMapRequest } from "../lib/mapping/input.ts";
 import { mockMap } from "../lib/mapping/mock.ts";
-import { buildSystemPrompt, buildUserMessage } from "../lib/mapping/prompt.ts";
+import { PROMPT_VERSION, buildSystemPrompt, buildUserMessage } from "../lib/mapping/prompt.ts";
 import { droppedIdsNotice, sanitizeProposal } from "../lib/mapping/sanitize.ts";
 import { PROPOSAL_SCHEMA, parseRawProposal } from "../lib/mapping/schema.ts";
 import { MESSAGES, handleMapRequest, type MappingDeps } from "../lib/mapping/service.ts";
@@ -197,6 +197,25 @@ test("demo: saved output only for an unchanged sample control", () => {
   assert.equal(findDemoOutput(demo, "C002", c001), null);
   assert.equal(findDemoOutput(demo, "C001", { ...c001, description: c001.description + " edited" }), null);
   for (const entry of Object.values(demo.controls)) assert.equal(parseRawProposal(entry.output).ok, true);
+});
+
+test("demo: file records model, date, prompt version, label and the test caveats", () => {
+  const by = demo.generatedBy;
+  assert.equal(by.mapper, "live");
+  assert.equal(by.model, "claude-haiku-5-5");
+  assert.match(by.generatedAt, /^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(by.promptVersion, PROMPT_VERSION);
+  assert.equal(by.label, "AI-generated, not reviewed");
+  assert.ok(by.notes.some((n) => n.startsWith("Not a blind test")));
+  assert.ok(by.notes.some((n) => n.startsWith("Small sample")));
+});
+
+test("service: demo responses carry the saved output's label, model, date and prompt version", async () => {
+  const { d } = deps();
+  const r = await handleMapRequest(sampleBody, "ip", "r", d);
+  const notices = (r.body as { notices: string[] }).notices;
+  assert.ok(notices.includes(`Saved suggestion: AI-generated, not reviewed (claude-haiku-5-5, ${demo.generatedBy.generatedAt}, prompt ${PROMPT_VERSION}).`));
+  assert.equal((r.body as { model: string }).model, "claude-haiku-5-5");
 });
 
 // ---------- service: mode selection and fallbacks ----------

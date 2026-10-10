@@ -2,7 +2,14 @@ import type { Catalog } from "../catalog/types.ts";
 import { OUTPUT_KEYS } from "./types.ts";
 import type { ControlInput } from "./types.ts";
 
-const KEY_FOR = Object.fromEntries(Object.entries(OUTPUT_KEYS).map(([k, f]) => [f, k])) as Record<string, string>;
+/**
+ * Version of the system prompt and user message format. Change it whenever the prompt changes,
+ * so saved outputs can be traced to the prompt that produced them.
+ * v1 (2026-10-09): first prompt. v2 (2026-10-10): None/N/A aligned with scoring; empty fields omitted.
+ */
+export const PROMPT_VERSION = "v2 (2026-10-10)";
+
+const KEY_FOR =Object.fromEntries(Object.entries(OUTPUT_KEYS).map(([k, f]) => [f, k])) as Record<string, string>;
 
 function catalogBlock(c: Catalog): string {
   const lines = c.items.map((i) => `${i.id} | ${i.label}`);

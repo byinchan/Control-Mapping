@@ -66,6 +66,11 @@ function serveDemo(requestId: string, request: MapRequest, truncated: string[], 
   }
   const by = deps.demo.generatedBy;
   const notices = [notice];
+  notices.push(
+    by.model
+      ? `Saved suggestion: ${by.label} (${by.model}, ${by.generatedAt}, prompt ${by.promptVersion}).`
+      : `Saved suggestion: ${by.label}.`,
+  );
   if (by.mapper === "mock") notices.push(MESSAGES.mock);
   return respond(requestId, "demo", by.model, saved, request, truncated, deps, notices);
 }

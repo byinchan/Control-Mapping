@@ -14,7 +14,7 @@ import { compareCell, summarizeComparisons, type CellComparison } from "../lib/m
 import { readSettings } from "../lib/mapping/config.ts";
 import type { DemoFile } from "../lib/mapping/demo.ts";
 import { mockMap } from "../lib/mapping/mock.ts";
-import { buildSystemPrompt } from "../lib/mapping/prompt.ts";
+import { PROMPT_VERSION, buildSystemPrompt } from "../lib/mapping/prompt.ts";
 import { sanitizeProposal } from "../lib/mapping/sanitize.ts";
 import { parseRawProposal } from "../lib/mapping/schema.ts";
 import { applySampleCorrections, sampleIntake, type SampleCorrection, type V1Control } from "../lib/sample.ts";
@@ -41,9 +41,11 @@ const demo: DemoFile = {
     mapper: live ? "live" : "mock",
     model: live ? settings.model : null,
     generatedAt: new Date().toISOString().slice(0, 10),
-    note: live
-      ? "One offline run of the live mapper over the 14 PUC sample controls. AI-generated, not reviewed."
-      : "Mock mapper output (keyword overlap, not AI). Placeholder until the live model run.",
+    promptVersion: live ? PROMPT_VERSION : null,
+    label: live ? "AI-generated, not reviewed" : "Mock output, not AI",
+    notes: live
+      ? ["One offline run of the live mapper over the 14 PUC sample controls."]
+      : ["Mock mapper output (keyword overlap, not AI). Placeholder until the live model run."],
   },
   controls: {},
 };
