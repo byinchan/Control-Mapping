@@ -2,6 +2,164 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 4: Intake, review and confirm screens (2026-10-10)
+
+### Rating radio buttons and "Confirm and next" (Bernadette's decisions)
+- **Ratings shown as radio buttons, not a dropdown.** A native dropdown can't show a short label when
+  closed and a long one in the list. Each option shows its short label (Full, Partial, None, N/A) with its
+  description, and the scoring effect of the selected one sits underneath ("Partial scores 0.5.").
+  - The labels, descriptions and effects live in `lib/scoring/config.ts` (`RATING_LABELS`, `RATING_HELP`,
+    `RATING_EFFECT`). The ratings key, messages and back-test use them, and the matrix, report and CSV will
+    too. Stored values and scoring are unchanged; a test checks that the effect text agrees with the
+    engine.
+  - No radio selected means "not rated yet", and the confirm rules still require a choice. This replaces
+    the earlier "Fully meets / Partly meets…" labels.
+- **"Confirm and next" with a confirm bar fixed to the bottom of the screen.** It confirms the open control
+  and opens the next one awaiting review, in list order and wrapping around (`nextAwaitingId`, tested). If
+  something blocks confirmation, the bar says "Not ready: n things to fix" and scrolls to the full list.
+  Once confirmed, the bar offers "Reopen for edits" and "Next awaiting review", or "All controls are
+  confirmed." There is deliberately no "Confirm all" and no bulk table: each control is opened and
+  confirmed on its own.
+- **Clicks to confirm all 14 samples as suggested: 19** (was 32): 4 to start, 14 "Confirm and next", and 1 to
+  remove C008's CIS ID. Measured in the browser.
+
+### Considered, not built
+- **Choosing which frameworks to assess at intake:** not built. Assessing fewer frameworks would make
+  "Fully Aligned" easier to reach, and the change touches scoring, the limited-coverage flag, the matrix,
+  the report and the CSV.
+- **Preview-then-apply for "Replace with a new AI suggestion"** (choose AI's version or mine per framework,
+  with "Use all"): possible later refinement. The current "Keep my edited frameworks" choice already
+  protects analyst edits.
+
+### Wording and style follow-up (no logic or scoring changes)
+- **A. "As described" in the positive helpers:** Fully meets reads "As described, the control meets the
+  requirement(s)." and Partly meets reads "As described, the control meets some of the requirement(s)."
+  This keeps the labels while making clear that a rating judges the control text, not proof that the
+  control works. The Does not meet and No requirement here helpers are unchanged. The ratings key reads the
+  same text, and a test pins all four helpers.
+- **B. Re-run helper box:** a rectangular box with a light violet background and violet border (matching the
+  AI badge) and dark violet text. It starts with the exact button label in bold quotes, then the agreed
+  wording. The three AI button labels live in one place (`app/components/labels.ts`). The button, helper box,
+  "you changed…" choice box, stale-text notice and batch summary all read from it, so they can't drift.
+
+### Wording and validation changes after Bernadette's testing (no change to scoring or the data model)
+1. **Batch button:** "Ask AI to map controls" (no count), with the helper line "The AI fills in all four
+   frameworks for each control. You review and edit everything before confirming." The single-control button
+   reads "Ask AI to map this control".
+2. **"Check this" notices in plain language with framework display names.** For example: "CIS Controls
+   v8.1: the AI said this framework has no requirement on this topic, but it also listed requirements from
+   it. Decide which is right: remove the IDs, or change the rating."
+   - Display names live in `lib/catalog/names.ts` and are used in every message and History line.
+   - A test checks that no internal ID such as `cis-v8.1` appears in blockers, warnings or History.
+   - Suggestions saved in a tab before this change keep their old warning text. A fresh tab shows the new
+     wording.
+3. **Rationale required:**
+   - A control can't be confirmed unless every rated framework (Fully meets, Partly meets, Does not meet)
+     has a non-empty rationale. For "No requirement here", the required reason counts instead.
+   - The red "Not ready to confirm: n things to fix" box lists every blocker at once in plain language.
+     After the first attempt it updates live as each one is fixed.
+   - Tests cover an empty rationale on Fully meets and Does not meet, a whitespace-only rationale, and the
+     reason-counts case.
+4. **Rating display labels** (stored values `full/partial/none/na` and scoring unchanged): Fully meets,
+   Partly meets, Does not meet, No requirement here.
+   - The helper text for the selected value appears under the dropdown.
+   - A one-line ratings key sits under the AI/Code/Analyst legend.
+   - The scoring rule text uses the new labels. The matrix, report and CSV (steps 5-6) will use the same
+     `RATING_LABELS` and `RATING_HELP`.
+5. **Re-run button:** "Replace with a new AI suggestion", with helper text saying it replaces the
+   requirement IDs, ratings, rationales, uncertainties and missing information for all four frameworks; the
+   control text is unchanged; and the current suggestion stays in History. The edit dialog spells out that
+   "Keep my edited frameworks" protects the IDs, rating, rationale and reason in the named frameworks,
+   while the other frameworks, uncertainties and missing information are replaced.
+
+### Revision after Bernadette's testing (guided flow)
+- **Guided flow with real routes** (the browser Back button works):
+  - `/` start screen with exactly two choices, Choose sample controls and Enter your own control, plus
+    "Continue reviewing (n)" when the tab has controls. No tutorials or videos.
+  - `/samples` checklist with Select all, a live "n of 14 selected" count, and Continue (disabled at 0).
+    Samples already added are greyed out.
+  - `/new` for your own control.
+  - `/review` with a step indicator: Choose, Review & confirm, Matrix & gaps, Report. The last two show as
+    locked until at least 1 control is confirmed, and as "coming next" until steps 5-6 exist. It also has a
+    compact control list with status dots and "+ Add controls".
+- **Control text** collapses to a one-line summary with "Edit text", so the mapping sits higher.
+- **History:** renamed to "History for this control" ("Kept in this browser tab only."), collapsed, with
+  plain sections: What was entered, AI suggestion, Earlier AI suggestions, Changes and decisions.
+- **AI original suggestion:** shown only for frameworks where the analyst's values differ from it, always
+  collapsed, labelled "Original suggestion (you changed this)" next to the AI badge.
+- **"Get a new AI suggestion"** (was "Ask AI again"), with the note "AI choices and wording can vary between
+  runs. A new suggestion replaces the current one." Demo mode says it returns the same saved suggestion.
+  When the analyst has edited frameworks, an in-page choice replaces the browser pop-up: Keep my edited
+  frameworks and replace the rest, Replace everything, or Cancel.
+- **At most 3 AI suggestions per control:** the current one plus the last 2 in short form (IDs and
+  ratings per framework). This keeps tab storage small: about 64 KB for 15 controls, far below the
+  browser limit even at 50 controls. Storage key is now `...:v2`; v1 tab data is ignored.
+- **Per-visitor limit while suggesting several controls:** the server now returns a reason code
+  (`rate-limited`, `unavailable`, `invalid-output`, `bad-request`) and, in demo mode, `demoReason`. The batch
+  no longer stops at the first problem: it carries on and ends with one friendly summary. "You've reached
+  the AI suggestion limit for now" explains how many controls got live suggestions, how many sample
+  controls got saved demo suggestions instead, which of the analyst's own controls were not sent ("wait a
+  few minutes… or map them by hand"), and that nothing was lost. The single-control message uses the real
+  configured limit ("20 every 10 minutes per visitor").
+- **Click count to confirm all 14 samples,** accepting every suggestion as is: 32 clicks.
+  - 4 to get started: Choose sample controls, Select all, Continue, Suggest with AI.
+  - 1 to confirm C001, which is already open.
+  - 26 to select and confirm each of the other 13.
+  - 1 to remove C008's CIS ID 3.1, because the AI rated CIS N/A but still listed it.
+
+  13 of 14 saved suggestions pass the confirm rules unchanged.
+
+### Workflow state (`lib/workflow/`, pure and unit-tested; the UI only calls it)
+- Each control keeps its **original text**, **current text**, the **AI proposal exactly as received**
+  (mode, model, request id, guardrails, notices, and the text it was made for), the analyst's
+  **working mapping**, the **confirmed snapshot** and a short **history**. That is the in-tab traceability
+  from principle 3. It is not a durable audit trail, and the UI says so.
+- Item badges: AI-suggested, Human-edited, Confirmed, Not mapped. Control status: Not mapped yet,
+  Awaiting review, Confirmed. Only confirmed controls feed scoring (`confirmedRatings`).
+- **Confirm is blocked** until every framework has a rating; N/A has a reason and no IDs; every other
+  rating has at least one ID; and every ID is in the catalog. Confirmed controls are locked until reopened.
+- Editing the control text after the AI suggestion marks the suggestion **stale**, with a visible warning.
+- Analyst-entered controls get IDs A001, A002, and so on. Sample controls keep C001-C014. Limit: 50
+  controls per tab.
+
+### Tab storage (`lib/workflow/storage.ts`)
+- `sessionStorage` under the versioned key `puc-control-mapping:workspace:v1`. Every load is
+  schema-checked: shape, lengths, ratings, control ids, and every stored ID against the catalogs.
+  **Anything that fails is discarded as a whole** and the analyst sees "Saved data in this tab failed
+  validation and was discarded." Blocked storage (private mode) shows a warning instead of failing.
+- Default: a React ref guards the one-time load so React's double effect run in development can't hide
+  the discard notice. This was found during browser testing.
+
+### Screens (`app/components/`)
+- One workspace page: intake (Load PUC sample, or enter a control), a control list with status counts,
+  and a review panel. The panel has five parts:
+  1. Control text (Analyst).
+  2. AI suggestion (AI), with mode badge, guardrail notices, and uncertainties and missing information
+     shown next to the mapping.
+  3. Per-framework editors (Analyst): searchable catalog picker that can only add catalog IDs, rating,
+     N/A reason, rationale, and the AI's original suggestion kept visible ("analyst changed this").
+  4. Confirm (Analyst), then the Code-calculated score and status with the limited-coverage flag and the
+     "alignment, not implementation or effectiveness" note.
+  5. Traceability.
+- Legend at the top: AI suggests, Code calculates, Analyst decides. Footer: verbatim disclaimer, fictional
+  organization note, short prototype boundaries.
+- "Suggest mappings with AI (n)" maps all unmapped controls one at a time and stops on the first error.
+  The per-IP limit of 20 per 10 minutes allows all 14 samples.
+- The AI line reads "AI-generated, awaiting your review" until the control is confirmed, then
+  "AI-generated, human-reviewed".
+
+### Verified in the browser (dev server)
+- Demo mode (no key): all 14 samples get saved suggestions with the demo and source notices. A custom
+  control gets the "demo mode only covers unchanged samples" message.
+- Confirm blockers, Human-edited badge, AI-original panel, confirmation with the code score (C001: 0.625,
+  Partially Aligned), reload keeps the work, tampered storage is discarded with a notice, 375 px phone
+  width has no horizontal scroll.
+- Live mode: one real call (about $0.0005) for a custom control that mentioned outdated IDs (ISO
+  A.9.2.5, CIS 18.6). The model ignored them, so the removed-ID warning did not appear.
+- **Open point for screenshots (step 7):** the live model rarely produces invalid IDs, so the removed-ID
+  warning is easiest to show with the mock mapper (`MAPPER=mock`, labelled "Mock mapper: not AI") and a
+  description that mentions an outdated ID such as "ISO A.9.2.1".
+
 ## Step 3: Mapping API route and demo mode (2026-10-09)
 
 ### Model and API

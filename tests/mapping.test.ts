@@ -131,9 +131,19 @@ test("sanitize: nothing silently filled in; problems become warnings", () => {
   assert.equal(proposal.frameworks["nist-csf-2.0"].rating, "full"); // rating kept as suggested
   assert.equal(proposal.frameworks["iso-27001-2022"].naReason, null); // no reason invented
   assert.equal(proposal.frameworks["soc2-tsc-2017"].naReason, null);
-  assert.equal(guardrails.warnings.length, 2);
-  assert.match(guardrails.warnings.join(" "), /no valid IDs remain/);
-  assert.match(guardrails.warnings.join(" "), /N\/A without a reason/);
+  assert.deepEqual(guardrails.warnings, [
+    'NIST CSF 2.0: the AI rated this "Full" but listed no requirement from the catalog. Add the requirement IDs, or change the rating.',
+    "ISO/IEC 27001:2022: the AI said this framework has no requirement on this topic but gave no reason. Add a reason, or change the rating.",
+  ]);
+});
+
+test("sanitize: 'no requirement here' with IDs gets a plain-language warning with display names only", () => {
+  const r = raw({ cis: { ids: ["3.1"], rating: "na", rationale: "r", na_reason: "Not covered" } });
+  const { guardrails } = sanitizeProposal(r, ID_INDEX);
+  assert.deepEqual(guardrails.warnings, [
+    "CIS Controls v8.1: the AI said this framework has no requirement on this topic, but it also listed requirements from it. Decide which is right: remove the IDs, or change the rating.",
+  ]);
+  assert.doesNotMatch(guardrails.warnings.join(" "), /\b(nist-csf-2\.0|iso-27001-2022|cis-v8\.1|soc2-tsc-2017)\b/);
 });
 
 test("sanitize: caps rationale, list items and IDs per framework", () => {
@@ -258,9 +268,11 @@ test("service: no API key -> demo mode for samples, 503 for custom controls", as
   assert.equal(s.status, 200);
   assert.equal((s.body as { mode: string }).mode, "demo");
   assert.ok((s.body as { notices: string[] }).notices.includes(MESSAGES.demoNoKey));
+  assert.equal((s.body as { demoReason: string }).demoReason, "no-key");
   const c = await handleMapRequest(customBody, "ip", "r", d);
   assert.equal(c.status, 503);
   assert.equal((c.body as { error: string }).error, MESSAGES.unavailable);
+  assert.equal((c.body as { code: string }).code, "unavailable");
 });
 
 test("service: mock mapper works for any control and says it is not AI", async () => {
@@ -300,7 +312,11 @@ test("service: per-IP limit -> demo for samples, 429 for custom", async () => {
   const s = await handleMapRequest(sampleBody, "ip", "r", d);
   assert.equal((s.body as { mode: string }).mode, "demo");
   assert.ok((s.body as { notices: string[] }).notices.includes(MESSAGES.demoRateLimited));
-  assert.equal((await handleMapRequest(customBody, "ip", "r", d)).status, 429);
+  assert.equal((s.body as { demoReason: string }).demoReason, "rate-limited");
+  const c = await handleMapRequest(customBody, "ip", "r", d);
+  assert.equal(c.status, 429);
+  assert.equal((c.body as { code: string }).code, "rate-limited");
+  assert.match((c.body as { error: string }).error, /limit of AI suggestions for now \(5 every 1 minutes per visitor\)/);
 });
 
 test("service: daily cap -> demo mode without calling the API", async () => {
