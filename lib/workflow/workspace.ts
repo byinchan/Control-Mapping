@@ -1,7 +1,9 @@
 // The analyst's workspace for the current browser tab: pure data and pure update functions.
 // No React, no storage. The UI calls these; it never decides workflow rules itself.
 import { isValidId, type IdIndex } from "../catalog/ids.ts";
+import { FRAMEWORK_NAMES } from "../catalog/names.ts";
 import { FRAMEWORK_IDS, type FrameworkId } from "../catalog/types.ts";
+import { RATING_LABELS } from "../scoring/config.ts";
 import type { Guardrails, MappingMode, Proposal, ControlInput } from "../mapping/types.ts";
 import type { Rating } from "../scoring/config.ts";
 import type { ControlRatings } from "../scoring/score.ts";
@@ -170,7 +172,7 @@ export function editControlText(ws: Workspace, id: string, field: keyof ControlI
   return update(ws, id, (r) => {
     if (r.confirmed) return r; // confirmed records are locked; reopen first
     const current = { ...r.current, [field]: value };
-    return withHistory({ ...r, current }, { at: now, event: "edited", detail: `control ${field}` });
+    return withHistory({ ...r, current }, { at: now, event: "edited", detail: `control text: ${field}` });
   });
 }
 
@@ -206,7 +208,7 @@ export function applyAiResult(ws: Workspace, id: string, ai: AiRecord, now: stri
     const earlierAi = r.ai ? [summarizeAi(r.ai, now), ...r.earlierAi].slice(0, MAX_EARLIER_AI) : r.earlierAi;
     const kept = keepEdited ? FRAMEWORK_IDS.filter((f) => r.mapping[f].edited) : [];
     const detail = `${ai.mode === "live" ? "Live AI" : ai.mode === "demo" ? "Demo (saved AI output)" : "Mock mapper"}${ai.model ? `, ${ai.model}` : ""}${
-      kept.length ? `; kept analyst edits in ${kept.join(", ")}` : ""
+      kept.length ? `; kept your edits in ${kept.map((f) => FRAMEWORK_NAMES[f]).join(", ")}` : ""
     }`;
     return withHistory({ ...r, ai, earlierAi, mapping }, { at: now, event: "ai-proposal", detail });
   });
@@ -227,29 +229,51 @@ export function differsFromAi(r: ControlRecord, f: FrameworkId): boolean {
 
 export type FrameworkPatch = Partial<Pick<FrameworkWork, "ids" | "rating" | "rationale" | "naReason">>;
 
+const FIELD_NAMES: Record<keyof FrameworkPatch, string> = {
+  ids: "requirement IDs",
+  rating: "rating",
+  rationale: "rationale",
+  naReason: "reason",
+};
+
 export function editFramework(ws: Workspace, id: string, f: FrameworkId, patch: FrameworkPatch, now: string): Workspace {
   return update(ws, id, (r) => {
     if (r.confirmed) return r;
     const w = { ...r.mapping[f], ...patch, edited: true };
     if (patch.ids) w.ids = [...new Set(patch.ids)];
-    const field = Object.keys(patch).join(", ");
-    return withHistory({ ...r, mapping: { ...r.mapping, [f]: w } }, { at: now, event: "edited", detail: `${f} ${field}` });
+    const field = Object.keys(patch)
+      .map((k) => FIELD_NAMES[k as keyof FrameworkPatch])
+      .join(", ");
+    return withHistory({ ...r, mapping: { ...r.mapping, [f]: w } }, { at: now, event: "edited", detail: `${FRAMEWORK_NAMES[f]}: ${field}` });
   });
 }
 
-/** Reasons the control cannot be confirmed yet; empty means it can. */
+/**
+ * Every reason the control cannot be confirmed yet, in plain language; empty means it can.
+ * All blockers are returned together so the analyst sees the full list at once.
+ */
 export function confirmBlockers(r: ControlRecord, index: IdIndex): string[] {
   const problems: string[] = [];
-  if (!r.current.name.trim() || !r.current.description.trim()) problems.push("The control needs a name and a description.");
+  if (!r.current.name.trim() || !r.current.description.trim()) problems.push("Add a control name and a description.");
   for (const f of FRAMEWORK_IDS) {
     const w = r.mapping[f];
-    if (w.rating === null) problems.push(`${f}: choose a rating.`);
-    else if (w.rating === "na") {
-      if (!w.naReason.trim()) problems.push(`${f}: N/A needs a reason.`);
-      if (w.ids.length > 0) problems.push(`${f}: remove the IDs or change the rating from N/A.`);
-    } else if (w.ids.length === 0) problems.push(`${f}: add at least one requirement ID, or rate it N/A.`);
+    const name = FRAMEWORK_NAMES[f];
     const unknown = w.ids.filter((id) => !isValidId(index, f, id));
-    if (unknown.length) problems.push(`${f}: not in the catalog: ${unknown.join(", ")}.`);
+    if (unknown.length) {
+      problems.push(`${name}: ${unknown.join(", ")} ${unknown.length === 1 ? "is" : "are"} not in the catalog. Remove ${unknown.length === 1 ? "it" : "them"}.`);
+    }
+    if (w.rating === null) {
+      problems.push(`${name}: choose a rating.`);
+      continue;
+    }
+    if (w.rating === "na") {
+      // For "No requirement here" the required reason plays the role of the rationale.
+      if (!w.naReason.trim()) problems.push(`${name}: say why there is no requirement here.`);
+      if (w.ids.length > 0) problems.push(`${name}: "${RATING_LABELS.na}" can't list requirement IDs. Remove the IDs, or change the rating.`);
+    } else {
+      if (w.ids.length === 0) problems.push(`${name}: add at least one requirement ID, or choose "${RATING_LABELS.na}".`);
+      if (!w.rationale.trim()) problems.push(`${name}: write a rationale explaining the "${RATING_LABELS[w.rating]}" rating.`);
+    }
   }
   return problems;
 }

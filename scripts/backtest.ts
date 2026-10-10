@@ -19,7 +19,7 @@ console.log(`|---|${FRAMEWORK_IDS.map(() => "---").join("|")}|`);
 for (const c of sample) {
   const cells = FRAMEWORK_IDS.map((f) => {
     const r = ratings.controls[c.id][f];
-    const label = r.rating === "na" ? `N/A (${r.naReason})` : RATING_LABELS[r.rating];
+    const label = r.rating === "na" ? `${RATING_LABELS.na} (${r.naReason})` : RATING_LABELS[r.rating];
     return c.correctedFrameworks.includes(f) ? `${label}*` : label;
   });
   console.log(`| ${c.id} ${c.name} | ${cells.join(" | ")} |`);

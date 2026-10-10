@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { FRAMEWORK_IDS, type FrameworkId } from "../lib/catalog/types.ts";
-import { RATINGS, STATUSES, type Rating, type Status } from "../lib/scoring/config.ts";
+import { RATINGS, RATING_HELP, RATING_LABELS, STATUSES, type Rating, type Status } from "../lib/scoring/config.ts";
 import {
   formatScore,
   scoreControl,
@@ -136,6 +136,14 @@ test("summarize counts statuses, coverage and Nones over confirmed controls", ()
   assert.deepEqual(s.frameworks[CIS], { inScope: 2, mapped: 2, counts: { full: 1, partial: 1, none: 0, na: 2 }, coverage: 0.75 });
   assert.equal(s.frameworks[SOC2].coverage, 1);
   assert.equal(summarize([]).frameworks[NIST].coverage, null);
+});
+
+test("rating display labels and helper text; stored values unchanged", () => {
+  assert.deepEqual(RATINGS, ["full", "partial", "none", "na"]);
+  assert.deepEqual(RATING_LABELS, { full: "Fully meets", partial: "Partly meets", none: "Does not meet", na: "No requirement here" });
+  for (const r of RATINGS) assert.ok(RATING_HELP[r].length > 10, r);
+  assert.match(RATING_HELP.none, /Scores 0/);
+  assert.match(RATING_HELP.na, /Left out of the score/);
 });
 
 test("formatScore shows up to three decimals", () => {

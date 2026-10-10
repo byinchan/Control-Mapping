@@ -1,5 +1,6 @@
 import type { IdIndex } from "../catalog/ids.ts";
 import { validateIds } from "../catalog/ids.ts";
+import { FRAMEWORK_NAMES } from "../catalog/names.ts";
 import type { FrameworkId } from "../catalog/types.ts";
 import { RATING_LABELS } from "../scoring/config.ts";
 import { OUTPUT_LIMITS } from "./config.ts";
@@ -27,24 +28,33 @@ export function sanitizeProposal(
 
   for (const key of Object.keys(OUTPUT_KEYS) as OutputKey[]) {
     const framework = OUTPUT_KEYS[key];
+    const name = FRAMEWORK_NAMES[framework];
     const f = raw.frameworks[key];
     const { valid, dropped } = validateIds(index, framework, f.ids);
     for (const id of dropped) guardrails.droppedIds.push({ framework, id: id.slice(0, 40) });
 
     let ids = valid;
     if (ids.length > OUTPUT_LIMITS.idsPerFramework) {
-      guardrails.warnings.push(`${framework}: only the first ${OUTPUT_LIMITS.idsPerFramework} of ${ids.length} suggested IDs were kept.`);
+      guardrails.warnings.push(`${name}: the AI listed ${ids.length} requirements. Only the first ${OUTPUT_LIMITS.idsPerFramework} were kept.`);
       ids = ids.slice(0, OUTPUT_LIMITS.idsPerFramework);
     }
 
     let naReason = f.na_reason?.trim() ? cap(f.na_reason, OUTPUT_LIMITS.naReason, `${framework}.naReason`, guardrails.truncatedOutput) : null;
     if (f.rating === "na") {
-      if (!naReason) guardrails.warnings.push(`${framework}: AI suggested N/A without a reason. The analyst must give one.`);
-      if (ids.length > 0) guardrails.warnings.push(`${framework}: AI suggested N/A but also listed IDs. Check which is intended.`);
+      if (!naReason) {
+        guardrails.warnings.push(`${name}: the AI said this framework has no requirement on this topic but gave no reason. Add a reason, or change the rating.`);
+      }
+      if (ids.length > 0) {
+        guardrails.warnings.push(
+          `${name}: the AI said this framework has no requirement on this topic, but it also listed requirements from it. Decide which is right: remove the IDs, or change the rating.`,
+        );
+      }
     } else {
       naReason = null;
       if (ids.length === 0) {
-        guardrails.warnings.push(`${framework}: AI suggested ${RATING_LABELS[f.rating]} but no valid IDs remain. Pick IDs or change the rating.`);
+        guardrails.warnings.push(
+          `${name}: the AI rated this "${RATING_LABELS[f.rating]}" but listed no requirement from the catalog. Add the requirement IDs, or change the rating.`,
+        );
       }
     }
 
