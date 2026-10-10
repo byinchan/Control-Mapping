@@ -4,6 +4,33 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 4: Intake, review and confirm screens (2026-10-10)
 
+### Rating radio buttons and "Confirm and next" (Bernadette's decisions)
+- **Ratings shown as radio buttons, not a dropdown.** A native dropdown can't show a short label when
+  closed and a long one in the list. Each option shows its short label (Full, Partial, None, N/A) with its
+  description, and the scoring effect of the selected one sits underneath ("Partial scores 0.5.").
+  - The labels, descriptions and effects live in `lib/scoring/config.ts` (`RATING_LABELS`, `RATING_HELP`,
+    `RATING_EFFECT`). The ratings key, messages and back-test use them, and the matrix, report and CSV will
+    too. Stored values and scoring are unchanged; a test checks that the effect text agrees with the
+    engine.
+  - No radio selected means "not rated yet", and the confirm rules still require a choice. This replaces
+    the earlier "Fully meets / Partly meets…" labels.
+- **"Confirm and next" with a confirm bar fixed to the bottom of the screen.** It confirms the open control
+  and opens the next one awaiting review, in list order and wrapping around (`nextAwaitingId`, tested). If
+  something blocks confirmation, the bar says "Not ready: n things to fix" and scrolls to the full list.
+  Once confirmed, the bar offers "Reopen for edits" and "Next awaiting review", or "All controls are
+  confirmed." There is deliberately no "Confirm all" and no bulk table: each control is opened and
+  confirmed on its own.
+- **Clicks to confirm all 14 samples as suggested: 19** (was 32): 4 to start, 14 "Confirm and next", and 1 to
+  remove C008's CIS ID. Measured in the browser.
+
+### Considered, not built
+- **Choosing which frameworks to assess at intake:** not built. Assessing fewer frameworks would make
+  "Fully Aligned" easier to reach, and the change touches scoring, the limited-coverage flag, the matrix,
+  the report and the CSV.
+- **Preview-then-apply for "Replace with a new AI suggestion"** (choose AI's version or mine per framework,
+  with "Use all"): possible later refinement. The current "Keep my edited frameworks" choice already
+  protects analyst edits.
+
 ### Wording and style follow-up (no logic or scoring changes)
 - **A. "As described" in the positive helpers:** Fully meets reads "As described, the control meets the
   requirement(s)." and Partly meets reads "As described, the control meets some of the requirement(s)."
