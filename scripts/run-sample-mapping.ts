@@ -2,6 +2,7 @@
 // analyst's sample mappings and (with --write-demo) saves the outputs as data/demo-mappings.json.
 //   npm run mapping:samples                 # mock mapper (MAPPER=mock) or live if a key is set
 //   npm run mapping:samples -- --write-demo # also write the demo file
+//   npm run mapping:samples -- --out <file>  # save the outputs to another file for review
 // Live runs spend API credit (about 14 Haiku calls).
 import { readFileSync, writeFileSync } from "node:fs";
 import corrections from "../data/sample-corrections.json" with { type: "json" };
@@ -23,6 +24,8 @@ import { applySampleCorrections, sampleIntake, type SampleCorrection, type V1Con
 const PRICES: Record<string, { input: number; output: number }> = { "claude-haiku-5-5": { input: 0.1, output: 0.5 } };
 
 const writeDemo = process.argv.includes("--write-demo");
+const outIndex = process.argv.indexOf("--out");
+const outPath = outIndex > 0 ? process.argv[outIndex + 1] : null;
 const settings = readSettings(process.env);
 const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
 const live = settings.mapper === "live" && apiKey;
@@ -97,6 +100,11 @@ if (live) {
     ? ((usage.inputTokens + usage.cacheWriteTokens * 1.25 + usage.cacheReadTokens * 0.1) * p.input + usage.outputTokens * p.output) / 1e6
     : null;
   console.log("Usage:", usage, cost === null ? "(no price on file for this model)" : `~$${cost.toFixed(4)}`);
+}
+
+if (outPath) {
+  writeFileSync(outPath, JSON.stringify(demo, null, 2) + "\n");
+  console.log(`Saved outputs to ${outPath}`);
 }
 
 if (writeDemo) {

@@ -77,6 +77,15 @@ test("prompt: user text cannot close the data block or inject markup", () => {
   assert.ok(msg.includes("\\u003c/control_data\\u003e"));
 });
 
+test("prompt: empty optional fields are left out; None and N/A are defined as in scoring", () => {
+  const msg = buildUserMessage({ name: "MFA", description: "Enforce MFA.", owner: "IT" });
+  assert.ok(msg.includes('"owner": "IT"'));
+  assert.ok(!msg.includes("activity") && !msg.includes("objective") && !msg.includes("null"));
+  const system = buildSystemPrompt(CATALOGS);
+  assert.match(system, /none = the framework has requirements on this topic/);
+  assert.match(system, /na = the framework does not address this topic at all, so it is left out of scoring/);
+});
+
 // ---------- schema and sanitize ----------
 
 test("schema: strict object shape with additionalProperties false everywhere", () => {
