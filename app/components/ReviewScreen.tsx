@@ -20,6 +20,7 @@ import {
   type FrameworkPatch,
 } from "@/lib/workflow/workspace.ts";
 import { requestMapping } from "./mappingClient.ts";
+import { AI_LABELS } from "./labels.ts";
 import { ReviewPanel } from "./ReviewPanel.tsx";
 import { StepIndicator } from "./StepIndicator.tsx";
 import { Button, Legend, Notice, RatingKey, cx } from "./ui.tsx";
@@ -33,7 +34,7 @@ const DOT: Record<ControlStatus, string> = {
   confirmed: "bg-emerald-600",
 };
 
-/** What happened in one "Ask AI to map controls" run, for a plain-language summary. */
+/** What happened in one batch AI run (AI_LABELS.mapAll), for a plain-language summary. */
 type BatchReport = {
   total: number;
   done: number;
@@ -64,7 +65,7 @@ function BatchSummary({ r }: { r: BatchReport }) {
           )}
           {r.limitSkipped.length > 0 && (
             <li>
-              Not sent yet: {r.limitSkipped.join(", ")}. Wait a few minutes and use &ldquo;Ask AI to map this control&rdquo;, or map{" "}
+              Not sent yet: {r.limitSkipped.join(", ")}. Wait a few minutes and use &ldquo;{AI_LABELS.mapOne}&rdquo;, or map{" "}
               {r.limitSkipped.length === 1 ? "it" : "them"} by hand.
             </li>
           )}
@@ -211,7 +212,7 @@ export function ReviewScreen() {
           {toSuggest.length > 0 && (
             <div>
               <Button variant="ai" className="w-full" disabled={busy.size > 0} onClick={suggestAll}>
-                Ask AI to map controls
+                {AI_LABELS.mapAll}
               </Button>
               <p className="mt-1 text-xs text-slate-600">
                 The AI fills in all four frameworks for each control. You review and edit everything before confirming.

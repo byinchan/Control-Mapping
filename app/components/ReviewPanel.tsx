@@ -18,6 +18,7 @@ import {
   type FrameworkPatch,
 } from "@/lib/workflow/workspace.ts";
 import { FrameworkEditor } from "./FrameworkEditor.tsx";
+import { AI_LABELS } from "./labels.ts";
 import { Button, ControlStatusBadge, FRAMEWORK_NAMES, ModeBadge, Notice, RoleBadge } from "./ui.tsx";
 
 const FIELDS: { key: keyof ControlInput; label: string; rows?: number; required?: boolean }[] = [
@@ -133,22 +134,25 @@ export function ReviewPanel({
           </div>
           {!locked && !askReplace && (
             <Button variant="ai" onClick={startAi} disabled={aiBusy || !textReady}>
-              {aiBusy ? "Asking AI…" : ai ? "Replace with a new AI suggestion" : "Ask AI to map this control"}
+              {aiBusy ? "Asking AI…" : ai ? AI_LABELS.replace : AI_LABELS.mapOne}
             </Button>
           )}
         </div>
 
         {!locked && ai && !askReplace && (
-          <p className="mt-1 text-xs text-slate-600">
+          <p className="mt-2 rounded-md border border-violet-300 bg-violet-50 px-3 py-2 text-xs leading-relaxed text-violet-950">
+            <span className="font-semibold">&ldquo;{AI_LABELS.replace}&rdquo;</span>{" "}
             {ai.mode === "demo"
-              ? "Demo mode returns the same saved suggestion for an unchanged sample control."
-              : "Asks the AI again for all four frameworks and replaces the requirement IDs, ratings, rationales, uncertainties and missing information shown here. The control text is not changed, and the current suggestion stays in History. AI choices and wording can vary between runs."}
+              ? "returns the same saved suggestion in demo mode, because this sample control is unchanged."
+              : "asks the AI again for all four frameworks. It replaces the requirement IDs, ratings, rationales, uncertainties and missing information shown here. The control text is not changed, and the current suggestion stays in History. AI choices and wording can vary between runs."}
           </p>
         )}
 
         {askReplace && (
           <div className="mt-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950" role="alertdialog" aria-label="Replace your edits?">
-            <p className="font-semibold">You changed {frameworkList(edited)}.</p>
+            <p className="font-semibold">
+              &ldquo;{AI_LABELS.replace}&rdquo;: you changed {frameworkList(edited)}. Choose what the new suggestion may replace.
+            </p>
             <ul className="mt-1 list-disc space-y-0.5 pl-4">
               <li>
                 <span className="font-medium">Keep my edited frameworks:</span> your requirement IDs, rating, rationale and reason in {frameworkList(edited)} stay
@@ -181,7 +185,9 @@ export function ReviewPanel({
               {time(ai.receivedAt)} · {locked ? "AI-generated, human-reviewed" : "AI-generated, awaiting your review"}
             </p>
             {aiIsStale(record) && !locked && (
-              <Notice tone="warn">The control text changed after this suggestion was made. Replace it with a new AI suggestion, or check the mapping yourself.</Notice>
+              <Notice tone="warn">
+                The control text changed after this suggestion was made. Use &ldquo;{AI_LABELS.replace}&rdquo;, or check the mapping yourself.
+              </Notice>
             )}
             {ai.notices.map((n) => (
               <Notice key={n} tone={n.startsWith("Saved suggestion") ? "info" : "warn"}>{n}</Notice>
