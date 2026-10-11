@@ -34,10 +34,6 @@ export const MESSAGES = {
   unavailable:
     "AI mapping is unavailable right now. Demo mode can only show saved suggestions for the unchanged PUC sample controls.",
   invalidOutput: "The AI response could not be validated, so nothing was shown. Please try again.",
-  demoNoKey: "Demo mode: no AI key is configured, so this is a saved suggestion for this sample control.",
-  demoRateLimited: "Demo mode: your request limit was reached, so this is a saved suggestion for this sample control.",
-  demoDailyCap: "Demo mode: today's AI call limit was reached, so this is a saved suggestion for this sample control.",
-  demoUnavailable: "Demo mode: the AI service could not be reached, so this is a saved suggestion for this sample control.",
   mock: "Mock mapper: suggestions come from keyword overlap, not from an AI model.",
 } as const;
 
@@ -66,12 +62,23 @@ function respond(
 export const rateLimitedMessage = (s: MappingSettings) =>
   `You have reached the limit of AI suggestions for now (${s.perIpRequests} every ${Math.round(s.perIpWindowMs / 60000)} minutes per visitor). Please wait a few minutes and try again, or map this control by hand.`;
 
-const DEMO_NOTICE: Record<DemoReason, string> = {
-  "no-key": MESSAGES.demoNoKey,
-  "rate-limited": MESSAGES.demoRateLimited,
-  "daily-cap": MESSAGES.demoDailyCap,
-  unavailable: MESSAGES.demoUnavailable,
+// Why demo mode answered, added to the one demo notice. Public text never says how the server is configured,
+// so the missing-key case gives no reason.
+const DEMO_REASON: Record<DemoReason, string> = {
+  "no-key": "",
+  "rate-limited": " Shown because your AI suggestion limit was reached.",
+  "daily-cap": " Shown because today's AI call limit was reached.",
+  unavailable: " Shown because the AI service could not be reached.",
 };
+
+/** The single notice for a demo answer: what is shown, where it came from (model, date, prompt version) and its label. */
+export function demoNotice(by: DemoFile["generatedBy"], reason: DemoReason): string {
+  const what = by.mapper === "mock" ? "saved mock-mapper suggestion (keyword overlap, not AI)" : "saved AI suggestion";
+  // "v2 (2026-10-10)" -> "v2": the date is already given.
+  const prompt = by.promptVersion?.replace(/\s*\(.*\)$/, "");
+  const source = [by.model, by.generatedAt, prompt ? `prompt ${prompt}` : null].filter(Boolean).join(", ");
+  return `Demo mode: showing a ${what} for this sample control (${source}). ${by.label}.${DEMO_REASON[reason]}`;
+}
 
 function serveDemo(requestId: string, request: MapRequest, truncated: string[], deps: MappingDeps, reason: DemoReason): ServiceResult {
   const saved = findDemoOutput(deps.demo, request.sampleId, request.control);
@@ -80,16 +87,7 @@ function serveDemo(requestId: string, request: MapRequest, truncated: string[], 
       ? { status: 429, body: { error: rateLimitedMessage(deps.settings), requestId, code: "rate-limited" } }
       : { status: 503, body: { error: MESSAGES.unavailable, requestId, code: "unavailable" } };
   }
-  const notice = DEMO_NOTICE[reason];
-  const by = deps.demo.generatedBy;
-  const notices = [notice];
-  notices.push(
-    by.model
-      ? `Saved suggestion: ${by.label} (${by.model}, ${by.generatedAt}, prompt ${by.promptVersion}).`
-      : `Saved suggestion: ${by.label}.`,
-  );
-  if (by.mapper === "mock") notices.push(MESSAGES.mock);
-  return respond(requestId, "demo", by.model, saved, request, truncated, deps, notices, reason);
+  return respond(requestId, "demo", deps.demo.generatedBy.model, saved, request, truncated, deps, [demoNotice(deps.demo.generatedBy, reason)], reason);
 }
 
 /** Handles one mapping request: validate input, apply limits, choose mock/live/demo, validate output. */

@@ -1,47 +1,74 @@
 import Link from "next/link";
 import { cx } from "./ui.tsx";
 
-type Step = { label: string; href: string | null; note?: string };
+type Step = { label: string; href: string; locked: string | null };
 
-/** Choose -> Review & confirm -> Matrix -> Report. Matrix and Report need at least one confirmed control. */
+const PILL = "flex items-center gap-1.5 rounded-full px-3 py-1 text-sm";
+
+/**
+ * Choose -> Review & confirm -> Matrix & gaps -> Report. Available steps are real links that look like
+ * outlined buttons; the current step is filled and marked aria-current; locked steps are disabled with the reason.
+ */
 export function StepIndicator({ current, confirmedCount }: { current: 1 | 2 | 3 | 4; confirmedCount: number }) {
-  const needsOne = "needs 1 confirmed control";
+  const needsOne = confirmedCount > 0 ? null : "Confirm 1 control first";
   const steps: Step[] = [
-    { label: "Choose controls", href: "/" },
-    { label: "Review & confirm", href: "/review" },
-    { label: "Matrix & gaps", href: confirmedCount > 0 ? "/matrix" : null, note: needsOne },
-    // Step 6 of the build adds the report; until then it is shown but not linked.
-    { label: "Report", href: null, note: confirmedCount > 0 ? "coming next" : needsOne },
+    { label: "Choose controls", href: "/", locked: null },
+    { label: "Review & confirm", href: "/review", locked: null },
+    { label: "Matrix & gaps", href: "/matrix", locked: needsOne },
+    { label: "Report", href: "/report", locked: needsOne },
   ];
   return (
-    <nav aria-label="Progress">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+    <nav aria-label="Steps">
+      <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-2">
         {steps.map((s, i) => {
           const n = i + 1;
-          const state = n === current ? "current" : s.href ? "available" : "locked";
-          const dot = (
-            <span
-              className={cx(
-                "flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold",
-                state === "current" && "bg-slate-900 text-white",
-                state === "available" && "bg-slate-200 text-slate-800",
-                state === "locked" && "bg-slate-100 text-slate-400",
-              )}
-            >
+          const number = (
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/80 text-xs font-semibold text-current ring-1 ring-current/30">
               {n}
             </span>
           );
-          const body = (
-            <span className={cx("flex items-center gap-1.5", state === "locked" && "text-slate-400")}>
-              {dot}
-              <span className={state === "current" ? "font-semibold text-slate-900" : undefined}>{s.label}</span>
-              {state === "locked" && s.note && <span className="text-xs">({s.note})</span>}
-            </span>
-          );
+          let body: React.ReactNode;
+          if (n === current) {
+            body = (
+              <span aria-current="step" className={cx(PILL, "bg-blue-600 font-semibold text-white")}>
+                {number}
+                {s.label}
+              </span>
+            );
+          } else if (s.locked) {
+            body = (
+              <span
+                aria-disabled="true"
+                title={s.locked}
+                className={cx(PILL, "cursor-not-allowed border border-dashed border-slate-300 text-slate-400")}
+              >
+                {number}
+                {s.label}
+                <span className="text-xs">({s.locked.toLowerCase()})</span>
+              </span>
+            );
+          } else {
+            body = (
+              <Link
+                href={s.href}
+                className={cx(
+                  PILL,
+                  "bg-white text-blue-700 ring-1 ring-inset ring-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+                )}
+              >
+                {number}
+                {s.label}
+              </Link>
+            );
+          }
           return (
-            <li key={s.label} className="flex items-center gap-2" aria-current={state === "current" ? "step" : undefined}>
-              {state === "available" && s.href ? <Link href={s.href} className="hover:underline">{body}</Link> : body}
-              {n < steps.length && <span aria-hidden className="text-slate-300">→</span>}
+            <li key={s.label} className="flex items-center gap-1.5">
+              {body}
+              {n < steps.length && (
+                <span aria-hidden className="text-slate-400">
+                  →
+                </span>
+              )}
             </li>
           );
         })}

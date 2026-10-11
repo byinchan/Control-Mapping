@@ -21,10 +21,10 @@ import {
   type FrameworkPatch,
 } from "@/lib/workflow/workspace.ts";
 import { requestMapping } from "./mappingClient.ts";
-import { AI_LABELS } from "./labels.ts";
+import { AI_LABELS, CONFIRM_LABELS } from "./labels.ts";
 import { ReviewPanel } from "./ReviewPanel.tsx";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, Legend, Notice, RatingKey, cx } from "./ui.tsx";
+import { Button, DisabledAction, Legend, LinkButton, Notice, RatingKey, StepFooter, TextLink, cx } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const now = () => new Date().toISOString();
@@ -138,7 +138,7 @@ export function ReviewScreen() {
         <div className="rounded-lg border border-dashed border-slate-300 p-8 text-center">
           <p className="text-slate-700">There are no controls in this tab yet.</p>
           <p className="mt-2 text-sm">
-            <Link href="/samples" className="underline">Choose sample controls</Link> or <Link href="/new" className="underline">enter your own control</Link>.
+            <TextLink href="/samples">Choose sample controls</TextLink> or <TextLink href="/new">enter your own control</TextLink>.
           </p>
         </div>
       </div>
@@ -183,8 +183,8 @@ export function ReviewScreen() {
       {discarded && <Notice tone="warn">Saved data in this tab failed validation and was discarded.</Notice>}
       {!storageOk && <Notice tone="warn">This browser blocked tab storage, so your work will be lost if the page reloads.</Notice>}
 
-      <div className="grid gap-4 lg:grid-cols-[16rem_1fr]">
-        <aside className="space-y-3 lg:sticky lg:top-4 lg:self-start">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[16rem_1fr]">
+        <aside className="min-w-0 space-y-3 lg:sticky lg:top-4 lg:self-start">
           <div className="rounded-lg border border-slate-200 p-3">
             <p className="text-xs text-slate-600">
               <span className="font-semibold text-slate-900">{counts.confirmed}</span> confirmed ·{" "}
@@ -200,7 +200,7 @@ export function ReviewScreen() {
                     title={r.current.name}
                     className={cx(
                       "flex w-full items-center gap-2 rounded px-2 py-1 text-left text-sm",
-                      r.id === selectedId ? "bg-slate-900 text-white" : "hover:bg-slate-100",
+                      r.id === selectedId ? "bg-blue-600 text-white" : "hover:bg-blue-50",
                     )}
                   >
                     <span className={cx("h-2 w-2 shrink-0 rounded-full", busy.has(r.id) ? "animate-pulse bg-violet-500" : DOT[controlStatus(r)])} />
@@ -210,7 +210,7 @@ export function ReviewScreen() {
                 </li>
               ))}
             </ul>
-            <p className="mt-2 flex flex-wrap gap-x-3 text-[11px] text-slate-500">
+            <p className="mt-2 flex flex-wrap gap-x-3 text-[13px] text-slate-500">
               <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-slate-300" />not mapped</span>
               <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-amber-400" />awaiting review</span>
               <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-emerald-600" />confirmed</span>
@@ -227,14 +227,9 @@ export function ReviewScreen() {
             </div>
           )}
           {batch && <BatchSummary r={batch} />}
-          {counts.confirmed > 0 && (
-            <Link href="/matrix" className="block rounded-md bg-slate-900 px-3 py-1.5 text-center text-sm font-medium text-white hover:bg-slate-700">
-              See matrix and gaps ({counts.confirmed} confirmed)
-            </Link>
-          )}
-          <Link href="/" className="block rounded-md px-3 py-1.5 text-center text-sm font-medium text-slate-800 ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
+          <LinkButton href="/" className="w-full">
             + Add controls
-          </Link>
+          </LinkButton>
           <button
             type="button"
             className="w-full text-xs text-red-700 underline"
@@ -283,6 +278,19 @@ export function ReviewScreen() {
           )}
         </div>
       </div>
+
+      <StepFooter back={{ href: "/", label: "Back to choose controls" }}>
+        {counts.confirmed > 0 ? (
+          // Green only when nothing is awaiting review; otherwise the per-control Confirm buttons are the main action.
+          <LinkButton href="/matrix" variant={counts["awaiting-review"] + counts.draft === 0 ? "primary" : "secondary"} size="lg">
+            {CONFIRM_LABELS.continueToMatrix} ({counts.confirmed} confirmed) <span aria-hidden>→</span>
+          </LinkButton>
+        ) : (
+          <DisabledAction size="lg" reason="Confirm at least 1 control first">
+            {CONFIRM_LABELS.continueToMatrix} <span aria-hidden>→</span>
+          </DisabledAction>
+        )}
+      </StepFooter>
     </div>
   );
 }

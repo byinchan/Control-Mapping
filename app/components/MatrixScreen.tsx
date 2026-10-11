@@ -9,7 +9,7 @@ import { buildResults } from "@/lib/results/matrix.ts";
 import { RATING_LABELS, SCORING_RULE_TEXT, type Rating, type Status } from "@/lib/scoring/config.ts";
 import { formatScore } from "@/lib/scoring/score.ts";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, FRAMEWORK_NAMES, Legend, Notice, RatingKey, RoleBadge, cx } from "./ui.tsx";
+import { Button, DisabledAction, FRAMEWORK_NAMES, Legend, LinkButton, Notice, RatingKey, RoleBadge, StepFooter, TextLink, cx } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const STATUS_STYLE: Record<Status, string> = {
@@ -60,11 +60,16 @@ export function MatrixScreen() {
           <p className="text-slate-700">Confirm at least one control to see the matrix and gaps.</p>
           <p className="mt-1 text-sm text-slate-500">Only confirmed controls count in results.</p>
           <p className="mt-3 text-sm">
-            <Link href={ws.controls.length > 0 ? "/review" : "/"} className="font-medium underline">
+            <TextLink href={ws.controls.length > 0 ? "/review" : "/"}>
               {ws.controls.length > 0 ? `Go to review (${plural(ws.controls.length, "control")} in this tab)` : "Choose controls"}
-            </Link>
+            </TextLink>
           </p>
         </div>
+        <StepFooter back={{ href: "/review", label: "Back to review" }}>
+          <DisabledAction size="lg" reason="Confirm at least 1 control first">
+            Continue to the executive report <span aria-hidden>→</span>
+          </DisabledAction>
+        </StepFooter>
       </div>
     );
   }
@@ -148,7 +153,7 @@ export function MatrixScreen() {
         <div className="flex flex-wrap items-end justify-between gap-2">
           <h2 id="matrix-title" className="text-base font-semibold">Control matrix</h2>
           <div className="text-right">
-            <Button variant="primary" onClick={() => downloadCsv(matrixCsv(rows))}>Download CSV</Button>
+            <Button onClick={() => downloadCsv(matrixCsv(rows))}>Download CSV</Button>
             <p className="mt-1 text-xs text-slate-500">Confirmed controls only. Built in your browser; nothing is uploaded.</p>
           </div>
         </div>
@@ -170,10 +175,9 @@ export function MatrixScreen() {
               {rows.map((row) => (
                 <tr key={row.id} className="border-t border-slate-100 align-top">
                   <td className="px-3 py-2">
-                    <Link href={`/review?focus=${row.id}`} className="hover:underline">
-                      <span className="font-mono text-xs text-slate-500">{row.id}</span>{" "}
-                      <span className="font-medium text-slate-900">{row.control.name}</span>
-                    </Link>
+                    <TextLink href={`/review?focus=${row.id}`}>
+                      <span className="font-mono text-xs">{row.id}</span> <span className="font-medium">{row.control.name}</span>
+                    </TextLink>
                     {row.control.owner && <p className="text-xs text-slate-500">{row.control.owner}</p>}
                   </td>
                   {FRAMEWORK_IDS.map((f) => {
@@ -228,9 +232,9 @@ export function MatrixScreen() {
             {gaps.map((g) => (
               <li key={g.id} className="rounded-lg border border-red-200 bg-red-50/40 p-3 text-sm">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Link href={`/review?focus=${g.id}`} className="font-medium text-slate-900 hover:underline">
-                    <span className="font-mono text-xs text-slate-500">{g.id}</span> {g.name}
-                  </Link>
+                  <TextLink href={`/review?focus=${g.id}`} className="font-medium">
+                    <span className="font-mono text-xs">{g.id}</span> {g.name}
+                  </TextLink>
                   <StatusBadge status={g.status} />
                   <span className="text-xs text-slate-600">score {formatScore(g.score)}</span>
                 </div>
@@ -257,9 +261,9 @@ export function MatrixScreen() {
             <ul className="space-y-2">
               {checks.map((c) => (
                 <li key={c.id} className="rounded-lg border border-amber-200 bg-amber-50/50 p-3 text-sm">
-                  <Link href={`/review?focus=${c.id}`} className="font-medium text-slate-900 hover:underline">
-                    <span className="font-mono text-xs text-slate-500">{c.id}</span> {c.name}
-                  </Link>
+                  <TextLink href={`/review?focus=${c.id}`} className="font-medium">
+                    <span className="font-mono text-xs">{c.id}</span> {c.name}
+                  </TextLink>
                   <p className="mt-0.5 text-slate-700">
                     {c.kind === "not-scorable"
                       ? `Not scorable: every framework is ${RATING_LABELS.na}.`
@@ -280,6 +284,13 @@ export function MatrixScreen() {
           </div>
         )}
       </section>
+
+      {/* Next step */}
+      <StepFooter back={{ href: "/review", label: "Back to review" }}>
+        <LinkButton href="/report" variant="primary" size="lg">
+          Continue to the executive report <span aria-hidden>→</span>
+        </LinkButton>
+      </StepFooter>
     </div>
   );
 }

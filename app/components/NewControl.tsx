@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MAX_CONTROLS, addControl } from "@/lib/workflow/workspace.ts";
 import { ControlForm } from "./ControlForm.tsx";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Notice } from "./ui.tsx";
+import { Notice, StepFooter } from "./ui.tsx";
 import { saveNow, useWorkspace } from "./useWorkspace.ts";
 
 export function NewControl() {
@@ -28,6 +27,7 @@ export function NewControl() {
         <div className="rounded-lg border border-slate-200 p-4">
           <ControlForm
             submitLabel="Add and review"
+            back={{ href: "/", label: "Back" }}
             onAdd={(input) => {
               const r = addControl(ws, input, new Date().toISOString());
               if (!r.id) return;
@@ -37,7 +37,7 @@ export function NewControl() {
           />
         </div>
       )}
-      <Link href="/" className="text-sm text-slate-600 underline">Back</Link>
+      {full && <StepFooter back={{ href: "/", label: "Back" }}>{null}</StepFooter>}
     </div>
   );
 }

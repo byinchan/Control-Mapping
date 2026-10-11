@@ -2,6 +2,210 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 6: Executive report (2026-10-11)
+
+### Neutral sample wording (UI text only)
+- The three user-facing "v1" labels now say "PUC sample control set" (review panel source line), "The 14 sample controls
+  from the PUC control set." (sample chooser) and "Loaded from PUC sample control set" (History entry; applies to controls
+  loaded from now on). Code comments and developer-only messages still say v1.
+
+### Report opens straight to a template draft (UI only)
+- The report's start page ("Start with a template draft") is removed. Opening the report with at least one confirmed
+  control creates the template draft automatically, still labelled "Template draft, not AI".
+- Code only: the draft is built from the facts pack by `templateSections()`. Opening the report never calls the AI or
+  any API (checked in the browser: no `/api/` requests from the report page).
+- An existing draft is never replaced on open or reload; the check runs inside the workspace update, so a repeated
+  effect cannot overwrite it. "Redraft from template" is still the only way to replace it.
+- Unchanged: the checks, Prepared by, Approve, Download PDF, out of date handling and the "confirm at least one
+  control" message when nothing is confirmed.
+
+### Demo mode: one compact notice (wording only)
+- The AI-suggested mapping panel showed up to three stacked notices in demo mode (purple "Replace…" note, yellow
+  "Demo mode: no AI key is configured…", blue "Saved suggestion…"). They are now one blue notice, built by
+  `demoNotice()` in `lib/mapping/service.ts`: "Demo mode: showing a saved AI suggestion for this sample control
+  (claude-haiku-5-5, 2026-10-10, prompt v2). AI-generated, not reviewed." The prompt version drops its repeated date.
+- When a limit caused demo mode, one short reason is added ("Shown because your AI suggestion limit was reached.",
+  today's call limit, or the AI service could not be reached). The missing-key case gives no reason: public text no
+  longer says how the server is configured.
+- The purple note's one useful fact is folded into the same notice: "In demo mode, "Replace with a new AI suggestion"
+  returns this same saved suggestion." The purple note still shows for live suggestions.
+- Kept: the "Demo mode: saved AI output" header badge and the model/time line.
+- Checked, no stacking, unchanged: the review page's batch summary (one notice, including the limit case), the 429
+  limit message and the 503 "unavailable" message (each a single error notice). The mock mapper's notice was already one line.
+- Suggestions already stored in an open tab keep their old notice text until the control is mapped again or the tab is closed.
+
+### Start page: one green button (UI only)
+- "Choose sample controls →" is the green primary button; "Enter your own control →" is now a blue outline button.
+  Both cards stay fully clickable. The sample card's hover and focus border is green, and the own-control card's is blue;
+  both keep the blue focus ring.
+
+### Final report tweaks (wording and layout only; scoring unchanged)
+- **Two decimals everywhere:** `formatScore` now shows control scores and framework average ratings as `0.50`, `0.63`, `1.00`
+  (matrix, review panel, CSV, report tables and text). Scoring still works in exact half-points; only the display changed.
+  The facts pack holds the rounded display values, so a narrative figure that matches the screen passes the number check
+  (tested: the C006 score is "0.50", the NIST average is "0.67", and an unrounded "0.667" is flagged).
+- **Method text:** "Controls came from the PUC sample control set or were entered by the analyst."
+- **Other "v1" wording left as is (for Bernadette to decide):** "PUC sample (v1)" under the control ID on the review page,
+  "The 14 controls from the Version 1 PUC control matrix." on the sample chooser, and the History entry "Loaded from PUC
+  sample (v1)". All other "v1" mentions are in code comments or developer messages.
+- **Prepared by:** "(required)" appears once, in the label. The input is wider, so the placeholder fits (286 px field, 186 px text).
+- **Key messages first:** in the report (screen and print), Key messages now comes before Purpose and scope. Print length is
+  unchanged: 1.12 pages on A4 and 1.20 on Letter for 14 confirmed controls, measured before and after the move.
+
+### One green button at a time; one job per place (UI only)
+- **Review page:**
+  - **Sticky bar:** per-control actions only (Confirm this control, Confirm and go to next control, Reopen
+    for edits, Next awaiting review). Its "See matrix & gaps" and "Continue to matrix & gaps" are removed.
+  - **Sidebar:** "See matrix & gaps (n confirmed)" is removed; "+ Add controls" and "Clear this tab" stay.
+  - **Page footer:** the only way to the matrix. "Continue to matrix & gaps (n confirmed) →" is green only
+    when no control is awaiting review, blue outline (still enabled) while any is, and disabled with the
+    reason when none are confirmed. Checked in the browser with none, some and all confirmed: exactly one
+    green button and at most one link to the matrix outside the step indicator.
+- **Report page:** the sticky toolbar's green "Approve report" or "Download PDF" duplicated the footer's
+  green button. The toolbar now holds the status and editing tools only (Redraft from template, or Edit
+  report once approved). Approve, then Download PDF, is the footer's single green action. The "Not ready to
+  approve" list now appears directly above that button, which scrolls to it, and the print-dialog tip sits
+  under it.
+- **Other pages checked:**
+  - samples, own control and matrix: one green button each, in the footer;
+  - report start screen: one green "Start with a template draft".
+  - The step indicator links are navigation and are not counted as duplicates.
+- **Left as is:** the start page's two cards each keep their green button, as asked for earlier. They are
+  two equal first choices, not two buttons for the same action.
+
+### "Prepared by" required before approval (logic change, tested)
+- Approve is blocked until "Prepared by" has a value; whitespace-only doesn't count. It is listed in the same
+  "Not ready to approve" list as the other checks: "Prepared by: add your name or initials and role." The field
+  is marked required and turns red after a blocked attempt. Helper text under it (screen only): "Your name or
+  initials and role. Kept in this browser tab only."
+- As before, any edit to the field clears approval. After approval the field is locked until "Edit report",
+  which also clears approval. The printed byline no longer needs a "Not given" fallback, since an approved
+  report always has a name.
+- Tests cover:
+  - empty and whitespace-only values are blocked;
+  - the blocker is listed together with figure blockers;
+  - a trimmed name such as initials and role is accepted;
+  - renaming or emptying the field after approval clears approval;
+  - existing approval tests now set a name.
+
+### Report wording, layout and print style (no logic changes)
+- **Byline:** "October 11, 2026 · 14 controls assessed · Prepared by: <name>". "· Draft, not approved" is added
+  only while the report isn't approved. The narrative source (Template or AI badge) shows on screen only. The
+  footer governance note names how the narrative was drafted ("a code template, not AI", or "an AI model
+  (<model>)").
+- **Status colours:** green Fully Aligned, amber Partially Aligned and red Gap Identified, in the headline
+  counts and the gaps table's status column, on screen and in print (`print-color-adjust: exact`). The
+  words stay, so black-and-white print still reads correctly.
+- **White space and page breaks:** about one extra blank line before each section heading. In print, heading
+  rows are kept with the text that follows (`break-after: avoid`), tables and table rows aren't split, and
+  paragraphs keep at least 2 lines together at a page break.
+- **Less repetition in the template:** Key messages no longer repeats the headline status counts; it covers
+  the framework rating range, requirements not met, single-framework results and controls awaiting review.
+  "Not implemented or effective" now appears only in the report footer, which the analyst can't edit away,
+  not also in Method and limitations. Tests check both.
+- **Print-dialog tip next to Download PDF:** "In the print dialog, turn off headers and footers for a cleaner
+  PDF." Why no `@page` rule removes them:
+  - The browser adds those headers and footers, and Safari and Firefox give the page no switch for them.
+  - In Chrome and Edge, `@page { margin: 0 }` hides them only because it leaves no margin to print into,
+    which also removes the margin on every later page, so it was not used.
+  - What the page can control is its title, which browsers print in that header and use as the default PDF
+    file name. While printing, the title is set to "PUC control mapping executive summary YYYY-MM-DD" and
+    restored afterwards.
+  - Not tested in Chrome (not installed here); behaviour taken from the browsers' documented print options.
+- **Print length** after these changes (print styles applied on screen, 14 confirmed controls): about 1.12
+  pages on A4 and 1.20 on Letter.
+
+### Larger text (UI only)
+- **Screen text:** every Tailwind text size is about 2 px larger, with headings scaled to match: 12→14,
+  14→16, 16→18 (also the default body size), 18→21, 20→23, 24→27 px. Badges go from 11→13 px. Only text
+  changes; spacing and widths keep their defaults.
+- **Printed report:** body 9.5→11 pt, small text 8.5→10 pt, section headings 11→12.5 pt, title 14→15.5 pt.
+- **Phone width (375 px):** the review page's single-column grid could widen to fit its content after the
+  change (10 px of sideways scroll). Single-column grids are now set to shrink (`grid-cols-1`, `min-w-0`).
+  Checked all six pages: no sideways scroll and no clipped button text.
+- **Print length:** the approved 14-control report measures about 1.03 pages on A4 and 1.10 on Letter, so
+  nothing was shrunk. The "may run over 2 pages" estimate was recalibrated for the larger print text (86
+  characters per line, 50 lines per page).
+
+### Navigation follow-up (UI only)
+- **One shared end-of-page footer (`StepFooter`)** on review, matrix, report, samples and own-control pages,
+  with the same spacing everywhere: blue "← Back…" link on the left, the large green next action on the right,
+  and the reason shown before a disabled button.
+- **Review page:** the footer sits below both columns: "← Back to choose controls" and "Continue to matrix &
+  gaps (n confirmed) →", disabled with "Confirm at least 1 control first" when nothing is confirmed. To avoid
+  two large Continue buttons when every control is confirmed, the sticky bar now shows "Continue to matrix &
+  gaps →" as a smaller blue outline button. The single large green Continue is the one in the footer.
+- **Start page:** each card is one link with a visible green button inside ("Choose sample controls →",
+  "Enter your own control →"), a hover border and background on the whole card, a pointer cursor and a
+  keyboard focus ring. Card titles are "PUC sample controls" and "Your own control", so the button text isn't
+  repeated. "Continue reviewing (n controls in this tab)" was already a blue outline button in the code from
+  the previous push; the black underlined version was an earlier build.
+
+### Navigation and button styles (UI only, no logic changes)
+- **Step indicator:** available steps are outlined blue pill links with hover and keyboard-focus rings. The
+  current step is filled blue and marked `aria-current="step"`, and is not a link. Locked steps are dashed
+  grey and `aria-disabled`, with the reason shown ("confirm 1 control first") and as a tooltip. They wrap
+  at phone width without sideways scrolling.
+- **Next-step button at the end of every step page:**
+  - **Review bottom bar:** with every control confirmed, a large green "Continue to matrix & gaps →" next to
+    "Reopen for edits" replaces "All controls are confirmed.". Otherwise the Confirm buttons stay the main
+    actions, with a smaller "See matrix & gaps (n confirmed)" once at least one is confirmed.
+  - **Matrix:** "Next: the executive report." is removed (the "Select a control name…" hint stays). After
+    Gaps: "← Back to review" and a large green "Continue to the executive report →". The empty state shows
+    that button disabled with "Confirm at least 1 control first".
+  - **Report:** it ends with "← Back to matrix & gaps" and a large green "Approve report →", which becomes
+    "Download PDF →" once approved. "Start with a template draft" is a large green button.
+  - **Samples and own-control pages:** "Continue with n controls →" and "Add and review →" are large green
+    buttons with a blue "← Back". The form says what's missing while the button is disabled.
+  - **Start page:** left as two large choice cards, the page's only real next steps, with blue hover and
+    focus borders. "Continue reviewing (n)" is a blue outline button.
+- **Colours:** no black buttons anywhere.
+  - Primary actions are green: Confirm, Approve report, Download PDF, Continue.
+  - Secondary actions are blue outline: Download CSV, Redraft from template, Edit text, Reopen, See matrix.
+  - Links are blue and underlined.
+  - Disabled controls are grey with the reason shown, e.g. Download PDF shows "Approve the report first".
+  - AI actions stay violet to match the AI badge, and Remove stays red outline.
+  - The selected control in the review list is blue instead of black.
+
+### Stage 1: report without AI
+- **Facts pack (`lib/report/facts.ts`):** everything the report may state, computed by code from **confirmed
+  controls only**: status counts and percentages, per-framework coverage, gaps (Gap Identified or any None),
+  limited coverage, owners, control scores. A fingerprint of the confirmed results tells when the report is
+  out of date.
+- **Code-only blocks:** headline results (status counts with percentages, coverage table) and the gaps table
+  (top 5, then "+n more in the matrix and CSV export"). These are not editable; to change them, change the
+  confirmations.
+- **Template draft, not AI (`lib/report/template.ts`):** a plain draft of all six sections, built only from
+  facts-pack values: purpose and scope, key messages, strengths, gaps and risks, 3 to 5 recommendations, and
+  method and limitations. It passes its own checks (tested with 1, 6 and 14 confirmed controls). It is the
+  starting draft now and will be the only fallback in Stage 2.
+- **Number-match check (`lib/report/checks.ts`), blocks Approve:**
+  - Framework names, versions, control and requirement IDs (including "CIS 13.10"), dates and list numbers
+    are removed first.
+  - Whole numbers and percentages next to a status or count phrase ("9 of 14 … Fully Aligned", "2 …
+    awaiting review") must equal that count: "9 Fully Aligned: code says 1".
+  - Every other figure, including number words, must be one the code computed.
+  - Control IDs must be confirmed controls in this report.
+  - The flags show as a live list under each section and update as you type.
+  - Limitation: a figure that exists elsewhere in the facts pack but is attached to the wrong noun is only
+    caught when it sits next to a status or count phrase.
+- **Claim-word check, warning only:** implemented, effective, compliant, certified, secure, audit-ready and
+  similar. Deliberate negations ("does not show that controls are implemented or effective") are skipped.
+- **Approve** locks the text and enables Download PDF; "Edit report" removes approval, and any edit clears it.
+  **Out of date:** when confirmations change, approval is cleared, the code blocks update, and the narrative's
+  stale figures are flagged. "I've checked the narrative against the current results" or "Redraft from
+  template" (keep my edited sections or replace everything) resolves it.
+- **Prepared by** starts blank (public app) and prints "Not given" if left empty.
+- **Print layout (Download PDF opens the print dialog):** compact 9.5 pt, page margins from `@page`, and paper
+  size from the dialog, so Letter and A4 both work. App chrome is hidden. The footer has "Fictional
+  organization. AI-assisted, human-reviewed.", the governance note and the disclaimer.
+  - Measured by applying the print styles on screen: the 13-control template report is about 1 page (0.96 of
+    A4, 0.99 of Letter).
+  - The "This may run over 2 pages" note comes from a tested line-count estimate.
+  - Print layout time stayed well inside the 1.5-hour time box.
+- **Storage:** the report lives in the tab's workspace (`report`, optional, so older tabs still load) and is
+  schema-checked on load like everything else.
+
 ## Step 5: Matrix, gaps and CSV export (2026-10-10)
 
 ### Results logic (`lib/results/`, pure and unit-tested; the screen only displays it)

@@ -14,4 +14,6 @@ export const CONFIRM_LABELS = {
   confirmAndNext: "Confirm and go to next control",
   /** Left-hand text in the bar, e.g. "C005: confirming records your decision". */
   barText: (controlId: string) => `${controlId}: confirming records your decision`,
+  /** Shown when every control is confirmed. */
+  continueToMatrix: "Continue to matrix & gaps",
 } as const;

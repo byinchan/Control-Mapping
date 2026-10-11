@@ -3,10 +3,18 @@
 import { useState } from "react";
 import { INPUT_LIMITS } from "@/lib/mapping/config.ts";
 import type { ControlInput } from "@/lib/mapping/types.ts";
-import { Button } from "./ui.tsx";
+import { Button, StepFooter } from "./ui.tsx";
 
 /** Intake form for one analyst-entered control. Name and description are required. */
-export function ControlForm({ onAdd, submitLabel }: { onAdd: (input: ControlInput) => void; submitLabel: string }) {
+export function ControlForm({
+  onAdd,
+  submitLabel,
+  back,
+}: {
+  onAdd: (input: ControlInput) => void;
+  submitLabel: string;
+  back?: { href: string; label: string };
+}) {
   const [draft, setDraft] = useState<ControlInput>({ name: "", description: "" });
   const set = (k: keyof ControlInput) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setDraft({ ...draft, [k]: e.target.value });
@@ -43,7 +51,12 @@ export function ControlForm({ onAdd, submitLabel }: { onAdd: (input: ControlInpu
         Owner <span className="font-normal text-slate-500">(optional)</span>
         <input value={draft.owner ?? ""} onChange={set("owner")} maxLength={INPUT_LIMITS.owner} className={input} />
       </label>
-      <Button type="submit" variant="primary" disabled={!ready}>{submitLabel}</Button>
+      <StepFooter back={back}>
+        {!ready && <span className="text-xs text-slate-600">Enter a name and a description to continue.</span>}
+        <Button type="submit" variant="primary" size="lg" disabled={!ready}>
+          {submitLabel} <span aria-hidden>→</span>
+        </Button>
+      </StepFooter>
     </form>
   );
 }

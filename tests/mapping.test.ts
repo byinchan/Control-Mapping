@@ -13,7 +13,7 @@ import { mockMap } from "../lib/mapping/mock.ts";
 import { PROMPT_VERSION, buildSystemPrompt, buildUserMessage } from "../lib/mapping/prompt.ts";
 import { droppedIdsNotice, sanitizeProposal } from "../lib/mapping/sanitize.ts";
 import { PROPOSAL_SCHEMA, parseRawProposal } from "../lib/mapping/schema.ts";
-import { MESSAGES, handleMapRequest, type MappingDeps } from "../lib/mapping/service.ts";
+import { MESSAGES, demoNotice, handleMapRequest, type MappingDeps } from "../lib/mapping/service.ts";
 import type { RawProposal } from "../lib/mapping/types.ts";
 import { sampleIntake, type V1Control } from "../lib/sample.ts";
 
@@ -224,7 +224,11 @@ test("service: demo responses carry the saved output's label, model, date and pr
   const { d } = deps();
   const r = await handleMapRequest(sampleBody, "ip", "r", d);
   const notices = (r.body as { notices: string[] }).notices;
-  assert.ok(notices.includes(`Saved suggestion: AI-generated, not reviewed (claude-haiku-5-5, ${demo.generatedBy.generatedAt}, prompt ${PROMPT_VERSION}).`));
+  // One compact notice, not a stack: what is shown, model, date, prompt version and label, and nothing about server configuration.
+  assert.deepEqual(notices, [
+    `Demo mode: showing a saved AI suggestion for this sample control (claude-haiku-5-5, ${demo.generatedBy.generatedAt}, prompt ${PROMPT_VERSION.replace(/\s*\(.*\)$/, "")}). AI-generated, not reviewed.`,
+  ]);
+  assert.ok(!/key/i.test(notices[0]));
   assert.equal((r.body as { model: string }).model, "claude-haiku-5-5");
 });
 
@@ -267,7 +271,7 @@ test("service: no API key -> demo mode for samples, 503 for custom controls", as
   const s = await handleMapRequest(sampleBody, "ip", "r", d);
   assert.equal(s.status, 200);
   assert.equal((s.body as { mode: string }).mode, "demo");
-  assert.ok((s.body as { notices: string[] }).notices.includes(MESSAGES.demoNoKey));
+  assert.ok((s.body as { notices: string[] }).notices.includes(demoNotice(demo.generatedBy, "no-key")));
   assert.equal((s.body as { demoReason: string }).demoReason, "no-key");
   const c = await handleMapRequest(customBody, "ip", "r", d);
   assert.equal(c.status, 503);
@@ -311,7 +315,7 @@ test("service: per-IP limit -> demo for samples, 429 for custom", async () => {
   assert.equal((await handleMapRequest(customBody, "ip", "r", d)).status, 200);
   const s = await handleMapRequest(sampleBody, "ip", "r", d);
   assert.equal((s.body as { mode: string }).mode, "demo");
-  assert.ok((s.body as { notices: string[] }).notices.includes(MESSAGES.demoRateLimited));
+  assert.ok((s.body as { notices: string[] }).notices.includes(demoNotice(demo.generatedBy, "rate-limited")));
   assert.equal((s.body as { demoReason: string }).demoReason, "rate-limited");
   const c = await handleMapRequest(customBody, "ip", "r", d);
   assert.equal(c.status, 429);
@@ -324,7 +328,7 @@ test("service: daily cap -> demo mode without calling the API", async () => {
   const { d, calls } = deps({}, ok, { dailyCap: new DailyCap(1, () => 0) });
   assert.equal((await handleMapRequest(customBody, "a", "r", d)).status, 200);
   const s = await handleMapRequest(sampleBody, "b", "r", d);
-  assert.ok((s.body as { notices: string[] }).notices.includes(MESSAGES.demoDailyCap));
+  assert.ok((s.body as { notices: string[] }).notices.includes(demoNotice(demo.generatedBy, "daily-cap")));
   assert.equal(calls.length, 1);
 });
 
@@ -332,7 +336,7 @@ test("service: billing/auth failure -> demo now, and live calls pause for the co
   const { d, calls } = deps({}, { ok: false, kind: "unavailable", cooldown: true });
   const s = await handleMapRequest(sampleBody, "ip", "r", d);
   assert.equal((s.body as { mode: string }).mode, "demo");
-  assert.ok((s.body as { notices: string[] }).notices.includes(MESSAGES.demoUnavailable));
+  assert.ok((s.body as { notices: string[] }).notices.includes(demoNotice(demo.generatedBy, "unavailable")));
   assert.ok(d.state.liveCooldownUntil > 0);
   await handleMapRequest(sampleBody, "ip", "r", d);
   assert.equal(calls.length, 1); // second request did not reach the API
@@ -359,4 +363,13 @@ test("compare: exact, overlap, disjoint and N/A cases", () => {
   const s = summarizeComparisons([compareCell(f, { kind: "na" }, { kind: "na" })]);
   assert.equal(s.counts["both-na"], 1);
   assert.equal(s.byFramework[f]["both-na"], 1);
+});
+
+test("demo notice: one line per reason; limits say why, the missing-key case does not mention configuration", () => {
+  const by = demo.generatedBy;
+  assert.match(demoNotice(by, "rate-limited"), /^Demo mode: showing a saved AI suggestion .* Shown because your AI suggestion limit was reached\.$/);
+  assert.match(demoNotice(by, "daily-cap"), /today's AI call limit was reached\.$/);
+  assert.match(demoNotice(by, "unavailable"), /could not be reached\.$/);
+  assert.ok(demoNotice(by, "no-key").endsWith(`${by.label}.`));
+  assert.match(demoNotice({ ...by, mapper: "mock", model: null, promptVersion: null }, "no-key"), /saved mock-mapper suggestion \(keyword overlap, not AI\) for this sample control \(\d{4}-\d{2}-\d{2}\)/);
 });

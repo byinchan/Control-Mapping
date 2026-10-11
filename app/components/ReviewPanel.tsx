@@ -94,7 +94,7 @@ export function ReviewPanel({
             <p className="flex items-center gap-2 text-xs text-slate-500">
               <RoleBadge role="Analyst" />
               <span className="font-mono">{record.id}</span>
-              <span>{record.sampleId ? "PUC sample (v1)" : "Entered by you"}</span>
+              <span>{record.sampleId ? "PUC sample control set" : "Entered by you"}</span>
               {textEdited(record) && <span className="text-amber-800">· text edited</span>}
             </p>
             <h2 className="mt-1 text-lg font-semibold text-slate-900">{record.current.name || "Untitled control"}</h2>
@@ -118,7 +118,7 @@ export function ReviewPanel({
           </div>
         </div>
         {editingText && !locked && (
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             {FIELDS.map(({ key, label, rows, required }) => {
               const id = `${record.id}-${key}`;
               const common = {
@@ -155,12 +155,12 @@ export function ReviewPanel({
           )}
         </div>
 
-        {!locked && ai && !askReplace && (
+        {/* In demo mode this fact is part of the single demo notice below instead. */}
+        {!locked && ai && ai.mode !== "demo" && !askReplace && (
           <p className="mt-2 rounded-md border border-violet-300 bg-violet-50 px-3 py-2 text-xs leading-relaxed text-violet-950">
-            <span className="font-semibold">&ldquo;{AI_LABELS.replace}&rdquo;</span>{" "}
-            {ai.mode === "demo"
-              ? "returns the same saved suggestion in demo mode, because this sample control is unchanged."
-              : "asks the AI again for all four frameworks. It replaces the requirement IDs, ratings, rationales, uncertainties and missing information shown here. The control text is not changed, and the current suggestion stays in History. AI choices and wording can vary between runs."}
+            <span className="font-semibold">&ldquo;{AI_LABELS.replace}&rdquo;</span> asks the AI again for all four frameworks. It replaces the
+            requirement IDs, ratings, rationales, uncertainties and missing information shown here. The control text is not changed, and the
+            current suggestion stays in History. AI choices and wording can vary between runs.
           </p>
         )}
 
@@ -205,14 +205,21 @@ export function ReviewPanel({
                 The control text changed after this suggestion was made. Use &ldquo;{AI_LABELS.replace}&rdquo;, or check the mapping yourself.
               </Notice>
             )}
-            {ai.notices.map((n) => (
-              <Notice key={n} tone={n.startsWith("Saved suggestion") ? "info" : "warn"}>{n}</Notice>
-            ))}
+            {ai.notices.map((n) =>
+              n.startsWith("Demo mode") ? (
+                <Notice key={n} tone="info">
+                  {n}
+                  {!locked && <> In demo mode, &ldquo;{AI_LABELS.replace}&rdquo; returns this same saved suggestion.</>}
+                </Notice>
+              ) : (
+                <Notice key={n} tone="warn">{n}</Notice>
+              ),
+            )}
             {ai.guardrails.warnings.map((w) => (
               <Notice key={w} tone="warn" title="Check this">{w}</Notice>
             ))}
             {(ai.proposal.uncertainties.length > 0 || ai.proposal.missingInformation.length > 0) && (
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {ai.proposal.uncertainties.length > 0 && (
                   <div className="rounded-md bg-white p-2 text-sm ring-1 ring-violet-100">
                     <p className="text-xs font-semibold text-violet-900">Uncertainties and assumptions</p>
@@ -237,7 +244,7 @@ export function ReviewPanel({
           <RoleBadge role="Analyst" />
           <h3 className="text-sm font-semibold">Review and edit the mapping</h3>
         </div>
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
           {FRAMEWORK_IDS.map((f) => (
             <FrameworkEditor key={f} record={record} framework={f} onPatch={(patch) => onPatch(f, patch)} />
           ))}
@@ -351,7 +358,7 @@ export function ReviewPanel({
                 <span>{CONFIRM_LABELS.barText(record.id)}</span>
               )}
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {onNext ? (
                 <>
                   <Button onClick={() => confirm(false)}>{CONFIRM_LABELS.confirm}</Button>
@@ -372,12 +379,13 @@ export function ReviewPanel({
               <RoleBadge role="Analyst" />
               Confirmed
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button onClick={onReopen}>Reopen for edits</Button>
-              {onNext ? (
-                <Button variant="primary" onClick={onNext}>Next awaiting review</Button>
-              ) : (
-                <span className="self-center text-sm text-emerald-800">All controls are confirmed.</span>
+              {/* Per-control actions only; moving on to the matrix is the page footer's job. */}
+              {onNext && (
+                <Button variant="confirm" onClick={onNext}>
+                  Next awaiting review
+                </Button>
               )}
             </div>
           </div>

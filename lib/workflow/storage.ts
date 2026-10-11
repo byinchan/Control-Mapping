@@ -3,6 +3,7 @@
 import { isValidId, type IdIndex } from "../catalog/ids.ts";
 import { FRAMEWORK_IDS } from "../catalog/types.ts";
 import { INPUT_LIMITS } from "../mapping/config.ts";
+import { MAX_SECTION_LENGTH, SECTION_KEYS } from "../report/report.ts";
 import { RATINGS } from "../scoring/config.ts";
 import { MAX_CONTROLS, MAX_EARLIER_AI, MAX_HISTORY, WORKSPACE_VERSION, emptyWorkspace, type Workspace } from "./workspace.ts";
 
@@ -86,6 +87,18 @@ function validRecord(v: unknown, index: IdIndex): boolean {
   );
 }
 
+function validReport(v: unknown): boolean {
+  if (!isObj(v) || !isStr(v.fingerprint, 16) || !isStr(v.draftedAt, 40) || !isStr(v.preparedBy, 120)) return false;
+  if (v.draftSource !== "template" && v.draftSource !== "ai") return false;
+  if (v.model !== null && !isStr(v.model, 100)) return false;
+  if (v.approved !== null && !(isObj(v.approved) && isStr(v.approved.at, 40) && isStr(v.approved.fingerprint, 16))) return false;
+  if (!isObj(v.sections) || Object.keys(v.sections).length !== SECTION_KEYS.length) return false;
+  return SECTION_KEYS.every((k) => {
+    const s = (v.sections as Obj)[k];
+    return isObj(s) && isStr(s.text, MAX_SECTION_LENGTH) && (s.source === "template" || s.source === "ai") && typeof s.edited === "boolean";
+  });
+}
+
 /** Returns the workspace if the value passes every check, otherwise null. */
 export function validateWorkspace(value: unknown, index: IdIndex): Workspace | null {
   if (!isObj(value) || value.version !== WORKSPACE_VERSION) return null;
@@ -94,6 +107,7 @@ export function validateWorkspace(value: unknown, index: IdIndex): Workspace | n
   if (!value.controls.every((r) => validRecord(r, index))) return null;
   const ids = value.controls.map((r) => (r as Obj).id);
   if (new Set(ids).size !== ids.length) return null;
+  if (value.report !== undefined && value.report !== null && !validReport(value.report)) return null;
   return value as Workspace;
 }
 

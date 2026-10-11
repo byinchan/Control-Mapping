@@ -161,9 +161,12 @@ test("rating display labels, descriptions and scoring effects; stored values unc
   assert.equal(scoreControl(r("full", "none", "na", "na")).inScope, 2);
 });
 
-test("formatScore shows up to three decimals", () => {
-  assert.equal(formatScore(5 / 6), "0.833");
-  assert.equal(formatScore(0.5), "0.5");
-  assert.equal(formatScore(1), "1");
+test("formatScore shows two decimals (display only)", () => {
+  assert.equal(formatScore(5 / 6), "0.83");
+  assert.equal(formatScore(0.625), "0.63");
+  assert.equal(formatScore(0.875), "0.88");
+  assert.equal(formatScore(0.5), "0.50");
+  assert.equal(formatScore(1), "1.00");
+  assert.equal(formatScore(0), "0.00");
   assert.equal(formatScore(null), "n/a");
 });
