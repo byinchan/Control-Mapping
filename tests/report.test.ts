@@ -114,7 +114,7 @@ test("number check: figures not computed by code are flagged; code figures pass"
   assert.ok(allowedNumbers(f).has(0.75)); // C004 score
   assert.deepEqual(checkNumbers("C004 scores 0.75 and the threshold is 0.9.", f), []);
   assert.equal(checkNumbers("Coverage improved by 23 points.", f).length, 1);
-  assert.equal(checkNumbers("A 0.83 average.", f)[0].message.startsWith("not a figure computed by code"), true);
+  assert.equal(checkNumbers("A 0.71 average.", f)[0].message.startsWith("not a figure computed by code"), true);
 });
 
 test("number check ignores framework names, versions, control and requirement IDs, dates and list numbers", () => {
@@ -232,4 +232,20 @@ test("prepared by: required before approval; whitespace does not count; editing 
   const emptied = setPreparedBy(ok.report, "");
   assert.equal(emptied.approved, null);
   assert.deepEqual(approveReport(emptied, f, T).blockers, [blocker]);
+});
+
+test("two-decimal figures: the facts pack holds what is shown, so rounded figures pass and unrounded ones are flagged", () => {
+  const f = buildFacts(sampleWorkspace());
+  // C006: one framework Partial -> 0.5, shown as 0.50; NIST average over 6 controls rounds to two decimals.
+  assert.equal(f.controls.find((c) => c.id === "C006")?.score, "0.50");
+  const nist = f.coverage.find((c) => c.name === "NIST CSF 2.0")!;
+  assert.match(nist.average, /^\d\.\d{2}$/);
+  assert.deepEqual(checkNumbers(`C006 scores 0.50 and NIST CSF 2.0 averages ${nist.average}.`, f), []);
+  // The unrounded value is not what is shown, so it is not accepted.
+  const exact = (1 + 1 + 1 + 0.5 + 0 + 0.5) / 6; // 0.6666…, shown as 0.67
+  assert.equal(nist.average, "0.67");
+  assert.equal(checkNumbers(`NIST CSF 2.0 averages ${exact.toFixed(3)}.`, f).length, 1);
+  // The template's own figures are the rounded ones and pass.
+  const t = templateSections(f);
+  for (const k of SECTION_KEYS) assert.deepEqual(checkNumbers(t[k], f), [], k);
 });

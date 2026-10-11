@@ -79,7 +79,7 @@ export function templateSections(f: Facts): Record<SectionKey, string> {
   const recommendations = bullets(recs.slice(0, 5));
 
   const method =
-    "Controls were loaded from the Version 1 PUC matrix or entered by the analyst. An AI model suggested requirement IDs, ratings and rationales " +
+    "Controls came from the PUC sample control set or were entered by the analyst. An AI model suggested requirement IDs, ratings and rationales " +
     "from the reference catalogs, and the analyst reviewed, edited and confirmed every mapping. Code calculated every figure in this report: " +
     `Full scores 1, Partial 0.5 and None 0, and N/A is left out. A control is Fully Aligned at ${THRESHOLDS.fullyAlignedMin} or higher with no None, ` +
     `Gap Identified below ${THRESHOLDS.gapBelow} (or below ${THRESHOLDS.gapWithNoneBelow} with a None), and Partially Aligned otherwise. ` +

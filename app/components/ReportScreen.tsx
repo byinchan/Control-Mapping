@@ -369,7 +369,7 @@ export function ReportScreen() {
             <SourceLabel r={report} /> Narrative: {narrativeLabel}
           </p>
           <p className="text-xs text-slate-600">
-            {day(report.approved?.at ?? report.draftedAt)} · {facts.confirmed} control{facts.confirmed === 1 ? "" : "s"} assessed · Prepared by:{" "}
+            {day(report.approved?.at ?? report.draftedAt)} · {facts.confirmed} control{facts.confirmed === 1 ? "" : "s"} assessed · Prepared by<span className="no-print"> (required)</span>:{" "}
             <input
               aria-label="Prepared by (required)"
               aria-describedby="prepared-by-help"
@@ -381,7 +381,7 @@ export function ReportScreen() {
               maxLength={120}
               disabled={approved}
               onChange={(e) => setReport((r) => setPreparedBy(r, e.target.value))}
-              className={`no-print rounded border px-1.5 py-0.5 text-xs disabled:border-transparent disabled:bg-transparent ${
+              className={`no-print w-72 max-w-full rounded border px-1.5 py-0.5 text-xs disabled:border-transparent disabled:bg-transparent ${
                 triedApprove && !report.preparedBy.trim() ? "border-red-500 ring-1 ring-red-500" : "border-slate-300"
               }`}
             />
@@ -390,12 +390,13 @@ export function ReportScreen() {
           </p>
           {!approved && (
             <p id="prepared-by-help" className="no-print text-xs text-slate-500">
-              <span className="font-medium text-slate-700">Prepared by (required):</span> Your name or initials and role. Kept in this
-              browser tab only.
+              Your name or initials and role. Kept in this browser tab only.
             </p>
           )}
         </header>
 
+        {/* Key messages first for a board reader, then purpose and the figures. */}
+        {section("keyMessages")}
         {section("purpose")}
 
         <section className="report-section" aria-labelledby="report-headline">
@@ -406,7 +407,6 @@ export function ReportScreen() {
           <HeadlineTables f={facts} />
         </section>
 
-        {section("keyMessages")}
         {section("strengths")}
         {section(
           "gapsAndRisks",

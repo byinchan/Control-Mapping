@@ -44,9 +44,13 @@ export function validateRatings(ratings: unknown): string[] {
   return errors;
 }
 
-/** Display form of a score: up to three decimals, no trailing zeros. */
+/**
+ * Display form of a score or average: always two decimals (0.63, 0.50, 1.00). Display only: scoring and
+ * status thresholds use the exact values. The report's facts pack holds these same rounded strings, so a
+ * figure quoted in the narrative is checked against exactly what is shown.
+ */
 export function formatScore(score: number | null): string {
-  return score === null ? "n/a" : String(Number(score.toFixed(3)));
+  return score === null ? "n/a" : score.toFixed(2);
 }
 
 /**

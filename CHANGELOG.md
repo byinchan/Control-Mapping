@@ -4,6 +4,19 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Final report tweaks (wording and layout only; scoring unchanged)
+- **Two decimals everywhere:** `formatScore` now shows control scores and framework average ratings as `0.50`, `0.63`, `1.00`
+  (matrix, review panel, CSV, report tables and text). Scoring still works in exact half-points; only the display changed.
+  The facts pack holds the rounded display values, so a narrative figure that matches the screen passes the number check
+  (tested: the C006 score is "0.50", the NIST average is "0.67", and an unrounded "0.667" is flagged).
+- **Method text:** "Controls came from the PUC sample control set or were entered by the analyst."
+- **Other "v1" wording left as is (for Bernadette to decide):** "PUC sample (v1)" under the control ID on the review page,
+  "The 14 controls from the Version 1 PUC control matrix." on the sample chooser, and the History entry "Loaded from PUC
+  sample (v1)". All other "v1" mentions are in code comments or developer messages.
+- **Prepared by:** "(required)" appears once, in the label. The input is wider, so the placeholder fits (286 px field, 186 px text).
+- **Key messages first:** in the report (screen and print), Key messages now comes before Purpose and scope. Print length is
+  unchanged: 1.12 pages on A4 and 1.20 on Letter for 14 confirmed controls, measured before and after the move.
+
 ### One green button at a time; one job per place (UI only)
 - **Review page:**
   - **Sticky bar:** per-control actions only (Confirm this control, Confirm and go to next control, Reopen

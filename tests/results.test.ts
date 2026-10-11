@@ -145,7 +145,7 @@ test("csv: header, confirmed rows only, injection-safe text from the analyst", (
       added.id,
       `'=HYPERLINK(""http://example.com"",""click"")`,
       "",
-      "0.5",
+      "0.50",
       "Partially Aligned",
       "No",
       "PR.AA-03",
