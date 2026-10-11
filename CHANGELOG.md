@@ -4,6 +4,18 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Larger text (UI only)
+- **Screen text:** every Tailwind text size is about 2 px larger, with headings scaled to match: 12→14,
+  14→16, 16→18 (also the default body size), 18→21, 20→23, 24→27 px. Badges go from 11→13 px. Only text
+  changes; spacing and widths keep their defaults.
+- **Printed report:** body 9.5→11 pt, small text 8.5→10 pt, section headings 11→12.5 pt, title 14→15.5 pt.
+- **Phone width (375 px):** the review page's single-column grid could widen to fit its content after the
+  change (10 px of sideways scroll). Single-column grids are now set to shrink (`grid-cols-1`, `min-w-0`).
+  Checked all six pages: no sideways scroll and no clipped button text.
+- **Print length:** the approved 14-control report measures about 1.03 pages on A4 and 1.10 on Letter, so
+  nothing was shrunk. The "may run over 2 pages" estimate was recalibrated for the larger print text (86
+  characters per line, 50 lines per page).
+
 ### Navigation follow-up (UI only)
 - **One shared end-of-page footer (`StepFooter`)** on review, matrix, report, samples and own-control pages,
   with the same spacing everywhere: blue "← Back…" link on the left, the large green next action on the right,

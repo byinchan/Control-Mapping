@@ -183,8 +183,8 @@ export function ReviewScreen() {
       {discarded && <Notice tone="warn">Saved data in this tab failed validation and was discarded.</Notice>}
       {!storageOk && <Notice tone="warn">This browser blocked tab storage, so your work will be lost if the page reloads.</Notice>}
 
-      <div className="grid gap-4 lg:grid-cols-[16rem_1fr]">
-        <aside className="space-y-3 lg:sticky lg:top-4 lg:self-start">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[16rem_1fr]">
+        <aside className="min-w-0 space-y-3 lg:sticky lg:top-4 lg:self-start">
           <div className="rounded-lg border border-slate-200 p-3">
             <p className="text-xs text-slate-600">
               <span className="font-semibold text-slate-900">{counts.confirmed}</span> confirmed ·{" "}
@@ -210,7 +210,7 @@ export function ReviewScreen() {
                 </li>
               ))}
             </ul>
-            <p className="mt-2 flex flex-wrap gap-x-3 text-[11px] text-slate-500">
+            <p className="mt-2 flex flex-wrap gap-x-3 text-[13px] text-slate-500">
               <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-slate-300" />not mapped</span>
               <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-amber-400" />awaiting review</span>
               <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-emerald-600" />confirmed</span>

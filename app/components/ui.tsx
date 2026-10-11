@@ -15,7 +15,7 @@ export function RoleBadge({ role }: { role: "AI" | "Code" | "Analyst" }) {
     Code: "bg-sky-100 text-sky-800 ring-sky-200",
     Analyst: "bg-emerald-100 text-emerald-800 ring-emerald-200",
   }[role];
-  return <span className={cx("inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-semibold ring-1 ring-inset", style)}>{role}</span>;
+  return <span className={cx("inline-flex items-center rounded px-1.5 py-0.5 text-[13px] font-semibold ring-1 ring-inset", style)}>{role}</span>;
 }
 
 export function Legend() {
@@ -51,7 +51,7 @@ export function ItemStatusBadge({ badge }: { badge: ItemBadge }) {
     Confirmed: "bg-emerald-600 text-white ring-emerald-600",
     "Not mapped": "bg-slate-50 text-slate-600 ring-slate-300",
   }[badge];
-  return <span className={cx("inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset", style)}>{badge}</span>;
+  return <span className={cx("inline-flex rounded-full px-2 py-0.5 text-[13px] font-medium ring-1 ring-inset", style)}>{badge}</span>;
 }
 
 export function ControlStatusBadge({ status }: { status: ControlStatus }) {
@@ -60,7 +60,7 @@ export function ControlStatusBadge({ status }: { status: ControlStatus }) {
     "awaiting-review": ["Awaiting review", "bg-amber-100 text-amber-900"],
     confirmed: ["Confirmed", "bg-emerald-600 text-white"],
   }[status];
-  return <span className={cx("inline-flex shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium", style)}>{label}</span>;
+  return <span className={cx("inline-flex shrink-0 rounded-full px-2 py-0.5 text-[13px] font-medium", style)}>{label}</span>;
 }
 
 export function ModeBadge({ mode }: { mode: MappingMode }) {
@@ -69,7 +69,7 @@ export function ModeBadge({ mode }: { mode: MappingMode }) {
     demo: ["Demo mode: saved AI output", "bg-orange-100 text-orange-900 ring-1 ring-inset ring-orange-300"],
     mock: ["Mock mapper: not AI", "bg-slate-200 text-slate-800"],
   }[mode];
-  return <span className={cx("inline-flex rounded px-2 py-0.5 text-[11px] font-semibold", style)}>{label}</span>;
+  return <span className={cx("inline-flex rounded px-2 py-0.5 text-[13px] font-semibold", style)}>{label}</span>;
 }
 
 export function Notice({ tone = "info", title, children }: { tone?: "info" | "warn" | "error" | "ok"; title?: string; children: ReactNode }) {

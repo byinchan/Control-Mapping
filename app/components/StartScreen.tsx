@@ -25,7 +25,7 @@ export function StartScreen() {
 
       {discarded && <Notice tone="warn">Saved data in this tab failed validation and was discarded. You are starting fresh.</Notice>}
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Link href="/samples" className={card} aria-label="Choose sample controls: pick any of the 14 PUC sample controls to review">
           <div>
             <p className="text-lg font-semibold text-slate-900">PUC sample controls</p>

@@ -83,7 +83,7 @@ function SourceBadge({ r, k }: { r: Report; k: SectionKey }) {
   const s = r.sections[k];
   if (s.edited) return <RoleBadge role="Analyst" />;
   if (s.source === "ai") return <RoleBadge role="AI" />;
-  return <span className="inline-flex rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold text-slate-700 ring-1 ring-inset ring-slate-300">Template</span>;
+  return <span className="inline-flex rounded bg-slate-100 px-1.5 py-0.5 text-[13px] font-semibold text-slate-700 ring-1 ring-inset ring-slate-300">Template</span>;
 }
 
 function HeadlineTables({ f }: { f: Facts }) {

@@ -105,11 +105,12 @@ export const unapprove = (r: Report): Report => ({ ...r, approved: null });
 
 /**
  * Rough printed length of the report, for the "may run over 2 pages" note. Counts wrapped text lines plus
- * the fixed blocks (title, tables, footer). Calibrated for the compact print layout (about 58 lines a page).
+ * the fixed blocks (title, tables, footer).
  */
 export function estimatePrintedPages(r: Report, facts: Facts): number {
-  const CHARS_PER_LINE = 100;
-  const LINES_PER_PAGE = 58;
+  // Calibrated for the 11 pt print text (about 86 characters per line, 50 lines per page).
+  const CHARS_PER_LINE = 86;
+  const LINES_PER_PAGE = 50;
   let lines = 12; // title block, headline figures, footer and governance note
   lines += 2 + facts.coverage.length; // coverage table
   lines += 2 + Math.min(facts.gaps.length, 5) + (facts.gaps.length > 5 ? 1 : 0); // gaps table

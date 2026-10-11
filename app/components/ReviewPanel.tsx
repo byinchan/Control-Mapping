@@ -121,7 +121,7 @@ export function ReviewPanel({
           </div>
         </div>
         {editingText && !locked && (
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             {FIELDS.map(({ key, label, rows, required }) => {
               const id = `${record.id}-${key}`;
               const common = {
@@ -215,7 +215,7 @@ export function ReviewPanel({
               <Notice key={w} tone="warn" title="Check this">{w}</Notice>
             ))}
             {(ai.proposal.uncertainties.length > 0 || ai.proposal.missingInformation.length > 0) && (
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {ai.proposal.uncertainties.length > 0 && (
                   <div className="rounded-md bg-white p-2 text-sm ring-1 ring-violet-100">
                     <p className="text-xs font-semibold text-violet-900">Uncertainties and assumptions</p>
@@ -240,7 +240,7 @@ export function ReviewPanel({
           <RoleBadge role="Analyst" />
           <h3 className="text-sm font-semibold">Review and edit the mapping</h3>
         </div>
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
           {FRAMEWORK_IDS.map((f) => (
             <FrameworkEditor key={f} record={record} framework={f} onPatch={(patch) => onPatch(f, patch)} />
           ))}
