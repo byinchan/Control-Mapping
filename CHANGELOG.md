@@ -4,6 +4,33 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Report wording, layout and print style (no logic changes)
+- **Byline:** "October 11, 2026 · 14 controls assessed · Prepared by: <name>". "· Draft, not approved" is added
+  only while the report isn't approved. The narrative source (Template or AI badge) shows on screen only. The
+  footer governance note names how the narrative was drafted ("a code template, not AI", or "an AI model
+  (<model>)").
+- **Status colours:** green Fully Aligned, amber Partially Aligned and red Gap Identified, in the headline
+  counts and the gaps table's status column, on screen and in print (`print-color-adjust: exact`). The
+  words stay, so black-and-white print still reads correctly.
+- **White space and page breaks:** about one extra blank line before each section heading. In print, heading
+  rows are kept with the text that follows (`break-after: avoid`), tables and table rows aren't split, and
+  paragraphs keep at least 2 lines together at a page break.
+- **Less repetition in the template:** Key messages no longer repeats the headline status counts; it covers
+  the framework rating range, requirements not met, single-framework results and controls awaiting review.
+  "Not implemented or effective" now appears only in the report footer, which the analyst can't edit away,
+  not also in Method and limitations. Tests check both.
+- **Print-dialog tip next to Download PDF:** "In the print dialog, turn off headers and footers for a cleaner
+  PDF." Why no `@page` rule removes them:
+  - The browser adds those headers and footers, and Safari and Firefox give the page no switch for them.
+  - In Chrome and Edge, `@page { margin: 0 }` hides them only because it leaves no margin to print into,
+    which also removes the margin on every later page, so it was not used.
+  - What the page can control is its title, which browsers print in that header and use as the default PDF
+    file name. While printing, the title is set to "PUC control mapping executive summary YYYY-MM-DD" and
+    restored afterwards.
+  - Not tested in Chrome (not installed here); behaviour taken from the browsers' documented print options.
+- **Print length** after these changes (print styles applied on screen, 14 confirmed controls): about 1.12
+  pages on A4 and 1.20 on Letter.
+
 ### Larger text (UI only)
 - **Screen text:** every Tailwind text size is about 2 px larger, with headings scaled to match: 12→14,
   14→16, 16→18 (also the default body size), 18→21, 20→23, 24→27 px. Badges go from 11→13 px. Only text

@@ -86,10 +86,13 @@ test("template draft passes its own checks: all sample controls, a single contro
 test("template draft states the code's figures", () => {
   const f = buildFacts(sampleWorkspace());
   const t = templateSections(f);
-  assert.match(t.keyMessages, /2 of 6 confirmed controls are Fully Aligned, 3 are Partially Aligned and 1 has status Gap Identified/);
+  // Key messages do not repeat the headline status counts.
+  assert.doesNotMatch(t.keyMessages, /Fully Aligned|Partially Aligned|Gap Identified/);
   assert.match(t.keyMessages, /1 control awaiting review is not included/);
+  assert.match(t.keyMessages, /Results for C006 .* rest on a single framework/);
   assert.match(t.gapsAndRisks, /C005 .*NIST CSF 2\.0 and CIS Controls v8\.1 has a requirement this control, as described, doesn't meet/);
-  assert.match(t.method, /does not show that they are implemented or effective/);
+  // "Not implemented or effective" lives in the fixed report footer only, not in the editable text.
+  for (const k of SECTION_KEYS) assert.doesNotMatch(t[k], /implemented|effective/, k);
   const recs = t.recommendations.split("\n");
   assert.ok(recs.length >= 3 && recs.length <= 5);
 });

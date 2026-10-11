@@ -10,7 +10,6 @@ const ref = (c: { id: string; name: string }) => `${c.id} ${c.name}`;
 
 export function templateSections(f: Facts): Record<SectionKey, string> {
   const n = f.confirmed;
-  const s = f.statusCounts;
   const rated = f.coverage.filter((c) => c.average !== "n/a");
   const byAverage = [...rated].sort((a, b) => Number(b.average) - Number(a.average));
   const best = byAverage[0];
@@ -24,10 +23,8 @@ export function templateSections(f: Facts): Record<SectionKey, string> {
     `align to ${f.frameworks.length === 4 ? "four" : f.frameworks.length} frameworks: ${list(f.frameworks)}. ` +
     "Only controls the analyst has confirmed are included.";
 
+  // The status counts are in the headline results just above, so key messages do not repeat them.
   const keyMessages = bullets([
-    n === 1
-      ? `The single confirmed control has status ${f.controls[0].status}.`
-      : `${s["Fully Aligned"]} of ${n} confirmed controls ${s["Fully Aligned"] === 1 ? "is" : "are"} Fully Aligned, ${s["Partially Aligned"]} ${s["Partially Aligned"] === 1 ? "is" : "are"} Partially Aligned and ${s["Gap Identified"]} ${s["Gap Identified"] === 1 ? "has" : "have"} status Gap Identified.`,
     best && worst && best.name !== worst.name
       ? `Average rating by framework ranges from ${worst.average} (${worst.name}) to ${best.average} (${best.name}).`
       : best
@@ -36,6 +33,7 @@ export function templateSections(f: Facts): Record<SectionKey, string> {
     notMet.length > 0
       ? `Requirements not met (rated None) appear for ${list(notMet.map(ref))}.`
       : "No framework is rated None for any confirmed control.",
+    ...(limited.length > 0 ? [`Results for ${list(limited.map(ref))} rest on a single framework, so treat ${limited.length === 1 ? "it" : "them"} with more caution.`] : []),
     ...(f.awaitingReview > 0
       ? [`${f.awaitingReview} ${f.awaitingReview === 1 ? "control awaiting review is" : "controls awaiting review are"} not included.`]
       : []),
@@ -85,7 +83,7 @@ export function templateSections(f: Facts): Record<SectionKey, string> {
     "from the reference catalogs, and the analyst reviewed, edited and confirmed every mapping. Code calculated every figure in this report: " +
     `Full scores 1, Partial 0.5 and None 0, and N/A is left out. A control is Fully Aligned at ${THRESHOLDS.fullyAlignedMin} or higher with no None, ` +
     `Gap Identified below ${THRESHOLDS.gapBelow} (or below ${THRESHOLDS.gapWithNoneBelow} with a None), and Partially Aligned otherwise. ` +
-    "Limitations: this report shows how controls, as described, align to frameworks. It does not show that they are implemented or effective. " +
+    "Limitations: ratings judge each control as described, against the framework text summarized in the catalogs. " +
     `Results cover the ${n} confirmed control${n === 1 ? "" : "s"} only, and the organization is fictional.`;
 
   return { purpose, keyMessages, strengths, gapsAndRisks, recommendations, method };

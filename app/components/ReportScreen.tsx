@@ -79,11 +79,32 @@ function Flags({ check }: { check: SectionCheck }) {
   );
 }
 
+/** On-screen only: how the narrative was drafted (AI badge or "Template"). */
+function SourceLabel({ r }: { r: Report }) {
+  return r.draftSource === "ai" ? (
+    <RoleBadge role="AI" />
+  ) : (
+    <span className="inline-flex rounded bg-slate-100 px-1.5 py-0.5 text-[13px] font-semibold text-slate-700 ring-1 ring-inset ring-slate-300">Template</span>
+  );
+}
+
 function SourceBadge({ r, k }: { r: Report; k: SectionKey }) {
   const s = r.sections[k];
   if (s.edited) return <RoleBadge role="Analyst" />;
   if (s.source === "ai") return <RoleBadge role="AI" />;
   return <span className="inline-flex rounded bg-slate-100 px-1.5 py-0.5 text-[13px] font-semibold text-slate-700 ring-1 ring-inset ring-slate-300">Template</span>;
+}
+
+const STATUS_CHIP: Record<string, string> = {
+  "Fully Aligned": "status-chip bg-emerald-100 text-emerald-900 ring-emerald-300",
+  "Partially Aligned": "status-chip bg-amber-100 text-amber-900 ring-amber-300",
+  "Gap Identified": "status-chip bg-red-100 text-red-900 ring-red-300",
+  "Not scorable": "status-chip bg-slate-100 text-slate-700 ring-slate-300",
+};
+
+/** Status with its colour (green, amber, red). The words stay, so it also reads correctly in black and white. */
+function StatusText({ status, children }: { status: string; children?: React.ReactNode }) {
+  return <span className={`inline-block rounded px-1.5 ring-1 ring-inset ${STATUS_CHIP[status] ?? ""}`}>{children ?? status}</span>;
 }
 
 function HeadlineTables({ f }: { f: Facts }) {
@@ -92,7 +113,10 @@ function HeadlineTables({ f }: { f: Facts }) {
       <p>
         {STATUS_ORDER.map((s, i) => (
           <span key={s}>
-            <span className="font-semibold">{f.statusCounts[s]}</span> {s} ({f.statusPercents[s]}){i < STATUS_ORDER.length - 1 ? " · " : ""}
+            <StatusText status={s}>
+              <span className="font-semibold">{f.statusCounts[s]}</span> {s} ({f.statusPercents[s]})
+            </StatusText>
+            {i < STATUS_ORDER.length - 1 ? " · " : ""}
           </span>
         ))}{" "}
         of {f.confirmed} confirmed control{f.confirmed === 1 ? "" : "s"}
@@ -150,7 +174,9 @@ function GapsTable({ f }: { f: Facts }) {
               <td>{g.owner ?? ""}</td>
               <td>{g.notMet.length ? g.notMet.join(", ") : "Low overall score"}</td>
               <td>{g.score}</td>
-              <td>{g.status}</td>
+              <td>
+                <StatusText status={g.status} />
+              </td>
             </tr>
           ))}
         </tbody>
@@ -158,6 +184,23 @@ function GapsTable({ f }: { f: Facts }) {
       {f.gaps.length > MAX_GAP_ROWS && <p className="text-xs">+{f.gaps.length - MAX_GAP_ROWS} more in the matrix and CSV export.</p>}
     </>
   );
+}
+
+/**
+ * Opens the print dialog with a clean document title: browsers print the title in their page header (when
+ * headers are on) and use it as the default PDF file name. The original title is restored afterwards.
+ */
+function printReport() {
+  const original = document.title;
+  const d = new Date();
+  const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  document.title = `PUC control mapping executive summary ${date}`;
+  const restore = () => {
+    document.title = original;
+    window.removeEventListener("afterprint", restore);
+  };
+  window.addEventListener("afterprint", restore);
+  window.print();
 }
 
 export function ReportScreen() {
@@ -296,7 +339,7 @@ export function ReportScreen() {
                 </Button>
               )}
               {approved ? (
-                <Button variant="primary" onClick={() => window.print()}>
+                <Button variant="primary" onClick={printReport}>
                   Download PDF
                 </Button>
               ) : (
@@ -312,7 +355,8 @@ export function ReportScreen() {
             </div>
           )}
           <p className="mt-1 text-xs text-slate-500">
-            Download PDF opens your browser&apos;s print dialog; choose &ldquo;Save as PDF&rdquo;.
+            Download PDF opens your browser&apos;s print dialog; choose &ldquo;Save as PDF&rdquo;. In the print dialog, turn off headers and
+            footers for a cleaner PDF.
             {pages > 2 && <span className="font-medium text-amber-800"> This may run over 2 pages: shorten the longest sections.</span>}
           </p>
         </div>
@@ -339,12 +383,11 @@ export function ReportScreen() {
         <header className="report-section border-b border-slate-200 pb-2">
           <h1 className="text-lg font-semibold">Control Mapping and Framework Alignment: Executive Summary</h1>
           <p>Pacific Utilities Corporation (PUC), a fictional organization</p>
-          <p className="text-xs text-slate-600">
-            {day(report.approved?.at ?? report.draftedAt)} · Based on {facts.confirmed} confirmed control{facts.confirmed === 1 ? "" : "s"} · Narrative:{" "}
-            {narrativeLabel} · {approved ? "Approved by the analyst" : "Draft, not approved"}
+          <p className="no-print mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-600">
+            <SourceLabel r={report} /> Narrative: {narrativeLabel}
           </p>
           <p className="text-xs text-slate-600">
-            Prepared by:{" "}
+            {day(report.approved?.at ?? report.draftedAt)} · {facts.confirmed} control{facts.confirmed === 1 ? "" : "s"} assessed · Prepared by:{" "}
             <input
               aria-label="Prepared by"
               value={report.preparedBy}
@@ -355,6 +398,7 @@ export function ReportScreen() {
               className="no-print rounded border border-slate-300 px-1.5 py-0.5 text-xs disabled:border-transparent disabled:bg-transparent"
             />
             <span className="print-only">{report.preparedBy || "Not given"}</span>
+            {!approved && <span className="font-semibold text-amber-800"> · Draft, not approved</span>}
           </p>
         </header>
 
@@ -383,9 +427,9 @@ export function ReportScreen() {
           <p className="font-medium">Fictional organization. AI-assisted, human-reviewed.</p>
           <p>
             Governance note: every count, score, status and table in this report was calculated by code from the analyst&apos;s confirmed
-            mappings. The narrative was drafted by {report.draftSource === "ai" ? "an AI model" : "a code template"}, then edited and approved by
-            the analyst; a check confirms that each figure in the narrative matches the code&apos;s results. This report shows alignment of control
-            descriptions to frameworks, not that controls are implemented or effective.
+            mappings. The narrative was drafted by {report.draftSource === "ai" ? `an AI model (${report.model ?? "Claude"})` : "a code template, not AI"},
+            then edited and approved by the analyst; a check confirms that each figure in the narrative matches the code&apos;s results. This report
+            shows alignment of control descriptions to frameworks, not that controls are implemented or effective.
           </p>
           <p>{DISCLAIMER}</p>
         </footer>
@@ -394,7 +438,7 @@ export function ReportScreen() {
       {/* Next step: approve, then download */}
       <StepFooter back={{ href: "/matrix", label: "Back to matrix & gaps" }}>
         {approved ? (
-          <Button variant="primary" size="lg" onClick={() => window.print()}>
+          <Button variant="primary" size="lg" onClick={printReport}>
             Download PDF <span aria-hidden>→</span>
           </Button>
         ) : (

@@ -26,7 +26,14 @@ body {
 .report-h2 {
   font-weight: 600;
   font-size: 1.1rem;
-  margin-top: 0.75rem;
+  /* About one extra blank line before each subheading. */
+  margin-top: 1.75em;
+  margin-bottom: 0.25em;
+}
+/* Status colours print as shown (the labels stay, so black-and-white print still reads correctly). */
+.report-doc {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 .report-table th,
 .report-table td {
@@ -75,13 +82,29 @@ body {
   }
   .report-h2 {
     font-size: 12.5pt;
-    margin-top: 0.5rem;
+    margin-top: 1.4em;
+    /* Never leave a heading alone at the bottom of a page. */
+    break-after: avoid;
+    page-break-after: avoid;
   }
   .report-doc .text-xs {
     font-size: 10pt !important;
   }
-  .report-section,
-  .report-table tr {
+  /* Keep tables, table rows and short blocks in one piece. */
+  .report-table,
+  .report-table tr,
+  .report-section > div:first-child {
     break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  /* The heading row (heading + badge) stays with the text that follows it. */
+  .report-section > div:first-child {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  p,
+  li {
+    orphans: 2;
+    widows: 2;
   }
 }
