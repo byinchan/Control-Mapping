@@ -4,6 +4,11 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Start page: one green button (UI only)
+- "Choose sample controls →" is the green primary button; "Enter your own control →" is now a blue outline button.
+  Both cards stay fully clickable. The sample card's hover and focus border is green, and the own-control card's is blue;
+  both keep the blue focus ring.
+
 ### Final report tweaks (wording and layout only; scoring unchanged)
 - **Two decimals everywhere:** `formatScore` now shows control scores and framework average ratings as `0.50`, `0.63`, `1.00`
   (matrix, review panel, CSV, report tables and text). Scoring still works in exact half-points; only the display changed.
