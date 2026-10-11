@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Legend, Notice } from "./ui.tsx";
+import { Legend, LinkButton, Notice } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 export function StartScreen() {
   const { ws, discarded } = useWorkspace();
   const count = ws?.controls.length ?? 0;
   const choice =
-    "block rounded-xl border-2 border-slate-200 bg-white p-6 text-left transition hover:border-slate-900 hover:shadow-sm focus:border-slate-900 focus:outline-none";
+    "block rounded-xl border-2 border-slate-200 bg-white p-6 text-left transition hover:border-blue-600 hover:shadow-sm focus-visible:border-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2";
   return (
     <div className="mx-auto max-w-3xl space-y-6 py-4">
       <header className="space-y-2">
@@ -24,21 +24,19 @@ export function StartScreen() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Link href="/samples" className={choice}>
-          <p className="text-lg font-semibold text-slate-900">Choose sample controls</p>
+          <p className="text-lg font-semibold text-blue-700">Choose sample controls →</p>
           <p className="mt-1 text-sm text-slate-600">Pick any of the 14 PUC sample controls to review.</p>
         </Link>
         <Link href="/new" className={choice}>
-          <p className="text-lg font-semibold text-slate-900">Enter your own control</p>
+          <p className="text-lg font-semibold text-blue-700">Enter your own control →</p>
           <p className="mt-1 text-sm text-slate-600">Type a control name and description to map.</p>
         </Link>
       </div>
 
       {count > 0 && (
-        <p className="text-sm">
-          <Link href="/review" className="font-medium text-slate-900 underline">
-            Continue reviewing ({count} control{count === 1 ? "" : "s"} in this tab)
-          </Link>
-        </p>
+        <LinkButton href="/review">
+          Continue reviewing ({count} control{count === 1 ? "" : "s"} in this tab) <span aria-hidden>→</span>
+        </LinkButton>
       )}
 
       <p className="text-xs text-slate-500">

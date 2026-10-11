@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PUC_SAMPLES } from "@/lib/workflow/samples.ts";
 import { MAX_CONTROLS, loadSample } from "@/lib/workflow/workspace.ts";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button } from "./ui.tsx";
+import { Button, TextLink } from "./ui.tsx";
 import { saveNow, useWorkspace } from "./useWorkspace.ts";
 
 export function SampleChecklist() {
@@ -83,9 +82,12 @@ export function SampleChecklist() {
 
       {selected.size > room && <p className="text-sm text-red-700">This tab can hold {room} more controls.</p>}
       <div className="flex items-center justify-between">
-        <Link href="/" className="text-sm text-slate-600 underline">Back</Link>
+        <TextLink href="/" className="text-sm">
+          ← Back
+        </TextLink>
         <Button
           variant="primary"
+          size="lg"
           disabled={selected.size === 0 || selected.size > room}
           onClick={() => {
             const chosen = PUC_SAMPLES.filter((s) => selected.has(s.id));
@@ -94,7 +96,7 @@ export function SampleChecklist() {
             router.push(`/review?focus=${chosen[0].id}`);
           }}
         >
-          Continue with {selected.size} control{selected.size === 1 ? "" : "s"}
+          Continue with {selected.size} control{selected.size === 1 ? "" : "s"} <span aria-hidden>→</span>
         </Button>
       </div>
     </div>

@@ -24,7 +24,7 @@ import { requestMapping } from "./mappingClient.ts";
 import { AI_LABELS } from "./labels.ts";
 import { ReviewPanel } from "./ReviewPanel.tsx";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, Legend, Notice, RatingKey, cx } from "./ui.tsx";
+import { Button, Legend, LinkButton, Notice, RatingKey, TextLink, cx } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const now = () => new Date().toISOString();
@@ -138,7 +138,7 @@ export function ReviewScreen() {
         <div className="rounded-lg border border-dashed border-slate-300 p-8 text-center">
           <p className="text-slate-700">There are no controls in this tab yet.</p>
           <p className="mt-2 text-sm">
-            <Link href="/samples" className="underline">Choose sample controls</Link> or <Link href="/new" className="underline">enter your own control</Link>.
+            <TextLink href="/samples">Choose sample controls</TextLink> or <TextLink href="/new">enter your own control</TextLink>.
           </p>
         </div>
       </div>
@@ -200,7 +200,7 @@ export function ReviewScreen() {
                     title={r.current.name}
                     className={cx(
                       "flex w-full items-center gap-2 rounded px-2 py-1 text-left text-sm",
-                      r.id === selectedId ? "bg-slate-900 text-white" : "hover:bg-slate-100",
+                      r.id === selectedId ? "bg-blue-600 text-white" : "hover:bg-blue-50",
                     )}
                   >
                     <span className={cx("h-2 w-2 shrink-0 rounded-full", busy.has(r.id) ? "animate-pulse bg-violet-500" : DOT[controlStatus(r)])} />
@@ -228,13 +228,13 @@ export function ReviewScreen() {
           )}
           {batch && <BatchSummary r={batch} />}
           {counts.confirmed > 0 && (
-            <Link href="/matrix" className="block rounded-md bg-slate-900 px-3 py-1.5 text-center text-sm font-medium text-white hover:bg-slate-700">
-              See matrix and gaps ({counts.confirmed} confirmed)
-            </Link>
+            <LinkButton href="/matrix" className="w-full">
+              See matrix &amp; gaps ({counts.confirmed} confirmed)
+            </LinkButton>
           )}
-          <Link href="/" className="block rounded-md px-3 py-1.5 text-center text-sm font-medium text-slate-800 ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
+          <LinkButton href="/" className="w-full">
             + Add controls
-          </Link>
+          </LinkButton>
           <button
             type="button"
             className="w-full text-xs text-red-700 underline"
@@ -271,6 +271,7 @@ export function ReviewScreen() {
                 if (target) openControl(target);
               }}
               onNext={nextId ? () => openControl(nextId) : null}
+              confirmedCount={counts.confirmed}
               onReopen={() => change((w) => reopenControl(w, selected.id, now()))}
               onRemove={() => {
                 if (!window.confirm(`Remove ${selected.id} from this tab?`)) return;

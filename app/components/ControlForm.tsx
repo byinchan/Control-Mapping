@@ -43,7 +43,12 @@ export function ControlForm({ onAdd, submitLabel }: { onAdd: (input: ControlInpu
         Owner <span className="font-normal text-slate-500">(optional)</span>
         <input value={draft.owner ?? ""} onChange={set("owner")} maxLength={INPUT_LIMITS.owner} className={input} />
       </label>
-      <Button type="submit" variant="primary" disabled={!ready}>{submitLabel}</Button>
+      <div className="flex justify-end">
+        <Button type="submit" variant="primary" size="lg" disabled={!ready}>
+          {submitLabel} <span aria-hidden>→</span>
+        </Button>
+      </div>
+      {!ready && <p className="text-right text-xs text-slate-600">Enter a name and a description to continue.</p>}
     </form>
   );
 }

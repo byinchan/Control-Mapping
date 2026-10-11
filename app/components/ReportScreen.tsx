@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { DISCLAIMER } from "@/lib/disclaimer.ts";
 import { checkSection, type SectionCheck } from "@/lib/report/checks.ts";
@@ -27,7 +26,7 @@ import {
 import { templateSections } from "@/lib/report/template.ts";
 import { RATING_LABELS } from "@/lib/scoring/config.ts";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, Legend, Notice, RoleBadge, cx } from "./ui.tsx";
+import { Button, DisabledAction, Legend, Notice, RoleBadge, TextLink } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const now = () => new Date().toISOString();
@@ -183,9 +182,7 @@ export function ReportScreen() {
         <div className="rounded-lg border border-dashed border-slate-300 p-8 text-center">
           <p className="text-slate-700">Confirm at least one control to start the report.</p>
           <p className="mt-3 text-sm">
-            <Link href={ws.controls.length ? "/review" : "/"} className="font-medium underline">
-              {ws.controls.length ? "Go to review" : "Choose controls"}
-            </Link>
+            <TextLink href={ws.controls.length ? "/review" : "/"}>{ws.controls.length ? "Go to review" : "Choose controls"}</TextLink>
           </p>
         </div>
       </div>
@@ -209,7 +206,9 @@ export function ReportScreen() {
           figure comes from code; the narrative is a draft you edit and approve.
         </p>
         <div className="rounded-lg border border-slate-200 p-4">
-          <Button variant="primary" onClick={startTemplate}>Start with a template draft</Button>
+          <Button variant="primary" size="lg" onClick={startTemplate}>
+            Start with a template draft <span aria-hidden>→</span>
+          </Button>
           <p className="mt-2 text-xs text-slate-600">Template draft, not AI: plain text built by code from your confirmed results.</p>
         </div>
       </div>
@@ -217,6 +216,12 @@ export function ReportScreen() {
   }
 
   const outOfDate = isOutOfDate(report, facts);
+  const approve = () => {
+    setTriedApprove(true);
+    const res = approveReport(report, facts, now());
+    if (res.blockers.length === 0) setReport(() => res.report);
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const approved = report.approved !== null && !outOfDate;
   const checks = Object.fromEntries(SECTION_KEYS.map((k) => [k, checkSection(report.sections[k].text, facts)])) as Record<SectionKey, SectionCheck>;
   const blockers = reportBlockers(report, facts);
@@ -286,20 +291,17 @@ export function ReportScreen() {
               {approved ? (
                 <Button onClick={() => setReport(unapprove)}>Edit report (removes approval)</Button>
               ) : (
-                <Button
-                  variant="confirm"
-                  onClick={() => {
-                    setTriedApprove(true);
-                    const res = approveReport(report, facts, now());
-                    if (res.blockers.length === 0) setReport(() => res.report);
-                  }}
-                >
+                <Button variant="confirm" onClick={approve}>
                   Approve report
                 </Button>
               )}
-              <Button variant="primary" disabled={!approved} onClick={() => window.print()} title={approved ? undefined : "Approve the report first"}>
-                Download PDF
-              </Button>
+              {approved ? (
+                <Button variant="primary" onClick={() => window.print()}>
+                  Download PDF
+                </Button>
+              ) : (
+                <DisabledAction reason="Approve the report first">Download PDF</DisabledAction>
+              )}
             </div>
           </div>
           {!approved && triedApprove && blockers.length > 0 && (
@@ -389,9 +391,25 @@ export function ReportScreen() {
         </footer>
       </article>
 
-      <p className={cx("no-print text-xs text-slate-500")}>
-        The report is kept only in this browser tab, like the rest of your work. <Link href="/matrix" className="underline">Back to the matrix</Link>
-      </p>
+      {/* Next step: approve, then download */}
+      <div className="no-print flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
+        <TextLink href="/matrix" className="text-sm">
+          ← Back to matrix &amp; gaps
+        </TextLink>
+        {approved ? (
+          <Button variant="primary" size="lg" onClick={() => window.print()}>
+            Download PDF <span aria-hidden>→</span>
+          </Button>
+        ) : (
+          <Button variant="primary" size="lg" onClick={approve}>
+            Approve report <span aria-hidden>→</span>
+          </Button>
+        )}
+      </div>
+      {!approved && triedApprove && blockers.length > 0 && (
+        <p className="no-print text-right text-xs text-red-700">Not ready to approve: see the list at the top of the page.</p>
+      )}
+      <p className="no-print text-xs text-slate-500">The report is kept only in this browser tab, like the rest of your work.</p>
     </div>
   );
 }

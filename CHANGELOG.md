@@ -4,6 +4,32 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Navigation and button styles (UI only, no logic changes)
+- **Step indicator:** available steps are outlined blue pill links with hover and keyboard-focus rings. The
+  current step is filled blue and marked `aria-current="step"`, and is not a link. Locked steps are dashed
+  grey and `aria-disabled`, with the reason shown ("confirm 1 control first") and as a tooltip. They wrap
+  at phone width without sideways scrolling.
+- **Next-step button at the end of every step page:**
+  - **Review bottom bar:** with every control confirmed, a large green "Continue to matrix & gaps →" next to
+    "Reopen for edits" replaces "All controls are confirmed.". Otherwise the Confirm buttons stay the main
+    actions, with a smaller "See matrix & gaps (n confirmed)" once at least one is confirmed.
+  - **Matrix:** "Next: the executive report." is removed (the "Select a control name…" hint stays). After
+    Gaps: "← Back to review" and a large green "Continue to the executive report →". The empty state shows
+    that button disabled with "Confirm at least 1 control first".
+  - **Report:** it ends with "← Back to matrix & gaps" and a large green "Approve report →", which becomes
+    "Download PDF →" once approved. "Start with a template draft" is a large green button.
+  - **Samples and own-control pages:** "Continue with n controls →" and "Add and review →" are large green
+    buttons with a blue "← Back". The form says what's missing while the button is disabled.
+  - **Start page:** left as two large choice cards, the page's only real next steps, with blue hover and
+    focus borders. "Continue reviewing (n)" is a blue outline button.
+- **Colours:** no black buttons anywhere.
+  - Primary actions are green: Confirm, Approve report, Download PDF, Continue.
+  - Secondary actions are blue outline: Download CSV, Redraft from template, Edit text, Reopen, See matrix.
+  - Links are blue and underlined.
+  - Disabled controls are grey with the reason shown, e.g. Download PDF shows "Approve the report first".
+  - AI actions stay violet to match the AI badge, and Remove stays red outline.
+  - The selected control in the review list is blue instead of black.
+
 ### Stage 1: report without AI
 - **Facts pack (`lib/report/facts.ts`):** everything the report may state, computed by code from **confirmed
   controls only**: status counts and percentages, per-framework coverage, gaps (Gap Identified or any None),

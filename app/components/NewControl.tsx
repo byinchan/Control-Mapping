@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MAX_CONTROLS, addControl } from "@/lib/workflow/workspace.ts";
 import { ControlForm } from "./ControlForm.tsx";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Notice } from "./ui.tsx";
+import { Notice, TextLink } from "./ui.tsx";
 import { saveNow, useWorkspace } from "./useWorkspace.ts";
 
 export function NewControl() {
@@ -37,7 +36,9 @@ export function NewControl() {
           />
         </div>
       )}
-      <Link href="/" className="text-sm text-slate-600 underline">Back</Link>
+      <TextLink href="/" className="text-sm">
+        ← Back
+      </TextLink>
     </div>
   );
 }
