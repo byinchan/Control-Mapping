@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen bg-white text-slate-900 antialiased">
         <div className="flex min-h-screen flex-col">
           <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">{children}</main>
-          <footer className="border-t border-slate-200 px-4 py-4 text-xs text-slate-600">
+          <footer className="no-print border-t border-slate-200 px-4 py-4 text-xs text-slate-600">
             <div className="mx-auto max-w-6xl space-y-1">
               <p className="font-medium text-slate-700">{DISCLAIMER}</p>
               <p>{FICTIONAL_ORG_NOTE} AI-assisted, human-reviewed.</p>

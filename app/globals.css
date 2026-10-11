@@ -1,1 +1,65 @@
 @import "tailwindcss";
+
+/* Report document: shared screen and print styles */
+.report-h2 {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-top: 0.75rem;
+}
+.report-table th,
+.report-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.2rem 0.5rem 0.2rem 0;
+  vertical-align: top;
+}
+.report-table th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #475569;
+}
+.print-only {
+  display: none;
+}
+
+/* Compact print layout for "Download PDF" (the browser's print dialog, Save as PDF).
+   Paper size comes from the print dialog, so Letter and A4 both work. */
+@media print {
+  @page {
+    margin: 14mm 14mm 16mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: inline !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .report-doc {
+    border: 0 !important;
+    padding: 0 !important;
+    font-size: 9.5pt !important;
+    line-height: 1.35 !important;
+    color: #000 !important;
+  }
+  .report-doc h1 {
+    font-size: 14pt !important;
+  }
+  .report-h2 {
+    font-size: 11pt;
+    margin-top: 0.5rem;
+  }
+  .report-doc .text-xs {
+    font-size: 8.5pt !important;
+  }
+  .report-section,
+  .report-table tr {
+    break-inside: avoid;
+  }
+}

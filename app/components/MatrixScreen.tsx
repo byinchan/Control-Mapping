@@ -208,7 +208,9 @@ export function MatrixScreen() {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-slate-500">Select a control name to open it in review.</p>
+        <p className="text-xs text-slate-500">
+          Select a control name to open it in review. Next: the <Link href="/report" className="underline">executive report</Link>.
+        </p>
       </section>
 
       {/* Gaps and checks */}

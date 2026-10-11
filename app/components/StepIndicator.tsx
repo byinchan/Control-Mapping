@@ -10,8 +10,7 @@ export function StepIndicator({ current, confirmedCount }: { current: 1 | 2 | 3 
     { label: "Choose controls", href: "/" },
     { label: "Review & confirm", href: "/review" },
     { label: "Matrix & gaps", href: confirmedCount > 0 ? "/matrix" : null, note: needsOne },
-    // Step 6 of the build adds the report; until then it is shown but not linked.
-    { label: "Report", href: null, note: confirmedCount > 0 ? "coming next" : needsOne },
+    { label: "Report", href: confirmedCount > 0 ? "/report" : null, note: needsOne },
   ];
   return (
     <nav aria-label="Progress">
