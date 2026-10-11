@@ -307,3 +307,14 @@ test("confirm and next: finds the next control awaiting review, wrapping around,
   ws = confirmControl(ws, "C003", ID_INDEX, T).ws;
   assert.equal(nextAwaitingId(ws, "C003"), null);
 });
+
+test("storage: saved data from before Activity was removed still loads (activity kept, not required)", () => {
+  let ws = addControl(emptyWorkspace(), { name: "Old control", description: "Typed earlier", activity: "Quarterly review" }, T).ws;
+  ws = editControlText(ws, "A001", "activity", "Quarterly review, updated", T);
+  const s = fakeStorage();
+  s.setItem(STORAGE_KEY, JSON.stringify(ws));
+  const loaded = loadWorkspace(s, ID_INDEX);
+  assert.equal(loaded.discarded, false);
+  assert.equal(loaded.ws.controls[0].current.activity, "Quarterly review, updated");
+  assert.equal(loaded.ws.controls[0].original.activity, "Quarterly review");
+});

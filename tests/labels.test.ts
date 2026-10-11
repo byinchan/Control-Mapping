@@ -17,13 +17,12 @@ test("AI button labels", () => {
   });
 });
 
-test("scoring rule text: average, thresholds, Not scorable and limited coverage; no repeated per-rating scores", () => {
+test("scoring rule text: average with per-rating values, thresholds, Not scorable and limited coverage", () => {
   const text = SCORING_RULE_TEXT.join("\n");
-  assert.match(SCORING_RULE_TEXT[0], /average of the rated frameworks/);
+  assert.equal(SCORING_RULE_TEXT[0], "Control score = average of the rated frameworks (Full 1, Partial 0.5, None 0; N/A left out).");
   assert.ok(text.includes(String(THRESHOLDS.fullyAlignedMin)));
   assert.ok(text.includes(String(THRESHOLDS.gapBelow)));
   assert.ok(text.includes(String(THRESHOLDS.gapWithNoneBelow)));
   assert.match(text, /Not scorable/);
   assert.match(text, /Limited framework coverage/);
-  assert.doesNotMatch(text, /\(1\.0\)|\(0\.5\)|\(0\)/);
 });

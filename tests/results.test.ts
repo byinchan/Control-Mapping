@@ -137,53 +137,148 @@ test("csv: header, confirmed rows only, injection-safe text from the analyst", (
   assert.ok(!body.includes("C002")); // not confirmed, not exported
   assert.ok(body.includes(`"'=HYPERLINK(""http://example.com"",""click"")"`));
   assert.ok(body.includes(`"'@cmd, with comma\nand a new line"`));
-  // The analyst's control as one exact row: IDs, ratings, rationales, score 0.5, status, flag, date.
+  // The analyst's control as one exact row, in the new column order.
   const row = body.split("\r\n").find((l) => l.startsWith(`"${added.id}"`));
   assert.equal(
     row,
     [
       added.id,
       `'=HYPERLINK(""http://example.com"",""click"")`,
-      "'@cmd, with comma\nand a new line",
       "",
-      "",
-      "",
-      "PR.AA-03",
-      "A.8.5",
-      "N/A",
-      "CC6.1",
-      "Full",
-      "Why full",
-      "None",
-      "Why none",
-      "N/A",
-      "Nothing on this topic",
-      "Partial",
-      "Why partial",
       "0.5",
       "Partially Aligned",
       "No",
+      "PR.AA-03",
+      "Full",
+      "A.8.5",
+      "None",
+      "N/A",
+      "N/A",
+      "CC6.1",
+      "Partial",
+      "Why full",
+      "Why none",
+      "Nothing on this topic",
+      "Why partial",
       "2026-10-10 14:05",
+      "'@cmd, with comma\nand a new line",
+      "",
     ]
       .map((c) => `"${c}"`)
       .join(","),
   );
 });
 
-test("csv: columns follow the v1 matrix, then ratings, rationales, score, status, flag and date", () => {
-  assert.deepEqual(CSV_HEADERS.slice(0, 10), [
+test("csv: columns in the requested order; no Activity, AI source or model columns", () => {
+  assert.deepEqual(CSV_HEADERS, [
     "Control ID",
     "Control Name",
+    "Control Owner",
+    "Score",
+    "Status",
+    "Limited framework coverage",
+    "NIST CSF 2.0",
+    "NIST CSF 2.0 rating",
+    "ISO/IEC 27001:2022",
+    "ISO/IEC 27001:2022 rating",
+    "CIS Controls v8.1 safeguards",
+    "CIS Controls v8.1 rating",
+    "SOC 2 TSC",
+    "SOC 2 TSC rating",
+    "NIST CSF 2.0 rationale or N/A reason",
+    "ISO/IEC 27001:2022 rationale or N/A reason",
+    "CIS Controls v8.1 rationale or N/A reason",
+    "SOC 2 TSC rationale or N/A reason",
+    "Confirmed at (UTC)",
     "Description",
     "Control Objective",
-    "Control Activity",
-    "Control Owner",
-    "NIST CSF 2.0",
-    "ISO/IEC 27001:2022",
-    "CIS Controls v8.1",
-    "SOC 2 TSC",
   ]);
-  assert.deepEqual(CSV_HEADERS.slice(-4), ["Score", "Status", "Limited framework coverage", "Confirmed at (UTC)"]);
-  assert.ok(!CSV_HEADERS.some((h) => /model|AI/i.test(h))); // AI source and model are left out
+  assert.ok(!CSV_HEADERS.some((h) => /activity|model|\bAI\b/i.test(h)));
   assert.equal(csvFileName(new Date(2026, 9, 10, 9, 0)), "puc-control-matrix-2026-10-10.csv");
+});
+
+
+/** Parses the CSV produced by matrixCsv (every cell quoted) into rows of cells. */
+function parseCsv(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let i = text.startsWith("\uFEFF") ? 1 : 0;
+  while (i < text.length) {
+    assert.equal(text[i], '"', `cell must be quoted at ${i}`);
+    let j = i + 1;
+    let cell = "";
+    for (;;) {
+      if (text[j] === '"' && text[j + 1] === '"') {
+        cell += '"';
+        j += 2;
+      } else if (text[j] === '"') break;
+      else cell += text[j++];
+    }
+    row.push(cell);
+    i = j + 1;
+    if (text[i] === ",") i += 1;
+    else if (text.startsWith("\r\n", i)) {
+      rows.push(row);
+      row = [];
+      i += 2;
+    }
+  }
+  return rows;
+}
+
+const CIS_COL = CSV_HEADERS.indexOf("CIS Controls v8.1 safeguards");
+
+test("csv: the five CIS IDs that a spreadsheet would turn into another safeguard stay exact as text", () => {
+  for (const id of ["3.10", "4.10", "8.10", "13.10", "16.10"]) {
+    let ws = loadSample(emptyWorkspace(), PUC_SAMPLES.slice(0, 1), T);
+    ws = rateAndConfirm(ws, "C001", ["full", "full", "full", "full"]);
+    ws = reopenControl(ws, "C001", T);
+    ws = editFramework(ws, "C001", CIS, { ids: [id] }, T);
+    ws = confirmControl(ws, "C001", ID_INDEX, T).ws;
+    const [, data] = parseCsv(matrixCsv(buildResults(ws).rows));
+    assert.equal(data[CIS_COL], `CIS ${id}`, id);
+    assert.ok(Number.isNaN(Number(data[CIS_COL])), `${id} must not look like a number`);
+  }
+});
+
+test("csv: single and multiple CIS IDs get the prefix; other frameworks and the app keep plain IDs", () => {
+  let ws = loadSample(emptyWorkspace(), PUC_SAMPLES.slice(0, 2), T);
+  ws = rateAndConfirm(ws, "C001", ["full", "full", "full", "full"]);
+  ws = rateAndConfirm(ws, "C002", ["full", "full", "full", "full"]);
+  ws = reopenControl(ws, "C002", T);
+  ws = editFramework(ws, "C002", CIS, { ids: ["6.3", "6.4", "13.10"] }, T);
+  ws = confirmControl(ws, "C002", ID_INDEX, T).ws;
+  const results = buildResults(ws);
+  const [, c001, c002] = parseCsv(matrixCsv(results.rows));
+  assert.equal(c001[CIS_COL], "CIS 6.3");
+  assert.equal(c002[CIS_COL], "CIS 6.3; CIS 6.4; CIS 13.10");
+  assert.equal(c001[CSV_HEADERS.indexOf("NIST CSF 2.0")], "PR.AA-03");
+  assert.equal(c001[CSV_HEADERS.indexOf("ISO/IEC 27001:2022")], "A.8.5");
+  assert.equal(c001[CSV_HEADERS.indexOf("SOC 2 TSC")], "CC6.1");
+  // Stored and displayed IDs stay plain.
+  assert.deepEqual(results.rows[1].cells[CIS].ids, ["6.3", "6.4", "13.10"]);
+});
+
+test("csv: the formula guard applies to every cell of a full export", () => {
+  let ws = emptyWorkspace();
+  const risky = ["=1+1", "+cmd", "-2", "@SUM(A1)", "\t=1", "\r=1", "  =HYPERLINK(\"x\")"];
+  for (const [i, text] of risky.entries()) {
+    const r = addControl(ws, { name: text, description: text, objective: text, owner: text }, T);
+    ws = r.ws;
+    FRAMEWORK_IDS.forEach((f) => {
+      ws = editFramework(ws, r.id!, f, { rating: i % 2 ? "na" : "none", ids: i % 2 ? [] : [IDS[f]], naReason: text, rationale: text }, T);
+    });
+    ws = confirmControl(ws, r.id!, ID_INDEX, T).ws;
+  }
+  const rows = parseCsv(matrixCsv(buildResults(ws).rows));
+  assert.equal(rows.length, risky.length + 1);
+  let checked = 0;
+  for (const row of rows.slice(1)) {
+    assert.equal(row.length, CSV_HEADERS.length);
+    for (const cell of row) {
+      assert.doesNotMatch(cell, /^\s*[=+\-@\t\r]/, `unguarded cell: ${JSON.stringify(cell)}`);
+      checked += 1;
+    }
+  }
+  assert.equal(checked, risky.length * CSV_HEADERS.length);
 });

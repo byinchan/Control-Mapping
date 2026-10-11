@@ -49,9 +49,9 @@ export const LIMITED_COVERAGE_MAX_IN_SCOPE = 1;
 export const STATUSES =["Fully Aligned", "Partially Aligned", "Gap Identified", "Not scorable"] as const;
 export type Status = (typeof STATUSES)[number];
 
-/** How score and status are calculated, in plain words (the per-rating scores are shown with the ratings). */
+/** How score and status are calculated, in plain words. */
 export const SCORING_RULE_TEXT = [
-  "Control score = average of the rated frameworks.",
+  "Control score = average of the rated frameworks (Full 1, Partial 0.5, None 0; N/A left out).",
   `Fully Aligned: score ${THRESHOLDS.fullyAlignedMin} or higher and no framework rated None.`,
   `Gap Identified: score below ${THRESHOLDS.gapBelow}, or any framework rated None with a score below ${THRESHOLDS.gapWithNoneBelow}.`,
   "Partially Aligned: everything else.",
