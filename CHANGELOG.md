@@ -2,6 +2,92 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 5: Matrix, gaps and CSV export (2026-10-10)
+
+### Results logic (`lib/results/`, pure and unit-tested; the screen only displays it)
+- `buildResults` uses **confirmed controls only**. Controls awaiting review are counted as "not included"
+  and never scored. Each row's score, status and limited-coverage flag come from the existing scoring
+  engine, and the totals come from `summarize`. No new scoring rules. Works with 1 or more confirmed
+  controls.
+- **Gaps (decided default):** every control with status Gap Identified, plus every control rated None on
+  any framework, listing those frameworks with their IDs and rationale. **"To check (not gaps)":** limited
+  framework coverage (only one framework rated) and Not scorable (every framework N/A), with the N/A
+  reasons.
+- **CSV (`lib/results/csv.ts`):**
+  - Columns: the v1 matrix columns (Control ID, Name, Description, Objective, Activity, Owner, the four
+    framework ID columns), then for each framework the rating and its rationale or N/A reason, then
+    Score, Status, Limited framework coverage and Confirmed at (UTC). **No AI source or model**
+    (decided default). Labels come from the shared constants.
+  - Format: every cell quoted (doubled quotes, commas and line breaks stay inside one cell), CRLF line
+    ends, and a UTF-8 marker at the start so Excel reads accents correctly.
+  - **Formula-injection guard:** any cell starting with `=`, `+`, `-`, `@`, tab or carriage return (also
+    after leading spaces) gets a leading `'`.
+  - Built in the browser and downloaded as `puc-control-matrix-YYYY-MM-DD.csv`. Nothing is uploaded.
+  - No disclaimer or notes rows inside the file (they break spreadsheet imports); the note sits next to
+    the button.
+
+### `/matrix` screen
+- "Matrix & gaps" in the step indicator becomes a link once 1 control is confirmed. The review sidebar
+  shows "See matrix and gaps (n confirmed)". With 0 confirmed, the page explains why it is empty.
+- **Code summary:** status counts; per framework the average rating, rated, N/A and None counts; "n
+  awaiting review are not included"; the scoring rule in plain words; and the note that alignment is not
+  implementation or effectiveness. With one control it says the results describe that control only.
+- **Matrix table:** short rating label and IDs per framework (catalog label on hover), N/A reason
+  (limited to 3 lines, full text on hover), score and status. Control names link back to review. The
+  table scrolls sideways inside its box on small screens.
+- Gaps and "To check" sections, and **Download CSV**.
+
+### CSV changes after Bernadette's export check
+- **Column order:** Control ID, Control Name, Control Owner, Score, Status, Limited framework coverage;
+  then per framework the requirement IDs and the rating; then the four rationale or N/A reason columns;
+  then Confirmed at (UTC). Description and Control Objective were not in the requested list. They are kept
+  at the end so the control text is not lost from the export.
+- **Removed: Control Activity** (option A). Sample controls carry their v1 activity text in Description,
+  so Activity was blank for all 14. The optional Activity field is also removed from `/new` and from "Edit
+  text" in review. Saved tab data from before still loads without errors (the stored field is still
+  accepted, and a test covers this). Such an older value is shown read-only as "Activity (entered in an
+  earlier version, not exported)".
+- **CIS IDs as text:** all 153 CIS safeguard IDs look like decimals to a spreadsheet. Five would silently
+  become a different, existing safeguard when a cell holds one ID: 3.10 to 3.1, 4.10 to 4.1, 8.10 to 8.1,
+  13.10 to 13.1, 16.10 to 16.1. Some locales would also read "3.1" as a date. NIST, ISO and SOC 2 IDs are
+  never affected. Fix: **in the CSV only**, CIS IDs are written "CIS 3.10" ("CIS 6.3; CIS 6.4"), under the
+  header "CIS Controls v8.1 safeguards". The app and stored data keep plain IDs.
+  - A value starting with letters always stays text: no hidden characters, no visible apostrophes, and the
+    formula guard is unaffected.
+  - Rejected: a leading `'` (visible when the file is opened, and confused with the formula guard),
+    `="3.10"` (a formula, which the guard blocks), invisible prefix characters, and relying on "import as
+    text".
+- **Tests:**
+  - the exact column order;
+  - each of the five IDs exported alone stays "CIS x.10";
+  - single and multiple CIS IDs, with other frameworks and stored IDs plain;
+  - the formula guard checked on every cell of a full export of risky controls.
+- **Matrix score line:** "Control score = average of the rated frameworks (Full 1, Partial 0.5, None 0;
+  N/A left out)."
+
+### Wording and layout follow-up (no scoring or data changes)
+- **Confirm bar:** "Confirm this control" and "Confirm and go to next control". The left text reads
+  "C005: confirming records your decision". The labels sit in `app/components/labels.ts` with the AI
+  button labels, and a test pins them.
+- **Ratings key:** a short list of four items at body size (14 px) on both the review and matrix pages. Each
+  item gives the rating and what it means, without the scores (those appear beside the radio buttons in
+  review).
+- **"How the score and status are calculated":** the first bullet repeating the per-rating scores is
+  removed. The average, status thresholds, Not scorable and limited-coverage lines remain, and a test
+  checks this.
+- **Gaps heading:** "Gaps and requirements not met", with the added line "Overall status can still be
+  Partially Aligned when one framework has a requirement this control doesn't meet."
+
+### Verified in the browser (production build, demo mode)
+- 0 confirmed: empty-state message. 1 confirmed: one row, "13 awaiting review not included". All 14
+  confirmed with "Confirm and next".
+- A control named `=HYPERLINK("http://example.com","click")`, rated None on NIST and N/A elsewhere, shows
+  as plain text on the page. It appears under Gaps (Gap Identified, score 0) and under "To check" (limited
+  coverage).
+- The downloaded CSV starts with the UTF-8 marker and has 15 data rows. The test control's row has the
+  name and description prefixed with `'`, and the comma and line break kept in one cell.
+- At 375 px the page doesn't scroll sideways; only the matrix box does.
+
 ## Step 4: Intake, review and confirm screens (2026-10-10)
 
 ### Rating radio buttons and "Confirm and next" (Bernadette's decisions)

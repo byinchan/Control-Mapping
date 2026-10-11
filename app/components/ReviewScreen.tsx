@@ -227,6 +227,11 @@ export function ReviewScreen() {
             </div>
           )}
           {batch && <BatchSummary r={batch} />}
+          {counts.confirmed > 0 && (
+            <Link href="/matrix" className="block rounded-md bg-slate-900 px-3 py-1.5 text-center text-sm font-medium text-white hover:bg-slate-700">
+              See matrix and gaps ({counts.confirmed} confirmed)
+            </Link>
+          )}
           <Link href="/" className="block rounded-md px-3 py-1.5 text-center text-sm font-medium text-slate-800 ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
             + Add controls
           </Link>

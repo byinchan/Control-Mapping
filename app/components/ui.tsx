@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { MappingMode } from "@/lib/mapping/types.ts";
-import { RATINGS, RATING_EFFECT, RATING_HELP, RATING_LABELS } from "@/lib/scoring/config.ts";
+import { RATINGS, RATING_HELP, RATING_LABELS } from "@/lib/scoring/config.ts";
 import type { ControlStatus, ItemBadge } from "@/lib/workflow/workspace.ts";
 
 export { FRAMEWORK_NAMES } from "@/lib/catalog/names.ts";
@@ -27,18 +27,19 @@ export function Legend() {
   );
 }
 
-/** Short key for the four rating labels, shown with the legend. */
+/** What the four ratings mean, as a short list at body size. Scores are shown with the radio buttons. */
 export function RatingKey() {
   return (
-    <p className="text-xs text-slate-600" aria-label="What the ratings mean">
-      <span className="font-medium text-slate-700">Ratings:</span>{" "}
-      {RATINGS.map((r, i) => (
-        <span key={r}>
-          <span className="font-medium text-slate-800">{RATING_LABELS[r]}</span>: {RATING_HELP[r]} ({RATING_EFFECT[r].replace(`${RATING_LABELS[r]} `, "").replace(/^is /, "").replace(/\.$/, "")})
-          {i < RATINGS.length - 1 ? " · " : ""}
-        </span>
-      ))}
-    </p>
+    <div className="text-sm text-slate-700" aria-label="What the ratings mean">
+      <p className="font-medium text-slate-900">Ratings</p>
+      <ul className="mt-1 grid gap-x-6 gap-y-0.5 sm:grid-cols-2">
+        {RATINGS.map((r) => (
+          <li key={r}>
+            <span className="font-semibold text-slate-900">{RATING_LABELS[r]}</span>: {RATING_HELP[r]}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

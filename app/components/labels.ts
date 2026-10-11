@@ -7,3 +7,11 @@ export const AI_LABELS = {
   /** Single control that already has an AI suggestion. */
   replace: "Replace with a new AI suggestion",
 } as const;
+
+/** Confirm bar on the review screen. */
+export const CONFIRM_LABELS = {
+  confirm: "Confirm this control",
+  confirmAndNext: "Confirm and go to next control",
+  /** Left-hand text in the bar, e.g. "C005: confirming records your decision". */
+  barText: (controlId: string) => `${controlId}: confirming records your decision`,
+} as const;
