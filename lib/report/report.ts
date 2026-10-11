@@ -88,6 +88,8 @@ export function reportBlockers(r: Report, facts: Facts): string[] {
   const blockers: string[] = [];
   if (facts.confirmed === 0) blockers.push("Confirm at least one control.");
   if (isOutOfDate(r, facts)) blockers.push("Confirmations changed after this draft. Check the narrative, then mark it as checked.");
+  // Whitespace-only does not count.
+  if (!r.preparedBy.trim()) blockers.push("Prepared by: add your name or initials and role.");
   for (const k of SECTION_KEYS) {
     const c = checkSection(r.sections[k].text, facts);
     if (sectionBlocks(c)) blockers.push(`${SECTION_TITLES[k]}: ${c.numbers.length + c.references.length} figure or reference to fix.`);

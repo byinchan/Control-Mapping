@@ -389,17 +389,29 @@ export function ReportScreen() {
           <p className="text-xs text-slate-600">
             {day(report.approved?.at ?? report.draftedAt)} · {facts.confirmed} control{facts.confirmed === 1 ? "" : "s"} assessed · Prepared by:{" "}
             <input
-              aria-label="Prepared by"
+              aria-label="Prepared by (required)"
+              aria-describedby="prepared-by-help"
+              aria-required="true"
+              aria-invalid={triedApprove && !report.preparedBy.trim() ? true : undefined}
+              required
               value={report.preparedBy}
-              placeholder="Your name and role"
+              placeholder="Your name or initials and role"
               maxLength={120}
               disabled={approved}
               onChange={(e) => setReport((r) => setPreparedBy(r, e.target.value))}
-              className="no-print rounded border border-slate-300 px-1.5 py-0.5 text-xs disabled:border-transparent disabled:bg-transparent"
+              className={`no-print rounded border px-1.5 py-0.5 text-xs disabled:border-transparent disabled:bg-transparent ${
+                triedApprove && !report.preparedBy.trim() ? "border-red-500 ring-1 ring-red-500" : "border-slate-300"
+              }`}
             />
-            <span className="print-only">{report.preparedBy || "Not given"}</span>
+            <span className="print-only">{report.preparedBy}</span>
             {!approved && <span className="font-semibold text-amber-800"> · Draft, not approved</span>}
           </p>
+          {!approved && (
+            <p id="prepared-by-help" className="no-print text-xs text-slate-500">
+              <span className="font-medium text-slate-700">Prepared by (required):</span> Your name or initials and role. Kept in this
+              browser tab only.
+            </p>
+          )}
         </header>
 
         {section("purpose")}

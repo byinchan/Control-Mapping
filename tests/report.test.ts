@@ -76,7 +76,7 @@ test("template draft passes its own checks: all sample controls, a single contro
       assert.deepEqual(c.references, [], `${k} references`);
       assert.deepEqual(c.claims, [], `${k} claims`);
     }
-    const r = createReport(f, texts, "template", null, T);
+    const r = setPreparedBy(createReport(f, texts, "template", null, T), "B. Chan, GRC Analyst");
     assert.deepEqual(reportBlockers(r, f), []);
     const recs = texts.recommendations.split("\n");
     assert.ok(recs.length >= 3 && recs.length <= 5, `3 to 5 recommendations, got ${recs.length}`);
@@ -149,7 +149,7 @@ test("claim check warns on implementation or effectiveness claims, skips deliber
 
 test("approval: blocked by number flags, allowed with claim warnings, cleared by any edit", () => {
   const f = buildFacts(sampleWorkspace());
-  let r = createReport(f, templateSections(f), "template", null, T);
+  let r = setPreparedBy(createReport(f, templateSections(f), "template", null, T), "BC, GRC Analyst");
   r = editSection(r, "keyMessages", "9 of 6 confirmed controls are Fully Aligned.");
   assert.deepEqual(approveReport(r, f, T).blockers, ["Key messages: 1 figure or reference to fix."]);
   r = editSection(r, "keyMessages", "2 of 6 confirmed controls are Fully Aligned, and they look effective.");
@@ -163,7 +163,7 @@ test("approval: blocked by number flags, allowed with claim warnings, cleared by
 test("out of date: changing confirmations clears approval until the narrative is checked again", () => {
   let ws = sampleWorkspace();
   const f1 = buildFacts(ws);
-  const approved = approveReport(createReport(f1, templateSections(f1), "template", null, T), f1, T).report;
+  const approved = approveReport(setPreparedBy(createReport(f1, templateSections(f1), "template", null, T), "BC, GRC Analyst"), f1, T).report;
   assert.ok(approved.approved);
   ws = reopenControl(ws, "C001", T);
   const f2 = buildFacts(ws);
@@ -210,4 +210,26 @@ test("print length estimate: short reports fit, long narrative is flagged as ove
   const long = editSection(editSection(r, "gapsAndRisks", "x".repeat(2000)), "strengths", "y".repeat(2000));
   const longer = editSection(editSection(long, "recommendations", "z".repeat(2000)), "keyMessages", "w".repeat(2000));
   assert.ok(estimatePrintedPages(longer, f) > 2);
+});
+
+test("prepared by: required before approval; whitespace does not count; editing it clears approval", () => {
+  const f = buildFacts(sampleWorkspace());
+  const draft = createReport(f, templateSections(f), "template", null, T);
+  const blocker = "Prepared by: add your name or initials and role.";
+  assert.deepEqual(approveReport(draft, f, T).blockers, [blocker]);
+  assert.equal(approveReport(draft, f, T).report.approved, null);
+  assert.deepEqual(approveReport(setPreparedBy(draft, "   \t "), f, T).blockers, [blocker]);
+  // Listed together with the other blockers, not instead of them.
+  const both = editSection(draft, "keyMessages", "9 of 6 confirmed controls are Fully Aligned.");
+  assert.deepEqual(approveReport(both, f, T).blockers, [blocker, "Key messages: 1 figure or reference to fix."]);
+  // Initials and role are enough.
+  const ok = approveReport(setPreparedBy(draft, " BC, GRC Analyst "), f, T);
+  assert.deepEqual(ok.blockers, []);
+  assert.ok(ok.report.approved);
+  // Editing the name after approval clears approval like any other edit; emptying it blocks again.
+  const renamed = setPreparedBy(ok.report, "Bernadette Chan, GRC Analyst");
+  assert.equal(renamed.approved, null);
+  const emptied = setPreparedBy(ok.report, "");
+  assert.equal(emptied.approved, null);
+  assert.deepEqual(approveReport(emptied, f, T).blockers, [blocker]);
 });

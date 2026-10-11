@@ -4,6 +4,21 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### "Prepared by" required before approval (logic change, tested)
+- Approve is blocked until "Prepared by" has a value; whitespace-only doesn't count. It is listed in the same
+  "Not ready to approve" list as the other checks: "Prepared by: add your name or initials and role." The field
+  is marked required and turns red after a blocked attempt. Helper text under it (screen only): "Your name or
+  initials and role. Kept in this browser tab only."
+- As before, any edit to the field clears approval. After approval the field is locked until "Edit report",
+  which also clears approval. The printed byline no longer needs a "Not given" fallback, since an approved
+  report always has a name.
+- Tests cover:
+  - empty and whitespace-only values are blocked;
+  - the blocker is listed together with figure blockers;
+  - a trimmed name such as initials and role is accepted;
+  - renaming or emptying the field after approval clears approval;
+  - existing approval tests now set a name.
+
 ### Report wording, layout and print style (no logic changes)
 - **Byline:** "October 11, 2026 · 14 controls assessed · Prepared by: <name>". "· Draft, not approved" is added
   only while the report isn't approved. The narrative source (Template or AI badge) shows on screen only. The
