@@ -2,6 +2,47 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 6: Executive report (2026-10-11)
+
+### Stage 1: report without AI
+- **Facts pack (`lib/report/facts.ts`):** everything the report may state, computed by code from **confirmed
+  controls only**: status counts and percentages, per-framework coverage, gaps (Gap Identified or any None),
+  limited coverage, owners, control scores. A fingerprint of the confirmed results tells when the report is
+  out of date.
+- **Code-only blocks:** headline results (status counts with percentages, coverage table) and the gaps table
+  (top 5, then "+n more in the matrix and CSV export"). These are not editable; to change them, change the
+  confirmations.
+- **Template draft, not AI (`lib/report/template.ts`):** a plain draft of all six sections, built only from
+  facts-pack values: purpose and scope, key messages, strengths, gaps and risks, 3 to 5 recommendations, and
+  method and limitations. It passes its own checks (tested with 1, 6 and 14 confirmed controls). It is the
+  starting draft now and will be the only fallback in Stage 2.
+- **Number-match check (`lib/report/checks.ts`), blocks Approve:**
+  - Framework names, versions, control and requirement IDs (including "CIS 13.10"), dates and list numbers
+    are removed first.
+  - Whole numbers and percentages next to a status or count phrase ("9 of 14 … Fully Aligned", "2 …
+    awaiting review") must equal that count: "9 Fully Aligned: code says 1".
+  - Every other figure, including number words, must be one the code computed.
+  - Control IDs must be confirmed controls in this report.
+  - The flags show as a live list under each section and update as you type.
+  - Limitation: a figure that exists elsewhere in the facts pack but is attached to the wrong noun is only
+    caught when it sits next to a status or count phrase.
+- **Claim-word check, warning only:** implemented, effective, compliant, certified, secure, audit-ready and
+  similar. Deliberate negations ("does not show that controls are implemented or effective") are skipped.
+- **Approve** locks the text and enables Download PDF; "Edit report" removes approval, and any edit clears it.
+  **Out of date:** when confirmations change, approval is cleared, the code blocks update, and the narrative's
+  stale figures are flagged. "I've checked the narrative against the current results" or "Redraft from
+  template" (keep my edited sections or replace everything) resolves it.
+- **Prepared by** starts blank (public app) and prints "Not given" if left empty.
+- **Print layout (Download PDF opens the print dialog):** compact 9.5 pt, page margins from `@page`, and paper
+  size from the dialog, so Letter and A4 both work. App chrome is hidden. The footer has "Fictional
+  organization. AI-assisted, human-reviewed.", the governance note and the disclaimer.
+  - Measured by applying the print styles on screen: the 13-control template report is about 1 page (0.96 of
+    A4, 0.99 of Letter).
+  - The "This may run over 2 pages" note comes from a tested line-count estimate.
+  - Print layout time stayed well inside the 1.5-hour time box.
+- **Storage:** the report lives in the tab's workspace (`report`, optional, so older tabs still load) and is
+  schema-checked on load like everything else.
+
 ## Step 5: Matrix, gaps and CSV export (2026-10-10)
 
 ### Results logic (`lib/results/`, pure and unit-tested; the screen only displays it)
