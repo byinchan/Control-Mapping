@@ -2,6 +2,52 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Step 6, Stage 2: AI-drafted narrative (2026-10-11, in progress)
+
+Approved plan, built in chunks A, B, D, then E and C together, then F.
+Decisions (Bernadette): mapping and report drafting share one per-visitor limit and one daily cap; fraction words count as
+figures in the number check; per-section regenerate stays out; structured recommendations and the saved demo draft stay;
+prompt tuning is limited to the 14-control case and one gaps case (about 20 minutes). Report changes from NACD
+board-reporting guidance: a code-written posture line, a "Decision requested" section, structured recommendations, and a
+code-written "What this report does not show" line. CLAUDE.md's report section list is updated to match.
+
+### Chunk A: pure logic and the report shape (no AI yet)
+- **Facts rebuilt on the server:** `factsInput(ws)` reduces the workspace to the minimum the facts pack needs (confirmed
+  controls' ID, name, owner and one rating per framework, plus the awaiting-review count; no descriptions, rationales or
+  N/A reasons). `buildFactsFrom()` builds the facts pack from it with the scoring engine; `buildFacts(ws)` now goes
+  through the same path. Tested equal to the old results and to the matrix's gaps list.
+- **Request validation** (`lib/report/request.ts`): strict shape, no unknown fields (so a request can't carry its own
+  figures), 1 to 50 controls, valid and unique IDs, one valid rating per framework, names and owners within the intake
+  caps. Over-long or malformed requests are rejected, not trimmed, because the app never sends them. Names and owners are
+  cleaned to one line of plain text.
+- **Posture line (code, not editable):** at the top of Key messages, e.g. "1 of 14 confirmed controls is Fully Aligned; no
+  confirmed control has a gap that needs a decision." "Gaps" are the gaps table's controls (Gap Identified or any None).
+  The number check gained one phrase ("have gaps" / "with gaps" = the gaps count), so a wrong gap count is flagged.
+- **"What this report does not show" (code, not editable):** under Purpose and scope.
+- **Decision requested:** new editable section, second in the report, drafted by the template (and by the AI from chunk B)
+  and checked like any other section. With gaps it asks leadership to assign owners for the gap controls and approve
+  remediation planning or record a decision to accept each gap; without gaps, to note the results and approve continued
+  review. No amounts, budgets or deadlines.
+- **Structured recommendations:** each is {text, owner, effort, why}, shown as a compact table in the approved report and
+  edited with one text box per field. When a draft is made, an owner not in the confirmed results becomes "Control owner
+  (to assign)" (`applyOwnerRule`, which also counts replacements for chunk B). After an edit nothing is silently changed:
+  an unknown owner, or an effort other than Low, Medium or High, is flagged and blocks approval. Text and "why" go through
+  the number, reference and claim checks.
+- **Fraction words:** "half", "a third", "two-thirds", "a quarter of", "most controls" / "most of", "majority" and
+  "minority" are flagged as approximate shares. Not flagged: "the most urgent", "third-party", "each quarter", "behalf".
+- **Number check fixes found by the new AI-style tests:** "two" in "two-thirds" is no longer also read as a count, and a
+  bracketed figure belongs to the phrase just before it ("2 are Fully Aligned (33%)" was wrongly checked against the next
+  status phrase).
+- **Storage:** a report that fails validation (including one saved in the old shape) is now dropped on its own and the
+  controls are kept; the report page rebuilds the template draft. A bad control still discards the whole tab, as before.
+- **Report order:** Key messages, Decision requested, Purpose and scope, Headline results, Strengths, Gaps and risks,
+  Recommendations, Method and limitations.
+- **Print length** (14 confirmed sample controls, approved template draft): about 1.45 pages on A4 and 1.53 on Letter
+  (was 1.12 / 1.20). The page estimate counts the new lines and the recommendations table.
+- Moved from chunk D: the screen wiring for these pieces (code lines, Decision requested, recommendations table and
+  editor), so this chunk can be tested on its own. Chunk D keeps the AI button, labels, the keep/replace dialog for AI
+  and the flagged-draft banner.
+
 ## Step 6: Executive report (2026-10-11)
 
 ### Neutral sample wording (UI text only)

@@ -12,7 +12,7 @@ export type InputResult =
   | { ok: false; error: string };
 
 // Control characters other than tab/newline, and bidi overrides that can hide text.
-const UNSAFE_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F‪-‮⁦-⁩]/g;
+export const UNSAFE_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F‪-‮⁦-⁩]/g;
 
 function clean(value: unknown, field: keyof typeof INPUT_LIMITS, truncated: string[]): string | undefined {
   if (value === undefined || value === null) return undefined;

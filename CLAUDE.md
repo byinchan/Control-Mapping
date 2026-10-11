@@ -103,7 +103,11 @@ Governance). Differences are for me to decide, not bugs.
   themes, prioritized recommendations with owner/rationale/effort), grounded in confirmed data;
   must not add controls, tools or facts not in the data. Validate that numbers quoted in the
   narrative match computed values; flag mismatches.
-- Sections: Purpose & scope; Headline results; Strengths; Gaps & risks; Recommendations;
+- Sections, in this order: Key messages (opens with a code-written overall posture line);
+  Decision requested (what leadership is asked to approve; no invented amounts, budgets,
+  deadlines or dollar exposure); Purpose & scope (ends with a code-written "What this report does
+  not show" line); Headline results; Strengths; Gaps & risks; Recommendations (structured: text,
+  owner from the facts pack or "Control owner (to assign)", effort Low/Medium/High, why);
   Method & limitations. 1-2 pages max; warn if over. Per-section edit and regenerate.
 - Footer: "Fictional organization. AI-assisted, human-reviewed." + a governance note describing the
   boundary between deterministic results and narrative synthesis.
