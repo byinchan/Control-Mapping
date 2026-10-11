@@ -144,12 +144,31 @@ export function LinkButton({
 /** The same look as a disabled button, with the reason shown next to it. */
 export function DisabledAction({ children, reason, size = "md" }: { children: ReactNode; reason: string; size?: Size }) {
   return (
-    <span className="inline-flex flex-wrap items-center gap-2">
+    <span className="inline-flex flex-wrap items-center justify-end gap-2">
+      <span className="text-xs text-slate-600">{reason}</span>
       <button type="button" disabled title={reason} className={buttonClass("primary", size)}>
         {children}
       </button>
-      <span className="text-xs text-slate-600">{reason}</span>
     </span>
+  );
+}
+
+/**
+ * End-of-page navigation, the same on every step page: a blue Back link on the left and the
+ * primary next action (large green) on the right.
+ */
+export function StepFooter({ back, children }: { back?: { href: string; label: string }; children: ReactNode }) {
+  return (
+    <div className="no-print flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
+      {back ? (
+        <TextLink href={back.href} className="text-sm">
+          ← {back.label}
+        </TextLink>
+      ) : (
+        <span />
+      )}
+      <div className="flex flex-wrap items-center justify-end gap-2">{children}</div>
+    </div>
   );
 }
 

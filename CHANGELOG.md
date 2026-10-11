@@ -4,6 +4,20 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Navigation follow-up (UI only)
+- **One shared end-of-page footer (`StepFooter`)** on review, matrix, report, samples and own-control pages,
+  with the same spacing everywhere: blue "← Back…" link on the left, the large green next action on the right,
+  and the reason shown before a disabled button.
+- **Review page:** the footer sits below both columns: "← Back to choose controls" and "Continue to matrix &
+  gaps (n confirmed) →", disabled with "Confirm at least 1 control first" when nothing is confirmed. To avoid
+  two large Continue buttons when every control is confirmed, the sticky bar now shows "Continue to matrix &
+  gaps →" as a smaller blue outline button. The single large green Continue is the one in the footer.
+- **Start page:** each card is one link with a visible green button inside ("Choose sample controls →",
+  "Enter your own control →"), a hover border and background on the whole card, a pointer cursor and a
+  keyboard focus ring. Card titles are "PUC sample controls" and "Your own control", so the button text isn't
+  repeated. "Continue reviewing (n controls in this tab)" was already a blue outline button in the code from
+  the previous push; the black underlined version was an earlier build.
+
 ### Navigation and button styles (UI only, no logic changes)
 - **Step indicator:** available steps are outlined blue pill links with hover and keyboard-focus rings. The
   current step is filled blue and marked `aria-current="step"`, and is not a link. Locked steps are dashed

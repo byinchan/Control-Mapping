@@ -392,7 +392,8 @@ export function ReviewPanel({
                   </Button>
                 </>
               ) : (
-                <LinkButton href="/matrix" variant="primary" size="lg">
+                // The large green Continue button is in the page footer below; here it is a smaller link.
+                <LinkButton href="/matrix">
                   {CONFIRM_LABELS.continueToMatrix} <span aria-hidden>→</span>
                 </LinkButton>
               )}

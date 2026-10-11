@@ -26,7 +26,7 @@ import {
 import { templateSections } from "@/lib/report/template.ts";
 import { RATING_LABELS } from "@/lib/scoring/config.ts";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, DisabledAction, Legend, Notice, RoleBadge, TextLink } from "./ui.tsx";
+import { Button, DisabledAction, Legend, Notice, RoleBadge, StepFooter, TextLink } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const now = () => new Date().toISOString();
@@ -392,10 +392,7 @@ export function ReportScreen() {
       </article>
 
       {/* Next step: approve, then download */}
-      <div className="no-print flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
-        <TextLink href="/matrix" className="text-sm">
-          ← Back to matrix &amp; gaps
-        </TextLink>
+      <StepFooter back={{ href: "/matrix", label: "Back to matrix & gaps" }}>
         {approved ? (
           <Button variant="primary" size="lg" onClick={() => window.print()}>
             Download PDF <span aria-hidden>→</span>
@@ -405,7 +402,7 @@ export function ReportScreen() {
             Approve report <span aria-hidden>→</span>
           </Button>
         )}
-      </div>
+      </StepFooter>
       {!approved && triedApprove && blockers.length > 0 && (
         <p className="no-print text-right text-xs text-red-700">Not ready to approve: see the list at the top of the page.</p>
       )}

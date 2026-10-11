@@ -21,10 +21,10 @@ import {
   type FrameworkPatch,
 } from "@/lib/workflow/workspace.ts";
 import { requestMapping } from "./mappingClient.ts";
-import { AI_LABELS } from "./labels.ts";
+import { AI_LABELS, CONFIRM_LABELS } from "./labels.ts";
 import { ReviewPanel } from "./ReviewPanel.tsx";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, Legend, LinkButton, Notice, RatingKey, TextLink, cx } from "./ui.tsx";
+import { Button, DisabledAction, Legend, LinkButton, Notice, RatingKey, StepFooter, TextLink, cx } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const now = () => new Date().toISOString();
@@ -284,6 +284,18 @@ export function ReviewScreen() {
           )}
         </div>
       </div>
+
+      <StepFooter back={{ href: "/", label: "Back to choose controls" }}>
+        {counts.confirmed > 0 ? (
+          <LinkButton href="/matrix" variant="primary" size="lg">
+            {CONFIRM_LABELS.continueToMatrix} ({counts.confirmed} confirmed) <span aria-hidden>→</span>
+          </LinkButton>
+        ) : (
+          <DisabledAction size="lg" reason="Confirm at least 1 control first">
+            {CONFIRM_LABELS.continueToMatrix} <span aria-hidden>→</span>
+          </DisabledAction>
+        )}
+      </StepFooter>
     </div>
   );
 }

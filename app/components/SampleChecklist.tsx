@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PUC_SAMPLES } from "@/lib/workflow/samples.ts";
 import { MAX_CONTROLS, loadSample } from "@/lib/workflow/workspace.ts";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, TextLink } from "./ui.tsx";
+import { Button, StepFooter } from "./ui.tsx";
 import { saveNow, useWorkspace } from "./useWorkspace.ts";
 
 export function SampleChecklist() {
@@ -81,10 +81,8 @@ export function SampleChecklist() {
       </div>
 
       {selected.size > room && <p className="text-sm text-red-700">This tab can hold {room} more controls.</p>}
-      <div className="flex items-center justify-between">
-        <TextLink href="/" className="text-sm">
-          ← Back
-        </TextLink>
+      <StepFooter back={{ href: "/", label: "Back" }}>
+        {selected.size === 0 && <span className="text-xs text-slate-600">Select at least 1 control to continue.</span>}
         <Button
           variant="primary"
           size="lg"
@@ -98,7 +96,7 @@ export function SampleChecklist() {
         >
           Continue with {selected.size} control{selected.size === 1 ? "" : "s"} <span aria-hidden>→</span>
         </Button>
-      </div>
+      </StepFooter>
     </div>
   );
 }

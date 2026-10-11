@@ -9,7 +9,7 @@ import { buildResults } from "@/lib/results/matrix.ts";
 import { RATING_LABELS, SCORING_RULE_TEXT, type Rating, type Status } from "@/lib/scoring/config.ts";
 import { formatScore } from "@/lib/scoring/score.ts";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, DisabledAction, FRAMEWORK_NAMES, Legend, LinkButton, Notice, RatingKey, RoleBadge, TextLink, cx } from "./ui.tsx";
+import { Button, DisabledAction, FRAMEWORK_NAMES, Legend, LinkButton, Notice, RatingKey, RoleBadge, StepFooter, TextLink, cx } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const STATUS_STYLE: Record<Status, string> = {
@@ -64,12 +64,12 @@ export function MatrixScreen() {
               {ws.controls.length > 0 ? `Go to review (${plural(ws.controls.length, "control")} in this tab)` : "Choose controls"}
             </TextLink>
           </p>
-          <div className="mt-4 flex justify-center">
-            <DisabledAction size="lg" reason="Confirm at least 1 control first">
-              Continue to the executive report <span aria-hidden>→</span>
-            </DisabledAction>
-          </div>
         </div>
+        <StepFooter back={{ href: "/review", label: "Back to review" }}>
+          <DisabledAction size="lg" reason="Confirm at least 1 control first">
+            Continue to the executive report <span aria-hidden>→</span>
+          </DisabledAction>
+        </StepFooter>
       </div>
     );
   }
@@ -286,14 +286,11 @@ export function MatrixScreen() {
       </section>
 
       {/* Next step */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4">
-        <TextLink href="/review" className="text-sm">
-          ← Back to review
-        </TextLink>
+      <StepFooter back={{ href: "/review", label: "Back to review" }}>
         <LinkButton href="/report" variant="primary" size="lg">
           Continue to the executive report <span aria-hidden>→</span>
         </LinkButton>
-      </div>
+      </StepFooter>
     </div>
   );
 }
