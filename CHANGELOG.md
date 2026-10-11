@@ -2,9 +2,11 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
-## Step 6, Stage 2: AI-drafted narrative (2026-10-11, in progress)
+## Step 6, Stage 2: report structure (chunk A built); AI-drafted narrative planned, not built (2026-10-11)
 
-Approved plan, built in chunks A, B, D, then E and C together, then F.
+Bernadette stopped Stage 2 after chunk A. Chunk A (below) is built and tested. The AI-drafted narrative, the
+`/api/report` route and the saved demo draft were planned but **not built**; they remain a possible Stage 2 (plan at the
+end of this section). The report uses the template draft only, labelled "Template draft, not AI".
 Decisions (Bernadette): mapping and report drafting share one per-visitor limit and one daily cap; fraction words count as
 figures in the number check; per-section regenerate stays out; structured recommendations and the saved demo draft stay;
 prompt tuning is limited to the 14-control case and one gaps case (about 20 minutes). Report changes from NACD
@@ -47,6 +49,31 @@ code-written "What this report does not show" line. CLAUDE.md's report section l
 - Moved from chunk D: the screen wiring for these pieces (code lines, Decision requested, recommendations table and
   editor), so this chunk can be tested on its own. Chunk D keeps the AI button, labels, the keep/replace dialog for AI
   and the flagged-draft banner.
+
+### Not built: possible Stage 2 plan (chunks B to F)
+Estimated about 6 h 10 remaining (of about 7 h 50 total). Order: B, D, then E and C together, then F.
+- **B. `/api/report` route and service (about 1 h 45):** built like the mapping route. Server-side key only, model
+  `claude-haiku-5-5` in config (`REPORT_MODEL`), strict JSON output for Key messages, Decision requested, Strengths, Gaps
+  and risks and structured recommendations. The prompt gets only the facts pack, rebuilt on the server from the
+  validated request; names and owners are data, never instructions; no new numbers, controls or claims, and no amounts,
+  budgets, deadlines or dollar exposure. Output is schema-checked and capped, the owner rule applied (with a count), and
+  the number, reference and claim checks run on the server too. Mapping and drafting share one per-visitor limit and one
+  daily cap. Missing key, limit, outage or invalid output: a short message, and the current (template) draft stays.
+  Generic errors; log only status and request id.
+- **D. UI (about 2 h, less the wiring already done in A):** a separate "Ask AI to draft the narrative" button, never
+  called automatically; "Regenerate narrative" asks "keep my edited sections / replace everything" first; labels
+  "AI-generated, not reviewed" before approval and "AI-generated, human-reviewed (model)" after; a banner when an AI
+  draft fails a check ("2 figures don't match the results: edit them, or redraft from template"); notices for replaced
+  owners. Approval unchanged.
+- **E + C. Prompt tuning and demo mode (about 1 h 05):** tune on the 14-control case and one gaps case (about 20 minutes).
+  One offline run saves an AI draft for the 14 sample controls with the suggested ratings unchanged, with model, date and
+  prompt version. In demo mode (the public site, no key) a small `GET /api/report` tells the page the mode; the button
+  reads "Show saved AI draft (demo)" and returns the saved draft only when the confirmed results match its fingerprint,
+  otherwise says no saved draft matches and keeps the template.
+- **F. Tests, docs and PR (about 1 h 20):** route validation and every fallback (no key, visitor limit shared with
+  mapping, daily cap, outage, invalid output, demo match and no match), output sanitizing (unknown owners and IDs,
+  over-long text, missing sections), the number check on real AI output, print length, CHANGELOG, browser check and a PR
+  with "What to test".
 
 ## Step 6: Executive report (2026-10-11)
 
