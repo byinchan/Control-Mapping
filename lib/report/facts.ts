@@ -2,10 +2,9 @@
 // CONFIRMED controls only. The narrative (template or AI) may quote these figures, never compute new ones.
 import { FRAMEWORK_NAMES } from "../catalog/names.ts";
 import { FRAMEWORK_IDS, type FrameworkId } from "../catalog/types.ts";
-import { buildResults } from "../results/matrix.ts";
-import { RATING_HALF_POINTS, RATING_LABELS, THRESHOLDS, type Status } from "../scoring/config.ts";
-import { formatScore } from "../scoring/score.ts";
-import type { Workspace } from "../workflow/workspace.ts";
+import { RATING_HALF_POINTS, RATING_LABELS, THRESHOLDS, type Rating, type Status } from "../scoring/config.ts";
+import { formatScore, scoreControl, summarize, type ControlRatings } from "../scoring/score.ts";
+import { confirmedRatings, type Workspace } from "../workflow/workspace.ts";
 
 export const ORGANISATION = "Pacific Utilities Corporation (PUC)";
 export const STATUS_ORDER = ["Fully Aligned", "Partially Aligned", "Gap Identified"] as const;
@@ -43,46 +42,74 @@ export type Facts = {
 
 const percent = (part: number, whole: number) => `${whole === 0 ? 0 : Math.round((part / whole) * 100)}%`;
 
-export function buildFacts(ws: Workspace): Facts {
-  const results = buildResults(ws);
-  const n = results.rows.length;
+/**
+ * The minimum the facts pack is built from: confirmed controls (ID, name, owner, one rating per framework) and the
+ * number awaiting review. The browser sends this to the report route, and the server rebuilds the facts pack from it
+ * with the same code, so the model only ever sees figures computed on the server.
+ */
+export type FactsInputControl = { id: string; name: string; owner: string | null; ratings: Record<FrameworkId, Rating> };
+export type FactsInput = { controls: FactsInputControl[]; awaitingReview: number };
+
+/** Confirmed controls only, in workspace order. N/A reasons are not needed for any figure, so they are left out. */
+export function factsInput(ws: Workspace): FactsInput {
+  const controls: FactsInputControl[] = [];
+  for (const r of ws.controls) {
+    const ratings = confirmedRatings(r);
+    if (!ratings || !r.confirmed) continue;
+    controls.push({
+      id: r.id,
+      name: r.confirmed.control.name,
+      owner: r.confirmed.control.owner?.trim() || null,
+      ratings: Object.fromEntries(FRAMEWORK_IDS.map((f) => [f, ratings[f].rating])) as Record<FrameworkId, Rating>,
+    });
+  }
+  return { controls, awaitingReview: ws.controls.length - controls.length };
+}
+
+export const buildFacts = (ws: Workspace): Facts => buildFactsFrom(factsInput(ws));
+
+export function buildFactsFrom(input: FactsInput): Facts {
+  // The scoring engine needs a reason with N/A; the reason never changes a figure, so a placeholder is used here.
+  const ratingsOf = (c: FactsInputControl): ControlRatings =>
+    Object.fromEntries(FRAMEWORK_IDS.map((f) => [f, c.ratings[f] === "na" ? { rating: "na", naReason: "N/A" } : { rating: c.ratings[f] }])) as ControlRatings;
+  const n = input.controls.length;
+  const summary = summarize(input.controls.map((c) => ({ id: c.id, ratings: ratingsOf(c), ids: Object.fromEntries(FRAMEWORK_IDS.map((f) => [f, [] as string[]])) as Record<FrameworkId, string[]> })));
   const statusCounts = {
-    "Fully Aligned": results.summary.statusCounts["Fully Aligned"],
-    "Partially Aligned": results.summary.statusCounts["Partially Aligned"],
-    "Gap Identified": results.summary.statusCounts["Gap Identified"],
+    "Fully Aligned": summary.statusCounts["Fully Aligned"],
+    "Partially Aligned": summary.statusCounts["Partially Aligned"],
+    "Gap Identified": summary.statusCounts["Gap Identified"],
   };
-  const controls: FactsControl[] = results.rows.map((row) => ({
-    id: row.id,
-    name: row.control.name,
-    owner: row.control.owner?.trim() || null,
-    score: formatScore(row.score),
-    status: row.status,
-    limitedCoverage: row.limitedCoverage,
-    ratings: Object.fromEntries(FRAMEWORK_IDS.map((f) => [FRAMEWORK_NAMES[f], RATING_LABELS[row.cells[f].rating]])),
-    notMet: FRAMEWORK_IDS.filter((f) => row.cells[f].rating === "none").map((f) => FRAMEWORK_NAMES[f]),
-  }));
+  const controls: FactsControl[] = input.controls.map((c) => {
+    const result = scoreControl(ratingsOf(c));
+    return {
+      id: c.id,
+      name: c.name,
+      owner: c.owner?.trim() || null,
+      score: formatScore(result.score),
+      status: result.status,
+      limitedCoverage: result.limitedCoverage,
+      ratings: Object.fromEntries(FRAMEWORK_IDS.map((f) => [FRAMEWORK_NAMES[f], RATING_LABELS[c.ratings[f]]])),
+      notMet: FRAMEWORK_IDS.filter((f) => c.ratings[f] === "none").map((f) => FRAMEWORK_NAMES[f]),
+    };
+  });
   return {
     organisation: ORGANISATION,
     frameworks: FRAMEWORK_IDS.map((f) => FRAMEWORK_NAMES[f]),
     confirmed: n,
-    awaitingReview: results.awaitingReview,
+    awaitingReview: input.awaitingReview,
     statusCounts,
     statusPercents: Object.fromEntries(STATUS_ORDER.map((s) => [s, percent(statusCounts[s], n)])) as Facts["statusPercents"],
-    notScorable: results.summary.notScorable.length,
-    limitedCoverage: results.summary.controlsWithLimitedCoverage.length,
+    notScorable: summary.notScorable.length,
+    limitedCoverage: summary.controlsWithLimitedCoverage.length,
     coverage: FRAMEWORK_IDS.map((f: FrameworkId) => {
-      const fw = results.summary.frameworks[f];
+      const fw = summary.frameworks[f];
       return { name: FRAMEWORK_NAMES[f], rated: fw.inScope, na: fw.counts.na, none: fw.counts.none, average: fw.coverage === null ? "n/a" : formatScore(fw.coverage) };
     }),
     controls,
-    gaps: results.gaps.map((g) => ({
-      id: g.id,
-      name: g.name,
-      owner: controls.find((c) => c.id === g.id)?.owner ?? null,
-      status: g.status,
-      score: formatScore(g.score),
-      notMet: g.noneFrameworks.map((nf) => FRAMEWORK_NAMES[nf.framework]),
-    })),
+    // Same rule as the matrix's gaps list: status Gap Identified, or any framework rated None.
+    gaps: controls
+      .filter((c) => c.status === "Gap Identified" || c.notMet.length > 0)
+      .map((c) => ({ id: c.id, name: c.name, owner: c.owner, status: c.status, score: c.score, notMet: c.notMet })),
     owners: [...new Set(controls.map((c) => c.owner).filter((o): o is string => Boolean(o)))],
   };
 }

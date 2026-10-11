@@ -2,16 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { DISCLAIMER } from "@/lib/disclaimer.ts";
-import { checkSection, type SectionCheck } from "@/lib/report/checks.ts";
+import { checkRecommendations, checkSection, type SectionCheck } from "@/lib/report/checks.ts";
 import { STATUS_ORDER, buildFacts, type Facts } from "@/lib/report/facts.ts";
 import {
   MAX_SECTION_LENGTH,
+  PART_TITLES,
+  RECOMMENDATION_LIMITS,
   SECTION_KEYS,
   SECTION_TITLES,
   approveReport,
   createReport,
+  editRecommendation,
   editSection,
-  editedSections,
+  editedParts,
   estimatePrintedPages,
   isOutOfDate,
   markChecked,
@@ -20,10 +23,13 @@ import {
   reportBlockers,
   setPreparedBy,
   unapprove,
+  type RecommendationField,
+  type RecommendationsPart,
   type Report,
+  type ReportSection,
   type SectionKey,
 } from "@/lib/report/report.ts";
-import { templateSections } from "@/lib/report/template.ts";
+import { DOES_NOT_SHOW, postureLine, templateDraft } from "@/lib/report/template.ts";
 import { RATING_LABELS } from "@/lib/scoring/config.ts";
 import { StepIndicator } from "./StepIndicator.tsx";
 import { Button, Legend, Notice, RoleBadge, StepFooter, TextLink } from "./ui.tsx";
@@ -53,7 +59,7 @@ function RenderedText({ text }: { text: string }) {
 }
 
 function Flags({ check }: { check: SectionCheck }) {
-  const blocking = [...check.numbers, ...check.references];
+  const blocking = [...check.numbers, ...check.references, ...check.fields];
   if (blocking.length === 0 && check.claims.length === 0) return <p className="no-print mt-1 text-xs text-emerald-700">Figures match the code&apos;s results.</p>;
   return (
     <div className="no-print mt-1 space-y-1">
@@ -88,8 +94,7 @@ function SourceLabel({ r }: { r: Report }) {
   );
 }
 
-function SourceBadge({ r, k }: { r: Report; k: SectionKey }) {
-  const s = r.sections[k];
+function SourceBadge({ s }: { s: ReportSection | RecommendationsPart }) {
   if (s.edited) return <RoleBadge role="Analyst" />;
   if (s.source === "ai") return <RoleBadge role="AI" />;
   return <span className="inline-flex rounded bg-slate-100 px-1.5 py-0.5 text-[13px] font-semibold text-slate-700 ring-1 ring-inset ring-slate-300">Template</span>;
@@ -186,6 +191,86 @@ function GapsTable({ f }: { f: Facts }) {
   );
 }
 
+/** Fixed line written by code (posture, "does not show"): not editable, marked with the Code badge on screen. */
+function CodeLine({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mb-1">
+      <span className="no-print mr-1.5 align-middle">
+        <RoleBadge role="Code" />
+      </span>
+      {children}
+    </p>
+  );
+}
+
+function RecommendationsTable({ items }: { items: RecommendationsPart["items"] }) {
+  return (
+    <table className="report-table w-full text-left">
+      <thead>
+        <tr>
+          <th>Recommendation</th>
+          <th>Owner</th>
+          <th>Effort</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((r, i) => (
+          <tr key={i}>
+            <td>{r.text}</td>
+            <td>{r.owner}</td>
+            <td>{r.effort}</td>
+            <td>{r.rationale}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+const REC_FIELDS: { field: RecommendationField; label: string; multiline: boolean }[] = [
+  { field: "text", label: "Recommendation", multiline: true },
+  { field: "owner", label: "Owner", multiline: false },
+  { field: "effort", label: "Effort (Low, Medium or High)", multiline: false },
+  { field: "rationale", label: "Why", multiline: true },
+];
+
+/** One text box per field. Owner and effort are checked, never silently changed after an edit. */
+function RecommendationsEditor({ items, onEdit }: { items: RecommendationsPart["items"]; onEdit: (i: number, f: RecommendationField, v: string) => void }) {
+  return (
+    <ol className="no-print space-y-2">
+      {items.map((r, i) => (
+        <li key={i} className="rounded-md border border-slate-200 p-2">
+          <p className="mb-1 text-xs font-semibold text-slate-600">Recommendation {i + 1}</p>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {REC_FIELDS.map(({ field, label, multiline }) => (
+              <label key={field} className="min-w-0 text-xs text-slate-600">
+                {label}
+                {multiline ? (
+                  <textarea
+                    value={r[field]}
+                    maxLength={RECOMMENDATION_LIMITS[field]}
+                    rows={2}
+                    onChange={(e) => onEdit(i, field, e.target.value)}
+                    className="mt-0.5 block w-full rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900"
+                  />
+                ) : (
+                  <input
+                    value={r[field]}
+                    maxLength={RECOMMENDATION_LIMITS[field]}
+                    onChange={(e) => onEdit(i, field, e.target.value)}
+                    className="mt-0.5 block w-full rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900"
+                  />
+                )}
+              </label>
+            ))}
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 /**
  * Opens the print dialog with a clean document title: browsers print the title in their page header (when
  * headers are on) and use it as the default PDF file name. The original title is restored afterwards.
@@ -217,7 +302,7 @@ export function ReportScreen() {
       change((w) => {
         if (w.report) return w;
         const f = buildFacts(w);
-        return f.confirmed > 0 ? { ...w, report: createReport(f, templateSections(f), "template", null, now()) } : w;
+        return f.confirmed > 0 ? { ...w, report: createReport(f, templateDraft(f), "template", null, now()) } : w;
       });
     }
   }, [ws, facts, change]);
@@ -246,7 +331,7 @@ export function ReportScreen() {
 
   const setReport = (fn: (r: Report) => Report) => change((w) => (w.report ? { ...w, report: fn(w.report) } : w));
   const redraftTemplate = (keepEdited: boolean) => {
-    setReport((r) => redraft(r, facts, templateSections(facts), "template", null, now(), keepEdited));
+    setReport((r) => redraft(r, facts, templateDraft(facts), "template", null, now(), keepEdited));
     setAskRedraft(false);
   };
 
@@ -261,17 +346,18 @@ export function ReportScreen() {
   };
   const approved = report.approved !== null && !outOfDate;
   const checks = Object.fromEntries(SECTION_KEYS.map((k) => [k, checkSection(report.sections[k].text, facts)])) as Record<SectionKey, SectionCheck>;
+  const recCheck = checkRecommendations(report.recommendations.items, facts);
   const blockers = reportBlockers(report, facts);
   const pages = estimatePrintedPages(report, facts);
-  const edited = editedSections(report);
+  const edited = editedParts(report);
   const narrativeLabel = report.draftSource === "ai" ? `AI-generated, human-reviewed${report.model ? ` (${report.model})` : ""}` : "Template draft, not AI";
 
-  const section = (k: SectionKey, extra?: React.ReactNode) => (
+  const section = (k: SectionKey, extra?: React.ReactNode, after?: React.ReactNode) => (
     <section key={k} className="report-section" aria-labelledby={`report-${k}`}>
       <div className="flex items-center gap-2">
         <h2 id={`report-${k}`} className="report-h2">{SECTION_TITLES[k]}</h2>
         <span className="no-print">
-          <SourceBadge r={report} k={k} />
+          <SourceBadge s={report.sections[k]} />
         </span>
       </div>
       {extra}
@@ -290,6 +376,7 @@ export function ReportScreen() {
           <Flags check={checks[k]} />
         </>
       )}
+      {after}
     </section>
   );
 
@@ -341,7 +428,7 @@ export function ReportScreen() {
           <Notice tone="warn" title="Redraft the narrative from the template?">
             <p>
               {edited.length > 0
-                ? `You edited: ${edited.map((k) => SECTION_TITLES[k]).join(", ")}.`
+                ? `You edited: ${edited.map((k) => PART_TITLES[k]).join(", ")}.`
                 : "You have not edited any section."}{" "}
               A new template draft replaces the section text and removes approval. Figures and tables are not affected.
             </p>
@@ -389,9 +476,10 @@ export function ReportScreen() {
           )}
         </header>
 
-        {/* Key messages first for a board reader, then purpose and the figures. */}
-        {section("keyMessages")}
-        {section("purpose")}
+        {/* Key messages and the decision asked for first, for a board reader; then purpose and the figures. */}
+        {section("keyMessages", <CodeLine><span className="font-semibold">{postureLine(facts)}</span></CodeLine>)}
+        {section("decisionRequested")}
+        {section("purpose", undefined, <div className="mt-1"><CodeLine>{DOES_NOT_SHOW}</CodeLine></div>)}
 
         <section className="report-section" aria-labelledby="report-headline">
           <div className="flex items-center gap-2">
@@ -408,7 +496,22 @@ export function ReportScreen() {
             <GapsTable f={facts} />
           </div>,
         )}
-        {section("recommendations")}
+        <section className="report-section" aria-labelledby="report-recommendations">
+          <div className="flex items-center gap-2">
+            <h2 id="report-recommendations" className="report-h2">{PART_TITLES.recommendations}</h2>
+            <span className="no-print">
+              <SourceBadge s={report.recommendations} />
+            </span>
+          </div>
+          {approved ? (
+            <RecommendationsTable items={report.recommendations.items} />
+          ) : (
+            <>
+              <RecommendationsEditor items={report.recommendations.items} onEdit={(i, f, v) => setReport((r) => editRecommendation(r, i, f, v))} />
+              <Flags check={recCheck} />
+            </>
+          )}
+        </section>
         {section("method")}
 
         <footer className="report-section mt-3 border-t border-slate-200 pt-2 text-xs text-slate-700">
