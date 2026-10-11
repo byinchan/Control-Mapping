@@ -155,12 +155,12 @@ export function ReviewPanel({
           )}
         </div>
 
-        {!locked && ai && !askReplace && (
+        {/* In demo mode this fact is part of the single demo notice below instead. */}
+        {!locked && ai && ai.mode !== "demo" && !askReplace && (
           <p className="mt-2 rounded-md border border-violet-300 bg-violet-50 px-3 py-2 text-xs leading-relaxed text-violet-950">
-            <span className="font-semibold">&ldquo;{AI_LABELS.replace}&rdquo;</span>{" "}
-            {ai.mode === "demo"
-              ? "returns the same saved suggestion in demo mode, because this sample control is unchanged."
-              : "asks the AI again for all four frameworks. It replaces the requirement IDs, ratings, rationales, uncertainties and missing information shown here. The control text is not changed, and the current suggestion stays in History. AI choices and wording can vary between runs."}
+            <span className="font-semibold">&ldquo;{AI_LABELS.replace}&rdquo;</span> asks the AI again for all four frameworks. It replaces the
+            requirement IDs, ratings, rationales, uncertainties and missing information shown here. The control text is not changed, and the
+            current suggestion stays in History. AI choices and wording can vary between runs.
           </p>
         )}
 
@@ -205,9 +205,16 @@ export function ReviewPanel({
                 The control text changed after this suggestion was made. Use &ldquo;{AI_LABELS.replace}&rdquo;, or check the mapping yourself.
               </Notice>
             )}
-            {ai.notices.map((n) => (
-              <Notice key={n} tone={n.startsWith("Saved suggestion") ? "info" : "warn"}>{n}</Notice>
-            ))}
+            {ai.notices.map((n) =>
+              n.startsWith("Demo mode") ? (
+                <Notice key={n} tone="info">
+                  {n}
+                  {!locked && <> In demo mode, &ldquo;{AI_LABELS.replace}&rdquo; returns this same saved suggestion.</>}
+                </Notice>
+              ) : (
+                <Notice key={n} tone="warn">{n}</Notice>
+              ),
+            )}
             {ai.guardrails.warnings.map((w) => (
               <Notice key={w} tone="warn" title="Check this">{w}</Notice>
             ))}

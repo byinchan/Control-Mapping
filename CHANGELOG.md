@@ -4,6 +4,21 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Demo mode: one compact notice (wording only)
+- The AI-suggested mapping panel showed up to three stacked notices in demo mode (purple "Replace…" note, yellow
+  "Demo mode: no AI key is configured…", blue "Saved suggestion…"). They are now one blue notice, built by
+  `demoNotice()` in `lib/mapping/service.ts`: "Demo mode: showing a saved AI suggestion for this sample control
+  (claude-haiku-5-5, 2026-10-10, prompt v2). AI-generated, not reviewed." The prompt version drops its repeated date.
+- When a limit caused demo mode, one short reason is added ("Shown because your AI suggestion limit was reached.",
+  today's call limit, or the AI service could not be reached). The missing-key case gives no reason: public text no
+  longer says how the server is configured.
+- The purple note's one useful fact is folded into the same notice: "In demo mode, "Replace with a new AI suggestion"
+  returns this same saved suggestion." The purple note still shows for live suggestions.
+- Kept: the "Demo mode: saved AI output" header badge and the model/time line.
+- Checked, no stacking, unchanged: the review page's batch summary (one notice, including the limit case), the 429
+  limit message and the 503 "unavailable" message (each a single error notice). The mock mapper's notice was already one line.
+- Suggestions already stored in an open tab keep their old notice text until the control is mapped again or the tab is closed.
+
 ### Start page: one green button (UI only)
 - "Choose sample controls →" is the green primary button; "Enter your own control →" is now a blue outline button.
   Both cards stay fully clickable. The sample card's hover and focus border is green, and the own-control card's is blue;
