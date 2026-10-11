@@ -18,7 +18,7 @@ import {
   type FrameworkPatch,
 } from "@/lib/workflow/workspace.ts";
 import { FrameworkEditor } from "./FrameworkEditor.tsx";
-import { AI_LABELS } from "./labels.ts";
+import { AI_LABELS, CONFIRM_LABELS } from "./labels.ts";
 import { Button, ControlStatusBadge, FRAMEWORK_NAMES, ModeBadge, Notice, RoleBadge } from "./ui.tsx";
 
 const FIELDS: { key: keyof ControlInput; label: string; rows?: number; required?: boolean }[] = [
@@ -345,22 +345,20 @@ export function ReviewPanel({
                   Not ready: {blockers.length} thing{blockers.length === 1 ? "" : "s"} to fix
                 </a>
               ) : (
-                <span>
-                  <span className="font-mono text-xs">{record.id}</span> · your decision
-                </span>
+                <span>{CONFIRM_LABELS.barText(record.id)}</span>
               )}
             </p>
             <div className="flex gap-2">
               {onNext ? (
                 <>
-                  <Button onClick={() => confirm(false)}>Confirm</Button>
+                  <Button onClick={() => confirm(false)}>{CONFIRM_LABELS.confirm}</Button>
                   <Button variant="confirm" onClick={() => confirm(true)}>
-                    Confirm and next
+                    {CONFIRM_LABELS.confirmAndNext}
                   </Button>
                 </>
               ) : (
                 <Button variant="confirm" onClick={() => confirm(false)}>
-                  Confirm
+                  {CONFIRM_LABELS.confirm}
                 </Button>
               )}
             </div>

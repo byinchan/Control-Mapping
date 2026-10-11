@@ -213,10 +213,13 @@ export function MatrixScreen() {
 
       {/* Gaps and checks */}
       <section aria-labelledby="gaps-title" className="space-y-2">
-        <h2 id="gaps-title" className="text-base font-semibold">Gaps</h2>
+        <h2 id="gaps-title" className="text-base font-semibold">Gaps and requirements not met</h2>
         <p className="text-sm text-slate-600">
           Controls with status Gap Identified, and controls rated {RATING_LABELS.none} on any framework (the framework has a requirement the control,
           as described, doesn&apos;t meet).
+        </p>
+        <p className="text-sm text-slate-600">
+          Overall status can still be Partially Aligned when one framework has a requirement this control doesn&apos;t meet.
         </p>
         {gaps.length === 0 ? (
           <Notice tone="ok">No gaps among the confirmed controls.</Notice>

@@ -37,6 +37,19 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
   table scrolls sideways inside its box on small screens.
 - Gaps and "To check" sections, and **Download CSV**.
 
+### Wording and layout follow-up (no scoring or data changes)
+- **Confirm bar:** "Confirm this control" and "Confirm and go to next control". The left text reads
+  "C005: confirming records your decision". The labels sit in `app/components/labels.ts` with the AI
+  button labels, and a test pins them.
+- **Ratings key:** a short list of four items at body size (14 px) on both the review and matrix pages. Each
+  item gives the rating and what it means, without the scores (those appear beside the radio buttons in
+  review).
+- **"How the score and status are calculated":** the first bullet repeating the per-rating scores is
+  removed. The average, status thresholds, Not scorable and limited-coverage lines remain, and a test
+  checks this.
+- **Gaps heading:** "Gaps and requirements not met", with the added line "Overall status can still be
+  Partially Aligned when one framework has a requirement this control doesn't meet."
+
 ### Verified in the browser (production build, demo mode)
 - 0 confirmed: empty-state message. 1 confirmed: one row, "13 awaiting review not included". All 14
   confirmed with "Confirm and next".
