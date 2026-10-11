@@ -7,6 +7,7 @@ import { RATING_LABELS } from "../scoring/config.ts";
 import type { Guardrails, MappingMode, Proposal, ControlInput } from "../mapping/types.ts";
 import type { Rating } from "../scoring/config.ts";
 import type { ControlRatings } from "../scoring/score.ts";
+import type { Report } from "../report/report.ts";
 
 export const WORKSPACE_VERSION = 2;
 export const MAX_CONTROLS = 50;
@@ -71,7 +72,13 @@ export type ControlRecord = {
   history: HistoryEvent[];
 };
 
-export type Workspace = { version: typeof WORKSPACE_VERSION; controls: ControlRecord[]; nextAnalystNumber: number };
+export type Workspace = {
+  version: typeof WORKSPACE_VERSION;
+  controls: ControlRecord[];
+  nextAnalystNumber: number;
+  /** The executive report draft, if one was started. Optional so older saved tabs still load. */
+  report?: Report | null;
+};
 
 export const emptyWorkspace = (): Workspace => ({ version: WORKSPACE_VERSION, controls: [], nextAnalystNumber: 1 });
 
