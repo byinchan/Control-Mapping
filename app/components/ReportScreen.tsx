@@ -210,6 +210,18 @@ export function ReportScreen() {
   const [triedApprove, setTriedApprove] = useState(false);
   const report = ws?.report ?? null;
 
+  // Opening the report goes straight to a template draft (code only, never the AI). Built inside change() from the
+  // stored workspace, so a second run of the effect cannot replace a draft that already exists.
+  useEffect(() => {
+    if (ws && facts && !ws.report && facts.confirmed > 0) {
+      change((w) => {
+        if (w.report) return w;
+        const f = buildFacts(w);
+        return f.confirmed > 0 ? { ...w, report: createReport(f, templateSections(f), "template", null, now()) } : w;
+      });
+    }
+  }, [ws, facts, change]);
+
   // Approval only stands for the results it was given for.
   useEffect(() => {
     if (report && facts && report.approved && isOutOfDate(report, facts)) change((w) => ({ ...w, report: reconcile(report, facts) }));
@@ -233,30 +245,12 @@ export function ReportScreen() {
   }
 
   const setReport = (fn: (r: Report) => Report) => change((w) => (w.report ? { ...w, report: fn(w.report) } : w));
-  const startTemplate = () => change((w) => ({ ...w, report: createReport(facts, templateSections(facts), "template", null, now()) }));
   const redraftTemplate = (keepEdited: boolean) => {
     setReport((r) => redraft(r, facts, templateSections(facts), "template", null, now(), keepEdited));
     setAskRedraft(false);
   };
 
-  if (!report) {
-    return (
-      <div className="mx-auto max-w-3xl space-y-4">
-        <StepIndicator current={4} confirmedCount={facts.confirmed} />
-        <h1 className="text-xl font-semibold text-slate-900">Executive report</h1>
-        <p className="text-sm text-slate-700">
-          A 1 to 2 page summary of the {facts.confirmed} confirmed control{facts.confirmed === 1 ? "" : "s"} for a board-level reader. Every
-          figure comes from code; the narrative is a draft you edit and approve.
-        </p>
-        <div className="rounded-lg border border-slate-200 p-4">
-          <Button variant="primary" size="lg" onClick={startTemplate}>
-            Start with a template draft <span aria-hidden>→</span>
-          </Button>
-          <p className="mt-2 text-xs text-slate-600">Template draft, not AI: plain text built by code from your confirmed results.</p>
-        </div>
-      </div>
-    );
-  }
+  if (!report) return <p className="text-sm text-slate-500">Preparing the template draft…</p>;
 
   const outOfDate = isOutOfDate(report, facts);
   const approve = () => {

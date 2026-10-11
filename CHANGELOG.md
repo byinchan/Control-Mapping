@@ -4,6 +4,16 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Report opens straight to a template draft (UI only)
+- The report's start page ("Start with a template draft") is removed. Opening the report with at least one confirmed
+  control creates the template draft automatically, still labelled "Template draft, not AI".
+- Code only: the draft is built from the facts pack by `templateSections()`. Opening the report never calls the AI or
+  any API (checked in the browser: no `/api/` requests from the report page).
+- An existing draft is never replaced on open or reload; the check runs inside the workspace update, so a repeated
+  effect cannot overwrite it. "Redraft from template" is still the only way to replace it.
+- Unchanged: the checks, Prepared by, Approve, Download PDF, out of date handling and the "confirm at least one
+  control" message when nothing is confirmed.
+
 ### Demo mode: one compact notice (wording only)
 - The AI-suggested mapping panel showed up to three stacked notices in demo mode (purple "Replace…" note, yellow
   "Demo mode: no AI key is configured…", blue "Saved suggestion…"). They are now one blue notice, built by
