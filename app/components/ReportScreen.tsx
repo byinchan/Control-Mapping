@@ -26,7 +26,7 @@ import {
 import { templateSections } from "@/lib/report/template.ts";
 import { RATING_LABELS } from "@/lib/scoring/config.ts";
 import { StepIndicator } from "./StepIndicator.tsx";
-import { Button, DisabledAction, Legend, Notice, RoleBadge, StepFooter, TextLink } from "./ui.tsx";
+import { Button, Legend, Notice, RoleBadge, StepFooter, TextLink } from "./ui.tsx";
 import { useWorkspace } from "./useWorkspace.ts";
 
 const now = () => new Date().toISOString();
@@ -263,7 +263,7 @@ export function ReportScreen() {
     setTriedApprove(true);
     const res = approveReport(report, facts, now());
     if (res.blockers.length === 0) setReport(() => res.report);
-    else window.scrollTo({ top: 0, behavior: "smooth" });
+    else setTimeout(() => document.getElementById("approve-blockers")?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
   };
   const approved = report.approved !== null && !outOfDate;
   const checks = Object.fromEntries(SECTION_KEYS.map((k) => [k, checkSection(report.sections[k].text, facts)])) as Record<SectionKey, SectionCheck>;
@@ -318,7 +318,7 @@ export function ReportScreen() {
           </Notice>
         )}
 
-        {/* Toolbar: approve, edit, redraft, PDF */}
+        {/* Toolbar: report status and editing tools. Approve and Download PDF are the footer's job. */}
         <div className="sticky top-0 z-20 rounded-lg border border-slate-200 bg-white/95 p-3 shadow-sm backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="flex items-center gap-2 text-sm">
@@ -330,33 +330,15 @@ export function ReportScreen() {
               )}
             </p>
             <div className="flex flex-wrap gap-2">
-              {!approved && <Button onClick={() => setAskRedraft(true)}>Redraft from template</Button>}
               {approved ? (
                 <Button onClick={() => setReport(unapprove)}>Edit report (removes approval)</Button>
               ) : (
-                <Button variant="confirm" onClick={approve}>
-                  Approve report
-                </Button>
-              )}
-              {approved ? (
-                <Button variant="primary" onClick={printReport}>
-                  Download PDF
-                </Button>
-              ) : (
-                <DisabledAction reason="Approve the report first">Download PDF</DisabledAction>
+                <Button onClick={() => setAskRedraft(true)}>Redraft from template</Button>
               )}
             </div>
           </div>
-          {!approved && triedApprove && blockers.length > 0 && (
-            <div className="mt-2">
-              <Notice tone="error" title="Not ready to approve">
-                <ul className="list-disc pl-4">{blockers.map((b) => <li key={b}>{b}</li>)}</ul>
-              </Notice>
-            </div>
-          )}
           <p className="mt-1 text-xs text-slate-500">
-            Download PDF opens your browser&apos;s print dialog; choose &ldquo;Save as PDF&rdquo;. In the print dialog, turn off headers and
-            footers for a cleaner PDF.
+            {approved ? "Download the PDF at the end of the page." : "When the narrative is ready, approve it at the end of the page."}
             {pages > 2 && <span className="font-medium text-amber-800"> This may run over 2 pages: shorten the longest sections.</span>}
           </p>
         </div>
@@ -447,7 +429,14 @@ export function ReportScreen() {
         </footer>
       </article>
 
-      {/* Next step: approve, then download */}
+      {/* Next step: approve, then download. The page's only green button. */}
+      {!approved && triedApprove && blockers.length > 0 && (
+        <div id="approve-blockers" className="no-print scroll-mt-24">
+          <Notice tone="error" title="Not ready to approve">
+            <ul className="list-disc pl-4">{blockers.map((b) => <li key={b}>{b}</li>)}</ul>
+          </Notice>
+        </div>
+      )}
       <StepFooter back={{ href: "/matrix", label: "Back to matrix & gaps" }}>
         {approved ? (
           <Button variant="primary" size="lg" onClick={printReport}>
@@ -459,9 +448,11 @@ export function ReportScreen() {
           </Button>
         )}
       </StepFooter>
-      {!approved && triedApprove && blockers.length > 0 && (
-        <p className="no-print text-right text-xs text-red-700">Not ready to approve: see the list at the top of the page.</p>
-      )}
+      <p className="no-print text-right text-xs text-slate-500">
+        {approved
+          ? "Download PDF opens your browser's print dialog; choose “Save as PDF”. In the print dialog, turn off headers and footers for a cleaner PDF."
+          : "Approve the report to enable Download PDF."}
+      </p>
       <p className="no-print text-xs text-slate-500">The report is kept only in this browser tab, like the rest of your work.</p>
     </div>
   );

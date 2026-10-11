@@ -227,11 +227,6 @@ export function ReviewScreen() {
             </div>
           )}
           {batch && <BatchSummary r={batch} />}
-          {counts.confirmed > 0 && (
-            <LinkButton href="/matrix" className="w-full">
-              See matrix &amp; gaps ({counts.confirmed} confirmed)
-            </LinkButton>
-          )}
           <LinkButton href="/" className="w-full">
             + Add controls
           </LinkButton>
@@ -271,7 +266,6 @@ export function ReviewScreen() {
                 if (target) openControl(target);
               }}
               onNext={nextId ? () => openControl(nextId) : null}
-              confirmedCount={counts.confirmed}
               onReopen={() => change((w) => reopenControl(w, selected.id, now()))}
               onRemove={() => {
                 if (!window.confirm(`Remove ${selected.id} from this tab?`)) return;
@@ -287,7 +281,8 @@ export function ReviewScreen() {
 
       <StepFooter back={{ href: "/", label: "Back to choose controls" }}>
         {counts.confirmed > 0 ? (
-          <LinkButton href="/matrix" variant="primary" size="lg">
+          // Green only when nothing is awaiting review; otherwise the per-control Confirm buttons are the main action.
+          <LinkButton href="/matrix" variant={counts["awaiting-review"] + counts.draft === 0 ? "primary" : "secondary"} size="lg">
             {CONFIRM_LABELS.continueToMatrix} ({counts.confirmed} confirmed) <span aria-hidden>→</span>
           </LinkButton>
         ) : (

@@ -4,6 +4,27 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### One green button at a time; one job per place (UI only)
+- **Review page:**
+  - **Sticky bar:** per-control actions only (Confirm this control, Confirm and go to next control, Reopen
+    for edits, Next awaiting review). Its "See matrix & gaps" and "Continue to matrix & gaps" are removed.
+  - **Sidebar:** "See matrix & gaps (n confirmed)" is removed; "+ Add controls" and "Clear this tab" stay.
+  - **Page footer:** the only way to the matrix. "Continue to matrix & gaps (n confirmed) →" is green only
+    when no control is awaiting review, blue outline (still enabled) while any is, and disabled with the
+    reason when none are confirmed. Checked in the browser with none, some and all confirmed: exactly one
+    green button and at most one link to the matrix outside the step indicator.
+- **Report page:** the sticky toolbar's green "Approve report" or "Download PDF" duplicated the footer's
+  green button. The toolbar now holds the status and editing tools only (Redraft from template, or Edit
+  report once approved). Approve, then Download PDF, is the footer's single green action. The "Not ready to
+  approve" list now appears directly above that button, which scrolls to it, and the print-dialog tip sits
+  under it.
+- **Other pages checked:**
+  - samples, own control and matrix: one green button each, in the footer;
+  - report start screen: one green "Start with a template draft".
+  - The step indicator links are navigation and are not counted as duplicates.
+- **Left as is:** the start page's two cards each keep their green button, as asked for earlier. They are
+  two equal first choices, not two buttons for the same action.
+
 ### "Prepared by" required before approval (logic change, tested)
 - Approve is blocked until "Prepared by" has a value; whitespace-only doesn't count. It is listed in the same
   "Not ready to approve" list as the other checks: "Prepared by: add your name or initials and role." The field

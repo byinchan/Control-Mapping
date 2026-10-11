@@ -19,7 +19,7 @@ import {
 } from "@/lib/workflow/workspace.ts";
 import { FrameworkEditor } from "./FrameworkEditor.tsx";
 import { AI_LABELS, CONFIRM_LABELS } from "./labels.ts";
-import { Button, ControlStatusBadge, FRAMEWORK_NAMES, LinkButton, ModeBadge, Notice, RoleBadge } from "./ui.tsx";
+import { Button, ControlStatusBadge, FRAMEWORK_NAMES, ModeBadge, Notice, RoleBadge } from "./ui.tsx";
 
 const FIELDS: { key: keyof ControlInput; label: string; rows?: number; required?: boolean }[] = [
   { key: "name", label: "Control name", required: true },
@@ -44,7 +44,6 @@ export function ReviewPanel({
   onReopen,
   onNext,
   onRemove,
-  confirmedCount,
 }: {
   record: ControlRecord;
   aiBusy: boolean;
@@ -59,8 +58,6 @@ export function ReviewPanel({
   onReopen: () => void;
   /** Open the next control awaiting review (null when there is none). */
   onNext: (() => void) | null;
-  /** Confirmed controls in the tab, for the "See matrix & gaps" link. */
-  confirmedCount: number;
   onRemove: () => void;
 }) {
   const [editingText, setEditingText] = useState(false);
@@ -355,11 +352,6 @@ export function ReviewPanel({
               )}
             </p>
             <div className="flex flex-wrap items-center gap-2">
-              {confirmedCount > 0 && (
-                <LinkButton href="/matrix" className="text-xs">
-                  See matrix &amp; gaps ({confirmedCount} confirmed)
-                </LinkButton>
-              )}
               {onNext ? (
                 <>
                   <Button onClick={() => confirm(false)}>{CONFIRM_LABELS.confirm}</Button>
@@ -382,20 +374,11 @@ export function ReviewPanel({
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <Button onClick={onReopen}>Reopen for edits</Button>
-              {onNext ? (
-                <>
-                  <LinkButton href="/matrix" className="text-xs">
-                    See matrix &amp; gaps ({confirmedCount} confirmed)
-                  </LinkButton>
-                  <Button variant="confirm" onClick={onNext}>
-                    Next awaiting review
-                  </Button>
-                </>
-              ) : (
-                // The large green Continue button is in the page footer below; here it is a smaller link.
-                <LinkButton href="/matrix">
-                  {CONFIRM_LABELS.continueToMatrix} <span aria-hidden>→</span>
-                </LinkButton>
+              {/* Per-control actions only; moving on to the matrix is the page footer's job. */}
+              {onNext && (
+                <Button variant="confirm" onClick={onNext}>
+                  Next awaiting review
+                </Button>
               )}
             </div>
           </div>
