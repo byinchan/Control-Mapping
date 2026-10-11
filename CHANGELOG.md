@@ -4,6 +4,11 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
 
 ## Step 6: Executive report (2026-10-11)
 
+### Neutral sample wording (UI text only)
+- The three user-facing "v1" labels now say "PUC sample control set" (review panel source line), "The 14 sample controls
+  from the PUC control set." (sample chooser) and "Loaded from PUC sample control set" (History entry; applies to controls
+  loaded from now on). Code comments and developer-only messages still say v1.
+
 ### Report opens straight to a template draft (UI only)
 - The report's start page ("Start with a template draft") is removed. Opening the report with at least one confirmed
   control creates the template draft automatically, still labelled "Template draft, not AI".

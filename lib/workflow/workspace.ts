@@ -164,7 +164,7 @@ export function loadSample(ws: Workspace, samples: readonly { id: string; input:
       earlierAi: [],
       mapping: emptyMapping(),
       confirmed: null,
-      history: [{ at: now, event: "created", detail: "Loaded from PUC sample (v1)" }],
+      history: [{ at: now, event: "created", detail: "Loaded from PUC sample control set" }],
     }));
   const order = new Map(samples.map((s, i) => [s.id, i]));
   const controls = [...ws.controls, ...added].sort((a, b) => {

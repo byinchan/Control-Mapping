@@ -94,7 +94,7 @@ export function ReviewPanel({
             <p className="flex items-center gap-2 text-xs text-slate-500">
               <RoleBadge role="Analyst" />
               <span className="font-mono">{record.id}</span>
-              <span>{record.sampleId ? "PUC sample (v1)" : "Entered by you"}</span>
+              <span>{record.sampleId ? "PUC sample control set" : "Entered by you"}</span>
               {textEdited(record) && <span className="text-amber-800">· text edited</span>}
             </p>
             <h2 className="mt-1 text-lg font-semibold text-slate-900">{record.current.name || "Untitled control"}</h2>

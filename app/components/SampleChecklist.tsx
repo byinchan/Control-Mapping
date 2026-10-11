@@ -34,7 +34,7 @@ export function SampleChecklist() {
       <header>
         <h1 className="text-xl font-semibold text-slate-900">Choose sample controls</h1>
         <p className="text-sm text-slate-600">
-          The 14 controls from the Version 1 PUC control matrix. Only the control text is loaded; you will get AI suggestions and decide the
+          The 14 sample controls from the PUC control set. Only the control text is loaded; you will get AI suggestions and decide the
           mapping on the next screen.
         </p>
       </header>
