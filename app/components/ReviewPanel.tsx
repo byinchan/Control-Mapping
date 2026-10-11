@@ -25,7 +25,6 @@ const FIELDS: { key: keyof ControlInput; label: string; rows?: number; required?
   { key: "name", label: "Control name", required: true },
   { key: "description", label: "Description", rows: 3, required: true },
   { key: "objective", label: "Objective", rows: 2 },
-  { key: "activity", label: "Activity", rows: 2 },
   { key: "owner", label: "Owner" },
 ];
 
@@ -104,6 +103,10 @@ export function ReviewPanel({
                 {record.current.description}
                 {record.current.owner && <span className="text-slate-500"> · Owner: {record.current.owner}</span>}
               </p>
+            )}
+            {!editingText && record.current.activity && (
+              // Activity is no longer collected; older saved controls may still have one, so show it rather than hide it.
+              <p className="text-xs text-slate-500">Activity (entered in an earlier version, not exported): {record.current.activity}</p>
             )}
           </div>
           <div className="flex items-center gap-2">

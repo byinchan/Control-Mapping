@@ -35,16 +35,10 @@ export function ControlForm({ onAdd, submitLabel }: { onAdd: (input: ControlInpu
         <span className="block text-xs font-normal text-slate-500">What the control does, in a sentence or two.</span>
         <textarea required rows={3} value={draft.description} onChange={set("description")} maxLength={INPUT_LIMITS.description} className={input} />
       </label>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label className="block text-sm font-medium text-slate-700">
-          Objective <span className="font-normal text-slate-500">(optional)</span>
-          <textarea rows={2} value={draft.objective ?? ""} onChange={set("objective")} maxLength={INPUT_LIMITS.objective} className={input} />
-        </label>
-        <label className="block text-sm font-medium text-slate-700">
-          Activity <span className="font-normal text-slate-500">(optional)</span>
-          <textarea rows={2} value={draft.activity ?? ""} onChange={set("activity")} maxLength={INPUT_LIMITS.activity} className={input} />
-        </label>
-      </div>
+      <label className="block text-sm font-medium text-slate-700">
+        Objective <span className="font-normal text-slate-500">(optional)</span>
+        <textarea rows={2} value={draft.objective ?? ""} onChange={set("objective")} maxLength={INPUT_LIMITS.objective} className={input} />
+      </label>
       <label className="block text-sm font-medium text-slate-700 sm:w-1/2">
         Owner <span className="font-normal text-slate-500">(optional)</span>
         <input value={draft.owner ?? ""} onChange={set("owner")} maxLength={INPUT_LIMITS.owner} className={input} />
