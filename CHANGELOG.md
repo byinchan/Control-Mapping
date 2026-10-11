@@ -37,6 +37,34 @@ Decisions, defaults and mapping differences. Bernadette makes the final call on 
   table scrolls sideways inside its box on small screens.
 - Gaps and "To check" sections, and **Download CSV**.
 
+### CSV changes after Bernadette's export check
+- **Column order:** Control ID, Control Name, Control Owner, Score, Status, Limited framework coverage;
+  then per framework the requirement IDs and the rating; then the four rationale or N/A reason columns;
+  then Confirmed at (UTC). Description and Control Objective were not in the requested list. They are kept
+  at the end so the control text is not lost from the export.
+- **Removed: Control Activity** (option A). Sample controls carry their v1 activity text in Description,
+  so Activity was blank for all 14. The optional Activity field is also removed from `/new` and from "Edit
+  text" in review. Saved tab data from before still loads without errors (the stored field is still
+  accepted, and a test covers this). Such an older value is shown read-only as "Activity (entered in an
+  earlier version, not exported)".
+- **CIS IDs as text:** all 153 CIS safeguard IDs look like decimals to a spreadsheet. Five would silently
+  become a different, existing safeguard when a cell holds one ID: 3.10 to 3.1, 4.10 to 4.1, 8.10 to 8.1,
+  13.10 to 13.1, 16.10 to 16.1. Some locales would also read "3.1" as a date. NIST, ISO and SOC 2 IDs are
+  never affected. Fix: **in the CSV only**, CIS IDs are written "CIS 3.10" ("CIS 6.3; CIS 6.4"), under the
+  header "CIS Controls v8.1 safeguards". The app and stored data keep plain IDs.
+  - A value starting with letters always stays text: no hidden characters, no visible apostrophes, and the
+    formula guard is unaffected.
+  - Rejected: a leading `'` (visible when the file is opened, and confused with the formula guard),
+    `="3.10"` (a formula, which the guard blocks), invisible prefix characters, and relying on "import as
+    text".
+- **Tests:**
+  - the exact column order;
+  - each of the five IDs exported alone stays "CIS x.10";
+  - single and multiple CIS IDs, with other frameworks and stored IDs plain;
+  - the formula guard checked on every cell of a full export of risky controls.
+- **Matrix score line:** "Control score = average of the rated frameworks (Full 1, Partial 0.5, None 0;
+  N/A left out)."
+
 ### Wording and layout follow-up (no scoring or data changes)
 - **Confirm bar:** "Confirm this control" and "Confirm and go to next control". The left text reads
   "C005: confirming records your decision". The labels sit in `app/components/labels.ts` with the AI
