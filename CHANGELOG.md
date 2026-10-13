@@ -718,7 +718,7 @@ Every NIST, CIS and SOC 2 ID in the v1 matrix exists in the current catalogs. No
 v1 changed or disappeared in v8.1.
 
 ### Dependency versions
-Same pins as the first project: react 19.3.0, react-dom 19.3.0, typescript 5.9.3, tailwindcss 4.3.3,
+Pinned: react 19.3.0, react-dom 19.3.0, typescript 5.9.3, tailwindcss 4.3.3,
 @tailwindcss/postcss 4.3.3. Dev-only type packages use caret ranges.
 
 **Changed: next 16.3.6 → 16.3.8 (security fix).** `npm audit` reported a high-severity advisory range
