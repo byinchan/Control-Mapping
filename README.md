@@ -112,9 +112,16 @@ The public site runs in demo mode, with saved AI output from a real run (claude-
 
 Pacific Utilities Corporation is fictional, and the 14 controls are my own writing. The AI suggestions are saved from a real run, and I reviewed the sample mappings. I corrected four of them (C002 for NIST, and C006, C012 and C013 for SOC 2), and each correction is recorded in `data/sample-corrections.json`.
 
-### Framework references
+### Framework references and copyright
 
-Requirement IDs and short labels refer to NIST CSF 2.0, ISO/IEC 27001:2022 Annex A, CIS Controls v8.1 and the SOC 2 Trust Services Criteria. CIS Controls content is licensed by CIS under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). NIST CSF 2.0 is a NIST publication. The ISO, SOC 2 and CIS labels are my own paraphrases. No framework source documents are included in this repo, and the project is not affiliated with or endorsed by these organizations.
+The app contains requirement identifiers (for example A.8.5 or CC6.1) and my own short labels. It doesn't reproduce the text of any framework. To read what a requirement actually says, use the publisher's official document.
+
+* NIST CSF 2.0 is a NIST publication.
+* CIS Controls content is licensed by CIS under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). The labels in the app are my own short labels.
+* ISO/IEC 27001:2022 is a copyrighted standard sold by ISO. I don't hold a copy of the standard. I worked from publicly available lists of the Annex A controls (the control numbers and titles), so the mapping reflects those titles and not the full text of each requirement. The app uses the control numbers as identifiers, and the labels are my own paraphrases. No part of the standard is included in this repo.
+* SOC 2 Trust Services Criteria are published by the AICPA. The app uses the criteria IDs as identifiers, and the labels are my own paraphrases.
+
+No framework source documents are included in this repo, and the project is not affiliated with or endorsed by these organizations.
 
 ### Six governance principles
 
