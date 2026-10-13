@@ -114,7 +114,7 @@ Pacific Utilities Corporation is fictional, and the 14 controls are my own writi
 
 ### Framework references
 
-Requirement IDs and short labels refer to NIST CSF 2.0, ISO/IEC 27001:2022 Annex A, CIS Controls v8.1 and the SOC 2 Trust Services Criteria. CIS Controls content is licensed by CIS under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). NIST CSF 2.0 is a NIST publication. The ISO and SOC 2 labels are my own paraphrases. No framework source documents are included in this repo, and the project is not affiliated with or endorsed by these organizations.
+Requirement IDs and short labels refer to NIST CSF 2.0, ISO/IEC 27001:2022 Annex A, CIS Controls v8.1 and the SOC 2 Trust Services Criteria. CIS Controls content is licensed by CIS under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). NIST CSF 2.0 is a NIST publication. The ISO, SOC 2 and CIS labels are my own paraphrases. No framework source documents are included in this repo, and the project is not affiliated with or endorsed by these organizations.
 
 ### Six governance principles
 
