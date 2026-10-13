@@ -1,10 +1,9 @@
-# Project 4: AI-Assisted Control Mapping & Framework Alignment
+# AI-Assisted Control Mapping & Framework Alignment
 
 ## Decisions (final)
 - STANDALONE: this repo (github.com/byinchan/Control-Mapping) is its own project with its own
   Vercel project. It must NOT import code from, link to, share keys with, or depend on any other
-  portfolio project (including the AI-GRC risk workflow). Bernadette picks which project to show
-  employers, so each must stand on its own. Do not read or copy from other repos.
+  project, and it must stand on its own. Do not read or copy from other repos.
 - AI PROVIDER: Anthropic Claude API only. The project is built with Claude Code and powered by
   Claude. Env var: ANTHROPIC_API_KEY (server-side only, never NEXT_PUBLIC_).
 - STORAGE: no accounts, no database, no saved sessions. Current browser tab only.
@@ -17,10 +16,9 @@ Frameworks: NIST CSF 2.0, ISO/IEC 27001:2022 (Annex A), CIS Controls v8, SOC 2 T
 Baseline: 14 controls (C001-C014) from the v1 matrix in /v1. Keep those IDs. They are the sample data.
 
 ## Stack and conventions
-- SAME TECH STACK as Bernadette's first portfolio project (built fresh here, never copied from it):
-  Next.js 16 App Router, React 19, TypeScript 5.9, Tailwind CSS 4 (via @tailwindcss/postcss),
-  Node's built-in test runner (node --test). Her first project pinned Next 16.3.6, React 19.3.0,
-  Tailwind 4.3.3, TypeScript 5.9.3: start from those exact versions unless a security fix needs a
+- TECH STACK (built fresh here): Next.js 16 App Router, React 19, TypeScript 5.9, Tailwind CSS 4
+  (via @tailwindcss/postcss), Node's built-in test runner (node --test). Pinned starting versions:
+  Next 16.3.6, React 19.3.0, Tailwind 4.3.3, TypeScript 5.9.3: start from those exact versions unless a security fix needs a
   newer one, and tell me if you change any. Check current docs rather than relying on memory.
   Keep dependencies minimal and justify each; no UI kit, no PDF library.
 - Deterministic logic = pure functions in lib/ (framework-free, unit-tested). UI never computes scores.
@@ -31,7 +29,7 @@ Baseline: 14 controls (C001-C014) from the v1 matrix in /v1. Keep those IDs. The
 - PDF: client-side, no server, no library. DEFAULT (chosen for speed): a dedicated print layout
   (@media print, Letter/A4) behind a "Download PDF" button that opens the browser print dialog
   (Save as PDF). Check that the report fits 2 pages by measuring rendered height. STRETCH upgrade:
-  a small hand-written dependency-free PDF writer (as in her first project) for a true one-click
+  a small hand-written dependency-free PDF writer for a true one-click
   download.
 - Tests: node --test. CI runs tests + catalog validator before deploy.
 - Preview: `npm run dev` for local preview. Vercel creates a preview deployment for every branch/PR;
@@ -113,7 +111,7 @@ Governance). Differences are for me to decide, not bugs.
   boundary between deterministic results and narrative synthesis.
 
 ## Governance principles (design requirements, not just README text)
-The same six principles as Bernadette's first portfolio project, adapted. Each must be visible in
+Six governance principles. Each must be visible in
 the product itself:
 1. Human-Owned GRC Logic: analysts make the mapping and rating decisions. AI suggestions are
    advisory; every ID, rating and rationale is editable.
@@ -145,9 +143,9 @@ management, workflow approvals, audit logging and organizational taxonomies. Ser
 integrated in this project.
 
 ## README (write at the end)
-Standalone, first person as Bernadette, same structure as her first project's README: opening
+Standalone, first person as Bernadette, with this structure: opening
 question, what it demonstrates, where AI helps and where it stops (AI assists with / the analyst
-owns / deterministic logic handles), workflow with screenshots in docs/images, executive report,
+owns / deterministic logic handles), workflow with screenshots in docs/screenshots, executive report,
 architecture, the six principles, intentional prototype boundaries, closing reflection. Also the
 framework content/copyright notice and a note that it was built with Claude Code and uses the
 Claude API. Fictional organization; never imply professional experience or validated mappings.
