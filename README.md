@@ -114,9 +114,9 @@ Pacific Utilities Corporation is fictional, and the 14 controls are my own writi
 
 ### Framework references and copyright
 
-The app contains requirement identifiers (for example A.8.5 or CC6.1) and my own short labels. It doesn't reproduce the text of any framework. To read what a requirement actually says, use the publisher's official document.
+The app contains requirement identifiers (for example A.8.5 or CC6.1) and short labels. For NIST CSF 2.0 the labels are NIST's own outcome statements; for the other frameworks they are my own short labels, and the app doesn't reproduce their text. To read what a requirement actually says, use the publisher's official document.
 
-* NIST CSF 2.0 is a NIST publication.
+* NIST CSF 2.0 is a NIST publication. The app uses NIST's outcome statements as labels; as a U.S. government work, they are not subject to copyright in the United States.
 * CIS Controls content is licensed by CIS under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). The labels in the app are my own short labels.
 * ISO/IEC 27001:2022 is a copyrighted standard sold by ISO. I don't hold a copy of the standard. I worked from publicly available lists of the Annex A controls (the control numbers and titles), so the mapping reflects those titles and not the full text of each requirement. The app uses the control numbers as identifiers, and the labels are my own paraphrases. No part of the standard is included in this repo.
 * SOC 2 Trust Services Criteria are published by the AICPA. The app uses the criteria IDs as identifiers, and the labels are my own paraphrases.
