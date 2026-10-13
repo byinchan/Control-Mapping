@@ -108,9 +108,13 @@ I built it with Claude Code and the Claude API, approving its actions as it work
 
 ### Demo mode and sample data
 
-The public site runs in demo mode, with saved AI output from a real run (claude-haiku-5-5, 2026-10-10, prompt v2) labelled "AI-generated, not reviewed". It costs nothing to run and can't be abused. The code supports live calls with a server-side key, and a labelled mock mapper (not AI) is the last fallback. Keys are never committed.
+The public site runs in demo mode, with saved AI output from a real run (claude-haiku-5-5, 2026-10-10, prompt v2) labelled "AI-generated, not reviewed". Demo mode makes no API calls, so it can't run up costs. The code supports live calls with a server-side key, and a labelled mock mapper (not AI) can be switched on in settings. Keys are never committed. With a live API key, the text of a control is sent to Anthropic's API to generate a suggestion. The public demo makes no API calls and sends nothing.
 
-Pacific Utilities Corporation is fictional, and the 14 controls are my own writing. I reviewed the Partial ratings on four of them (C005, C011, C012 and C013) and agreed with them.
+Pacific Utilities Corporation is fictional, and the 14 controls are my own writing. The AI suggestions are saved from a real run, and I reviewed the sample mappings. I corrected four of them (C002 for NIST, and C006, C012 and C013 for SOC 2), and each correction is recorded in `data/sample-corrections.json`.
+
+### Framework references
+
+Requirement IDs and short labels refer to NIST CSF 2.0, ISO/IEC 27001:2022 Annex A, CIS Controls v8.1 and the SOC 2 Trust Services Criteria. CIS Controls content is licensed by CIS under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). NIST CSF 2.0 is a NIST publication. The ISO and SOC 2 labels are my own paraphrases. No framework source documents are included in this repo, and the project is not affiliated with or endorsed by these organizations.
 
 ### Six governance principles
 
