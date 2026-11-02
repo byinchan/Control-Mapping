@@ -2,6 +2,17 @@
 
 Decisions, defaults and mapping differences. Bernadette makes the final call on mappings.
 
+## Security update: Next.js 16.3.8 to 16.4.4 (2026-11-02)
+- `npm audit` reported Next.js 16.0.0 to 16.4.0 as affected by three advisories (fixed in 16.4.1):
+  GHSA-2464-fhr4-w9xw (critical, remote code execution in the Image Optimization API with SVG files),
+  GHSA-673q-mjm6-r5xr (critical, remote code execution in `use cache` functions returning typed arrays) and
+  GHSA-p3m5-59mp-jv5r (high, denial of service in App Router Server Actions).
+- Pinned `next` to 16.4.4, the latest 16.x. Only `next` and its own `@next/*` packages changed in the lockfile.
+  `npm audit`: 0 vulnerabilities. `npm audit signatures`: all packages have verified registry signatures, and `next` has a
+  verified provenance attestation. 16.4.4 was published on 2026-11-02; 16.4.3 (2026-10-23) is the fallback if needed.
+- No code changes were needed. No feature changes. Typecheck, 123 tests, catalog check and build pass; a browser run of the
+  production build in demo mode (map, confirm, matrix, report, approve) showed the same results and no errors.
+
 ## Step 6, Stage 2: report structure (chunk A built); AI-drafted narrative planned, not built (2026-10-11)
 
 Bernadette stopped Stage 2 after chunk A. Chunk A (below) is built and tested. The AI-drafted narrative, the
